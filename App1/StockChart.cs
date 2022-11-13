@@ -80,7 +80,7 @@ namespace App1
                 //canvas.DrawCircle(points[i].x + camera.CameraOffSetX, points[i].y, 2, p);
                 if (i != values.Length - 1)
                 {
-                    canvas.DrawLine( (points[i].x + camera.CameraOffSetX)*test_zoomfactor, points[i].y + camera.CameraOffSetY  , (points[i + 1].x + camera.CameraOffSetX)*test_zoomfactor, points[i + 1].y + camera.CameraOffSetY, p);
+                    canvas.DrawLine( (points[i].x )*test_zoomfactor + camera.CameraOffSetX, points[i].y + camera.CameraOffSetY  , (points[i + 1].x )*test_zoomfactor + camera.CameraOffSetX, points[i + 1].y + camera.CameraOffSetY, p);
                 }
             }
         }
