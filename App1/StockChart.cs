@@ -30,6 +30,9 @@ namespace App1
         MyPoint lastPlace;
         float test_zoomfactor = 1;
 
+        public bool Zoom = false;
+        public bool Move = false;
+
         Paint p;
         public StockChart(Context context) : base(context)
         {
@@ -96,9 +99,15 @@ namespace App1
             {
                 if (e.Action == MotionEventActions.Move )
                 {
-                    //camera.CameraOffSetX += (float)e.GetX() - lastPlace.x;
-                    //camera.CameraOffSetY += (float)e.GetY() - lastPlace.y;
-                    test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100;
+                    if (Zoom)
+                    {
+                        test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100;
+                    }
+                    if (Move)
+                    {
+                        camera.CameraOffSetX += (float)e.GetX() - lastPlace.x;
+                        camera.CameraOffSetY += (float)e.GetY() - lastPlace.y;
+                    }
                 }
             }
             lastPlace = new MyPoint(e.GetX(), e.GetY());

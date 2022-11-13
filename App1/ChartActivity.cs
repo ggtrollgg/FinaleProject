@@ -24,9 +24,24 @@ namespace App1
         List<float> list = new List<float>();
         List<string> list_Dates = new List<string>();
 
+        Button btnMove, btnZoom;
+        LinearLayout l1;
+        StockChart chart;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+            SetContentView(Resource.Layout.ChartLayout);
+            btnMove = FindViewById<Button>(Resource.Id.btnMove);
+            btnZoom = FindViewById<Button>(Resource.Id.btnZoom);
+
+            l1 = FindViewById<LinearLayout>(Resource.Id.LLChart);
+
+            
+            btnZoom.Click += BtnZoom_Click;
+            btnMove.Click += BtnMove_Click;
+
+            chart = new StockChart(this);
 
             Console.WriteLine("1");
             _ = testAsync();
@@ -34,16 +49,26 @@ namespace App1
 
         }
 
+        private void BtnMove_Click(object sender, EventArgs e)
+        {
+            chart.Move = !chart.Move;
+        }
+
+        private void BtnZoom_Click(object sender, EventArgs e)
+        {
+            chart.Zoom = !chart.Zoom;
+        }
+
         public void test()
         {
-            StockChart chart = new StockChart(this);
+            
             float[] arrey = new float[list.Count];
             for (int i = 0; i < arrey.Length; i++)
             {
                 arrey[i] = list[i];
             }
             chart.values = arrey;
-            SetContentView(chart);
+            l1.AddView(chart);
         }
 
 

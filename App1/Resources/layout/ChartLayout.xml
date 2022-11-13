@@ -4,4 +4,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:id="@+id/LLChart"
+        android:orientation="vertical"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+           android:layout_width="wrap_content"
+           android:layout_height="50dp"
+            android:text="Move"
+            android:id="@+id/btnMove"
+            android:layout_marginLeft="10dp"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:id="@+id/btnZoom"
+            android:text="Zoom"
+            android:layout_marginLeft="10dp"
+        />
+    
+    </LinearLayout>
+    
 </LinearLayout>
