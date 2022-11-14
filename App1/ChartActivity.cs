@@ -57,6 +57,10 @@ namespace App1
         private void BtnZoom_Click(object sender, EventArgs e)
         {
             chart.Zoom = !chart.Zoom;
+            if (chart.Zoom)
+            {
+                btnZoom.Background = null;
+            }
         }
 
         public void test()
