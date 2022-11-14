@@ -52,6 +52,14 @@ namespace App1
         private void BtnMove_Click(object sender, EventArgs e)
         {
             chart.Move = !chart.Move;
+            if (chart.Move)
+            {
+                btnMove.SetBackgroundColor(Android.Graphics.Color.Green);
+            }
+            else
+            {
+                btnMove.SetBackgroundColor(Android.Graphics.Color.Red);
+            }
         }
 
         private void BtnZoom_Click(object sender, EventArgs e)
@@ -59,7 +67,13 @@ namespace App1
             chart.Zoom = !chart.Zoom;
             if (chart.Zoom)
             {
-                btnZoom.Background = null;
+                btnZoom.SetBackgroundColor(Android.Graphics.Color.Green);
+                //btnZoom.Background = (Android.Graphics.Drawables.Drawable)"green";
+            }
+            else
+            {
+                btnZoom.SetBackgroundColor(Android.Graphics.Color.Red);
+                //btnZoom.Background = (Android.Graphics.Drawables.Drawable)"red";
             }
         }
 
