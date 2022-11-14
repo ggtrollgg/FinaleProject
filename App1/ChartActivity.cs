@@ -126,6 +126,7 @@ namespace App1
             }
             Console.WriteLine("3");
             test();
+            return;
         }
 
         public String[] CleanAndSaperet(String TheContent)
