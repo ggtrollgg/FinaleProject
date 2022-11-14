@@ -220,7 +220,7 @@ namespace App1
             int i2 = (int)Math.Round(i);
             //Console.WriteLine("i2 is:" + i2);
             //return i2;
-            return defualtI2;
+            return defualtI2;  
         }
     }
 
