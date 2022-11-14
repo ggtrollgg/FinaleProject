@@ -97,19 +97,50 @@ namespace App1
             }
             else
             {
+                if (e.PointerCount > 1)
+                {
+                    Paint p1 = new Paint();
+                    p1.Color = Color.Black;
+
+                    //e.GetToolMajor(e.FindPointerIndex(1));
+                    //test_zoomfactor += (e.GetToolMajor(e.GetPointerId(0)) - lastPlace.x) / 100000;
+
+                    MyPoint point1 = new MyPoint((float)e.GetX(), (float)e.GetY());
+                   
+
+
+
+                    //MyPoint point2 = new MyPoint(e.GetAxisValue(Axis.X), e.GetAxisValue(Axis.Y));
+                    MyPoint point2 = new MyPoint(e.GetAxisValue(Axis.X, e.FindPointerIndex(e.GetPointerId(1))), e.GetAxisValue(Axis.Y, e.FindPointerIndex(e.GetPointerId(1))));
+
+
+                    canvas.DrawCircle(point1.x, point1.y, 100, p1);
+                    canvas.DrawCircle(point2.x, point2.y, 100, p1);
+                    Invalidate();
+
+                    //test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100;
+                }
                 if (e.Action == MotionEventActions.Move )
                 {
-                    if (Zoom)
+                    if(e.PointerCount > 1)
                     {
-                        test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100;
+
                     }
-                    if (Move)
+                    else
                     {
-                        camera.CameraOffSetX += (float)e.GetX() - lastPlace.x;
-                        camera.CameraOffSetY += (float)e.GetY() - lastPlace.y;
+                        if (Zoom)
+                        {
+                            test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100;
+                        }
+                        if (Move)
+                        {
+                            camera.CameraOffSetX += (float)e.GetX() - lastPlace.x;
+                            camera.CameraOffSetY += (float)e.GetY() - lastPlace.y;
+                        }
                     }
                 }
             }
+
             lastPlace = new MyPoint(e.GetX(), e.GetY());
             return true;
         }
