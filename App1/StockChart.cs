@@ -32,6 +32,7 @@ namespace App1
 
 
         MyPoint lastPlace;
+        MyPoint lastPlace2;
         float test_zoomfactor = 1;
 
 
@@ -79,6 +80,10 @@ namespace App1
 
                 int i = CalculatePointZoomingOn();
 
+                if(0 <=i && i < values.Length)
+                {
+                    canvas.DrawCircle(Changedpoints[i].x, Changedpoints[i].y, 10, p1);
+                }
                 //Console.WriteLine("mispoint x is: " + midPoint.x);
                 //Console.WriteLine("changed x is: " + Changedpoints[i].x);
                 //Console.WriteLine("changed-1 x is: " + Changedpoints[i-1].x);
@@ -86,11 +91,11 @@ namespace App1
                 //Console.WriteLine("changed-3 x is: " + Changedpoints[i-3].x);
                 //Console.WriteLine("changed-4 x is: " + Changedpoints[i-4].x);
 
-                canvas.DrawCircle(Changedpoints[i].x, Changedpoints[i-5].y, 10, p1);
+                
                 p1.Color = Color.Blue;
-                canvas.DrawCircle(Changedpoints[i-1].x, Changedpoints[i].y, 10, p1);
+                //canvas.DrawCircle(Changedpoints[i-1].x, Changedpoints[i].y, 10, p1);
                 p1.Color = Color.Green;
-                canvas.DrawCircle(Changedpoints[i+1].x, Changedpoints[i].y, 10, p1);
+                //canvas.DrawCircle(Changedpoints[i+1].x, Changedpoints[i].y, 10, p1);
             }
         }
 
@@ -125,6 +130,7 @@ namespace App1
                 //canvas.DrawCircle( (i * canvas.Width )/ (values.Length-1), canvas.Height + ((lowest- values[i] )*(1/(heighest-lowest)) * canvas.Height), (float)2, p);
                 //canvas.DrawCircle(points[i].x + camera.CameraOffSetX, points[i].y, 2, p);
                 canvas.DrawCircle(Changedpoints[i].x, Changedpoints[i].y, 2, p);
+
                 if (i != values.Length - 1)
                 {
                     // canvas.DrawLine( (points[i].x )*test_zoomfactor + camera.CameraOffSetX, points[i].y + camera.CameraOffSetY  , (points[i + 1].x )*test_zoomfactor + camera.CameraOffSetX, points[i + 1].y + camera.CameraOffSetY, p);
@@ -142,7 +148,7 @@ namespace App1
                 point1 = new MyPoint((float)e.GetX(), (float)e.GetY());
                 point2 = new MyPoint(e.GetAxisValue(Axis.X, e.FindPointerIndex(e.GetPointerId(1))), e.GetAxisValue(Axis.Y, e.FindPointerIndex(e.GetPointerId(1))));
 
-                if(e.Action == MotionEventActions.Pointer2Down)
+                if(e.Action == MotionEventActions.Pointer2Down || e.Action == MotionEventActions.Down)
                 {
                     midPoint = new MyPoint((point1.x + point2.x) / 2, (point1.y + point2.y) / 2);
                 }
@@ -165,8 +171,30 @@ namespace App1
             {
                 if (e.Action == MotionEventActions.Move)
                 {
-                    if (e.PointerCount > 1)
+                    if (e.PointerCount > 1 && midPoint!=null)
                     {
+                        point2 = new MyPoint(e.GetAxisValue(Axis.X, e.FindPointerIndex(e.GetPointerId(1))), e.GetAxisValue(Axis.Y, e.FindPointerIndex(e.GetPointerId(1))));
+                        if (lastPlace2 == null)
+                        {
+                            lastPlace2 = new MyPoint(point2.x, point2.y);
+                        }
+
+
+                        //test_zoomfactor += Math.Max((Math.Abs((float)e.GetX() - midPoint.x) / 1000),Math.Abs( ((float)point2.x - midPoint.x) / 1000));
+
+                        //if(Math.Abs((float)e.GetX() - lastPlace.x) > Math.Abs((float)point2.x - lastPlace2.x))
+                        //{
+                        //    test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100;
+                        //}
+                        //else
+                        //{
+                        //    test_zoomfactor += ((float)point2.x - lastPlace2.x) / 100;
+                        //}
+
+                        test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100 + ((float)point2.x - lastPlace2.x) / 100;
+
+                        lastPlace2.x = point2.x;
+                        lastPlace2.y = point2.y;
 
                     }
                     else
@@ -198,10 +226,28 @@ namespace App1
 
         private void CalculateNewPointes()
         {
-           for(int i = 0; i < values.Length; i++)
-            {
-               Changedpoints[i] = new MyPoint((points[i].x) * test_zoomfactor + camera.CameraOffSetX, points[i].y + camera.CameraOffSetY);
-            }
+            //if(midPoint != null)
+            //{
+            //    int midPointI = CalculatePointZoomingOn();
+            //    for (int i = 0; i < values.Length; i++)
+            //    {
+            //        if(i < midPointI)
+            //        {
+            //            Changedpoints[i] = new MyPoint((points[i].x) * (test_zoomfactor) + camera.CameraOffSetX, points[i].y + camera.CameraOffSetY);
+            //        }
+            //        else if(i > midPointI)
+            //        {
+            //            Changedpoints[i] = new MyPoint((points[i].x) * test_zoomfactor + camera.CameraOffSetX, points[i].y + camera.CameraOffSetY);
+            //        }
+            //    }
+            //}
+            //else
+            //{
+                for (int i = 0; i < values.Length; i++)
+                {
+                    Changedpoints[i] = new MyPoint((points[i].x) * test_zoomfactor + camera.CameraOffSetX, points[i].y + camera.CameraOffSetY);
+                }
+            //} 
         }
 
         private int CalculatePointZoomingOn()
