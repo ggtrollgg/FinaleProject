@@ -31,9 +31,13 @@ namespace App1
             btnstart = FindViewById<Button>(Resource.Id.btnstart);
             btnExit = FindViewById<Button>(Resource.Id.btnExit);
             btnToListView = FindViewById<Button>(Resource.Id.btnToListView);
+
+
             btnstart.Click += Btnstart_Click;
             btnExit.Click += BtnExit_Click;
             btnToListView.Click += BtnToListView_Click;
+
+
             //btnToActivity2 = FindViewById<Button>(Resource.Id.btnToActivity2);
             //btnToActivity2.Click += BtnToActivity2_Click;
 
