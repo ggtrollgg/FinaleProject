@@ -11,21 +11,23 @@ using System.Text;
 
 namespace App1
 {
-    internal class DataPoint
+    public class DataPoint
     {
         public float heigh;
         public float low;
+        public String symbol;
         public string date;
 
         public DataPoint()
         {
 
         }
-        public DataPoint(float heigh, float low, string date)
+        public DataPoint(float heigh, float low, string date, String symbol)
         {
             this.heigh = heigh;
             this.low = low;
             this.date = date;
+            this.symbol = symbol;
         }
     }
 }

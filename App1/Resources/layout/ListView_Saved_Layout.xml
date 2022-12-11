@@ -68,6 +68,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textSize="20dp"
+        android:id="@+id/tvSymbol"
             />
 
 </LinearLayout>

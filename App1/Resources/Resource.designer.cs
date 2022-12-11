@@ -4107,40 +4107,43 @@ namespace App1
 			public const int tvLow = 2131230957;
 			
 			// aapt resource value: 0x7F0800EE
-			public const int tvTrackingPrices = 2131230958;
+			public const int tvSymbol = 2131230958;
 			
 			// aapt resource value: 0x7F0800EF
-			public const int @unchecked = 2131230959;
+			public const int tvTrackingPrices = 2131230959;
 			
 			// aapt resource value: 0x7F0800F0
-			public const int uniform = 2131230960;
+			public const int @unchecked = 2131230960;
 			
 			// aapt resource value: 0x7F0800F1
-			public const int unlabeled = 2131230961;
+			public const int uniform = 2131230961;
 			
 			// aapt resource value: 0x7F0800F2
-			public const int up = 2131230962;
+			public const int unlabeled = 2131230962;
 			
 			// aapt resource value: 0x7F0800F3
-			public const int useLogo = 2131230963;
+			public const int up = 2131230963;
 			
 			// aapt resource value: 0x7F0800F4
-			public const int view_offset_helper = 2131230964;
+			public const int useLogo = 2131230964;
 			
 			// aapt resource value: 0x7F0800F5
-			public const int view_tree_saved_state_registry_owner = 2131230965;
+			public const int view_offset_helper = 2131230965;
 			
 			// aapt resource value: 0x7F0800F6
-			public const int visible = 2131230966;
+			public const int view_tree_saved_state_registry_owner = 2131230966;
 			
 			// aapt resource value: 0x7F0800F7
-			public const int visible_removing_fragment_view_tag = 2131230967;
+			public const int visible = 2131230967;
 			
 			// aapt resource value: 0x7F0800F8
-			public const int withText = 2131230968;
+			public const int visible_removing_fragment_view_tag = 2131230968;
 			
 			// aapt resource value: 0x7F0800F9
-			public const int wrap_content = 2131230969;
+			public const int withText = 2131230969;
+			
+			// aapt resource value: 0x7F0800FA
+			public const int wrap_content = 2131230970;
 			
 			static Id()
 			{
