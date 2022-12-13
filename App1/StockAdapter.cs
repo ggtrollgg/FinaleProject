@@ -44,33 +44,72 @@ namespace App1
         public override View GetView(int position, View convertView, ViewGroup parent)
         {
             Android.Views.LayoutInflater layoutInflater = ((StockViewActivity)context).LayoutInflater;
-            Android.Views.View view = layoutInflater.Inflate(Resource.Layout.ListView_Saved_Layout, parent, false);
+            Android.Views.View view = SavedLayout(position, convertView, parent);
+
+            DataPoint Temp = objects[position];
+            
+            if (Temp!=null && Temp.TrackingPrices!=null)
+            {
+                view = TrackingLayout(position, convertView, parent);
+            }
+            return view;
+
+        }
+
+        private View TrackingLayout(int position, View convertView, ViewGroup parent)
+        {
+
+            Android.Views.LayoutInflater layoutInflater = ((StockViewActivity)context).LayoutInflater;
             TextView tvSymbol, tvAlarmSound, tvTrackingPrices, tvLow, tvHeigh;
 
+            Android.Views.View view = layoutInflater.Inflate(Resource.Layout.ListView_Track_Layout, parent, false);
             tvSymbol = view.FindViewById<TextView>(Resource.Id.tvSymbol);
             tvLow = view.FindViewById<TextView>(Resource.Id.tvLow);
             tvHeigh = view.FindViewById<TextView>(Resource.Id.tvHeigh);
-
-
             tvAlarmSound = view.FindViewById<TextView>(Resource.Id.tvAlarmSound);
             tvTrackingPrices = view.FindViewById<TextView>(Resource.Id.tvTrackingPrices);
+            
+
 
 
             DataPoint Temp = objects[position];
-           
+
 
             if (Temp != null)
             {
                 //Task t = testAsync(Temp);
                 //t.Wait();
 
-                tvSymbol.Text =   Temp.symbol;
+                tvSymbol.Text = Temp.symbol;
                 tvLow.Text = "Low: " + Temp.low;
-                tvHeigh.Text = "Heigh: " +Temp.heigh;
+                tvHeigh.Text = "Heigh: " + Temp.heigh;
 
             }
             return view;
+        }
 
+        private View SavedLayout(int position, View convertView, ViewGroup parent)
+        {
+            Android.Views.LayoutInflater layoutInflater = ((StockViewActivity)context).LayoutInflater;
+            Android.Views.View view = layoutInflater.Inflate(Resource.Layout.ListView_Saved_Layout, parent, false);
+
+            TextView tvSymbol, tvAlarmSound, tvTrackingPrices, tvLow, tvHeigh;
+            tvSymbol = view.FindViewById<TextView>(Resource.Id.tvSymbol);
+            tvLow = view.FindViewById<TextView>(Resource.Id.tvLow);
+            tvHeigh = view.FindViewById<TextView>(Resource.Id.tvHeigh);
+
+            DataPoint Temp = objects[position];
+            if (Temp != null)
+            {
+                //Task t = testAsync(Temp);
+                //t.Wait();
+
+                tvSymbol.Text = Temp.symbol;
+                tvLow.Text = "Low: " + Temp.low;
+                tvHeigh.Text = "Heigh: " + Temp.heigh;
+
+            }
+            return view;
         }
 
         public override int Count

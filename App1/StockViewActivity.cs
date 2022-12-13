@@ -5,6 +5,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Java.Util;
+using Org.Apache.Http.Cookies;
 using Org.Json;
 using System;
 using System.Collections.Generic;
@@ -38,11 +39,17 @@ namespace App1
             btnShowSaved = FindViewById<Button>(Resource.Id.btnShowSaved);
 
             btnReturnHome.Click += BtnReturnHome_Click;
+            list = new List<String>();
+            Datalist = new List<DataPoint>();
 
             //DeleteFile("SavedStocks.txt");
             //Add_To_File("AAPL");
+            //Add_To_File("TSLA");
+            
 
-            _ = processAllSavedStocks();
+            Console.WriteLine(Read_from_file());
+
+           _ = processAllSavedStocks();
            
 
 
@@ -50,22 +57,31 @@ namespace App1
 
 
             
-            // Create your application here
+
 
         }
 
         private async Task processAllSavedStocks()
         {
             String s = Read_from_file();
+            s = s.Replace("\0", "");
+            s = s.Replace("\n", "");
+
             String[] s2 = s.Split(',');
+            Console.WriteLine(s2);
+            Console.WriteLine("------------------------------------------------------------------------------------------");
             for (int i = 0; i < s2.Length; i++)
             {
-                list.Add(s2[i]);
-
-                DataPoint d = new DataPoint();
-                d.symbol = s2[i];
-                Datalist.Add(d);
-                _ = GetInfoFromWeb(s2[i].ToString(), i);
+                if (s2[i] != null && s2[i].Length!= 0)
+                {
+                    list.Add(s2[i]);
+                    Console.WriteLine(s2[i]);
+                    Console.WriteLine("------------------------------------------------------------------------------------------");
+                    DataPoint d = new DataPoint();
+                    d.symbol = s2[i];
+                    Datalist.Add(d);
+                    _ = GetInfoFromWeb(s2[i].ToString(), i);
+                }
             }
 
         }
@@ -142,29 +158,36 @@ namespace App1
                 //    Console.WriteLine(g);
                 //    link += g;
                 //}
+
+
                 symbol = symbol.Replace("\0","");
+                symbol = symbol.Replace("\n", "");
+                symbol = symbol.Replace(",", "");
                 //string symbol2 = new string(symbol);
+
+
                 string link = "https://financialmodelingprep.com/api/v3/historical-chart/1min/";
                 link = link.Insert(link.Length, symbol);
                 link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
 
-                if (link != "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860")
-                {
-                    Toast.MakeText(this, "false", ToastLength.Long).Show();
-                    Console.WriteLine(link);
-                    Console.WriteLine("https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860");
-                }
+                //if (link != "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860")
+                //{
+                //    Toast.MakeText(this, "false", ToastLength.Long).Show();
+                //    Console.WriteLine(link);
+                //    Console.WriteLine("https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860");
+                //}
 
 
                 //using (var request2 = new HttpRequestMessage(new HttpMethod("GET"), "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860"))
+                
                 using (var request2 = new HttpRequestMessage(new HttpMethod("GET"), link))
                 {
-                    Toast.MakeText(this, "2", ToastLength.Short).Show();
+                    //Toast.MakeText(this, "sending requast for info", ToastLength.Short).Show();
                     var response2 = await httpClient2.SendAsync(request2);
                     response2.EnsureSuccessStatusCode();
-                    Toast.MakeText(this, "3", ToastLength.Short).Show();
                     string responseBody = await response2.Content.ReadAsStringAsync();
                     JSONArray HistInfo = new JSONArray(responseBody);
+
                     Console.WriteLine(HistInfo.Length());
 
                     Datalist[place].low=((float)(HistInfo.GetJSONObject(0).GetDouble("low")));
@@ -173,9 +196,9 @@ namespace App1
 
                 }
             }
-            Toast.MakeText(this, "5", ToastLength.Short).Show();
 
-            if(place == Datalist.Count-1)
+            Toast.MakeText(this, "got the info from web?", ToastLength.Short).Show();
+            if (place >= Datalist.Count-2)
             { 
                 ShowListView();
             }
@@ -213,7 +236,7 @@ namespace App1
                         if (str != null)
                         {
                             //  tv.Text = str;
-                            Toast.MakeText(this, str, ToastLength.Short).Show();
+                            //Toast.MakeText(this, str, ToastLength.Short).Show();
                             return str;
                         }
                     }
@@ -236,7 +259,7 @@ namespace App1
         {
             try
             {
-                string str = the_stock;//= et.Text;
+                string str = the_stock + ",";//= et.Text;
                 using (Stream stream = OpenFileOutput("SavedStocks.txt", Android.Content.FileCreationMode.Append))
                 {
                     try
@@ -245,7 +268,7 @@ namespace App1
                         {
                             stream.Write(Encoding.ASCII.GetBytes(str), 0, str.Length);
                             stream.Close();
-                            Toast.MakeText(this, "save", ToastLength.Short).Show();
+                            Toast.MakeText(this, "saved", ToastLength.Short).Show();
                         }
                     }
                     catch (Java.IO.IOException a)
