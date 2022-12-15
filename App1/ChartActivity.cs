@@ -81,11 +81,14 @@ namespace App1
         {
             
             float[] arrey = new float[list.Count];
+            String[] arrey2 = new string[list.Count];
             for (int i = 0; i < arrey.Length; i++)
             {
                 arrey[i] = list[i];
+                arrey2[i] = list_Dates[i];
             }
             chart.values = arrey;
+            chart.Dates = arrey2;
             l1.AddView(chart);
         }
 

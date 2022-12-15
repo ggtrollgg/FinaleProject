@@ -23,6 +23,7 @@ namespace App1
 
 
         public float[] values;
+        public String[] Dates;
         float heighest = 0, lowest = -1;
         
 
@@ -63,11 +64,39 @@ namespace App1
                 CreatChartPoints();
                 DrawPoints();
                 DrawTouching();
+
+                DrawXexis();
                 Invalidate();
             }
         }
 
-        
+        private void DrawXexis()
+        {
+            //MyPoint textlocation = new MyPoint(canvas.Width/(2/9),canvas.Height);
+            Paint textPaint = new Paint();
+            //textPaint.AntiAlias = true;
+            textPaint.Color = Color.Black;
+            //textPaint.StrokeWidth = 1;
+            textPaint.TextSize = canvas.Height / 40;
+            for (int g = 1; g < 4; g++)
+            {
+                float defualtPointx = ((float)this.canvas.Width * (float)(2.0 / 9.0) * g - camera.CameraOffSetX) / test_zoomfactor;
+                float defualtI = (defualtPointx * (values.Length - 1)) / canvas.Width;
+                float i = ((((float)canvas.Width * ((float)(2.0 / 9.0) * g) - camera.CameraOffSetX) / test_zoomfactor) / ((float)canvas.Width / (values.Length - 1)));
+
+                if((int)Math.Round(i) >= Dates.Length)
+                {
+                    i = Dates.Length-1;
+                }
+                if(i < 0)
+                {
+                    i = 0;
+                }
+
+                canvas.DrawText(Dates[(int)Math.Round(i)], canvas.Width * (float)(2.0 / 9.0) * g -150, canvas.Height, textPaint);
+            }
+            
+        }
 
         private void DrawTouching()
         {

@@ -58,6 +58,8 @@ namespace App1
             //    Console.WriteLine(link2);
             //    Console.WriteLine("https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860");
             //}
+
+
             String symbol = "AAPL";
             string link = "https://financialmodelingprep.com/api/v3/historical-chart/1min/";
             link = link.Insert(link.Length, symbol);
