@@ -48,7 +48,7 @@ namespace App1
 
             DataPoint Temp = objects[position];
             
-            if (Temp!=null && Temp.TrackingPrices!=null)
+            if (Temp!=null && Temp.TrackingPrices!=null && Temp.SoundName != null && Temp.SoundName != "")
             {
                 view = TrackingLayout(position, convertView, parent);
             }

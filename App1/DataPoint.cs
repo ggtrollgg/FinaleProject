@@ -15,6 +15,7 @@ namespace App1
     {
         public float heigh;
         public float low;
+
         public String symbol;
         public string date;
 
