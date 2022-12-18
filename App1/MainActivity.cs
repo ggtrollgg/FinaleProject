@@ -37,29 +37,6 @@ namespace App1
             btnExit.Click += BtnExit_Click;
             btnToListView.Click += BtnToListView_Click;
 
-
-            //btnToActivity2 = FindViewById<Button>(Resource.Id.btnToActivity2);
-            //btnToActivity2.Click += BtnToActivity2_Click;
-
-
-            //string link = "https://financialmodelingprep.com/api/v3/historical-chart/1min/" + symbol + "?apikey=0a0b32a8d57dc7a4d38458de98803860";
-            //String link = "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860";
-
-
-
-            //string link = "https://financialmodelingprep.com/api/v3/historical-chart/1min/";
-            //string link2 = link.Insert(link.Length, "AAPL");
-            //link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
-            //string test = "?apikey=0a0b32a8d57dc7a4d38458de98803860";
-            //link2 = link2.Insert(link2.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
-            //if (link2 != "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860")
-            //{
-            //    Toast.MakeText(this, "false", ToastLength.Long).Show();
-            //    Console.WriteLine(link2);
-            //    Console.WriteLine("https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860");
-            //}
-
-
             String symbol = "AAPL";
             string link = "https://financialmodelingprep.com/api/v3/historical-chart/1min/";
             link = link.Insert(link.Length, symbol);

@@ -78,13 +78,17 @@ namespace App1
             textPaint.Color = Color.Black;
             //textPaint.StrokeWidth = 1;
             textPaint.TextSize = canvas.Height / 40;
+            String TheString;
             for (int g = 1; g < 4; g++)
             {
+                
                 float defualtPointx = ((float)this.canvas.Width * (float)(2.0 / 9.0) * g - camera.CameraOffSetX) / test_zoomfactor;
                 float defualtI = (defualtPointx * (values.Length - 1)) / canvas.Width;
                 float i = ((((float)canvas.Width * ((float)(2.0 / 9.0) * g) - camera.CameraOffSetX) / test_zoomfactor) / ((float)canvas.Width / (values.Length - 1)));
 
-                if((int)Math.Round(i) >= Dates.Length)
+                
+
+                if ((int)Math.Round(i) >= Dates.Length)
                 {
                     i = Dates.Length-1;
                 }
@@ -92,8 +96,9 @@ namespace App1
                 {
                     i = 0;
                 }
-
-                canvas.DrawText(Dates[(int)Math.Round(i)], canvas.Width * (float)(2.0 / 9.0) * g -150, canvas.Height, textPaint);
+                TheString = Dates[(int)Math.Round(i)];
+                TheString = TheString.Remove(0, 10);
+                canvas.DrawText(TheString, canvas.Width * (float)(2.0 / 9.0) * g, canvas.Height, textPaint);
             }
             
         }
@@ -299,63 +304,5 @@ namespace App1
         }
     }
 
-        //public override bool OnTouchEvent(MotionEvent e)
-        //{
-        //    if(lastPlace == null)
-        //    {
-        //        lastPlace = new MyPoint(e.GetX(), e.GetY());
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        if (e.PointerCount > 1)
-        //        {
-        //            Paint p1 = new Paint();
-        //            p1.Color = Color.Black;
-
-        //            //e.GetToolMajor(e.FindPointerIndex(1));
-        //            //test_zoomfactor += (e.GetToolMajor(e.GetPointerId(0)) - lastPlace.x) / 100000;
-
-        //            MyPoint point1 = new MyPoint((float)e.GetX(), (float)e.GetY());
-
-
-
-
-        //            //MyPoint point2 = new MyPoint(e.GetAxisValue(Axis.X), e.GetAxisValue(Axis.Y));
-        //            MyPoint point2 = new MyPoint(e.GetAxisValue(Axis.X, e.FindPointerIndex(e.GetPointerId(1))), e.GetAxisValue(Axis.Y, e.FindPointerIndex(e.GetPointerId(1))));
-
-
-        //            canvas.DrawCircle(point1.x, point1.y, 100, p1);
-        //            canvas.DrawCircle(point2.x, point2.y, 100, p1);
-
-        //            Invalidate();
-        //            //test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100;
-        //        }
-        //        if (e.Action == MotionEventActions.Move )
-        //        {
-        //            if(e.PointerCount > 1)
-        //            {
-
-        //            }
-        //            else
-        //            {
-        //                if (Zoom)
-        //                {
-        //                    test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100;
-        //                }
-        //                if (Move)
-        //                {
-        //                    camera.CameraOffSetX += (float)e.GetX() - lastPlace.x;
-        //                    camera.CameraOffSetY += (float)e.GetY() - lastPlace.y;
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    lastPlace = new MyPoint(e.GetX(), e.GetY());
-
-        //    return true;
-        //}
-
-    //}
+    
 }
