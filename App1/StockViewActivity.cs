@@ -14,28 +14,37 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
-using System.Threading.Tasks;
+
+
+using System.Diagnostics;
 
 using Firebase.Firestore;
 using Firebase;
-using Android.Gms.Tasks;
-using Task = System.Threading.Tasks.Task;
+
+//using Android.Gms.Tasks;
+
+//using Task = System.Threading.Tasks.Task;
+using System.Threading.Tasks;
+using System.Threading;
+using Java.Util.Functions;
 
 namespace App1
 {
     [Activity(Label = "StockViewActivity")]
-    public class StockViewActivity : Activity, IOnSuccessListener
+    public class StockViewActivity : Activity, Android.Gms.Tasks.IOnSuccessListener
     {
-        Button btnReturnHome, btnShowSaved;
+        Button btnReturnHome, btnShowSaved, btnShowTrack;
 
         public static List<String> list = new List<String>();
-        public static List<DataPoint> Datalist = new List<DataPoint>();
+        public static List<StockData> Datalist = new List<StockData>();
 
         ListView lvStock;
         StockAdapter adapter;
 
         public FirebaseFirestore db;
+        CancellationTokenSource CTS = new CancellationTokenSource();
 
+        bool ShowOnlyTracking= false;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -43,10 +52,14 @@ namespace App1
             SetContentView(Resource.Layout.ListViewPage_Layout);
             btnReturnHome = FindViewById<Button>(Resource.Id.btnReturnHome);
             btnShowSaved = FindViewById<Button>(Resource.Id.btnShowSaved);
+            btnShowTrack = FindViewById<Button>(Resource.Id.btnShowTrack);
+
+            btnShowTrack.Click += BtnShowTrack_Click;
+            btnShowSaved.Click += BtnShowSaved_Click;
 
             btnReturnHome.Click += BtnReturnHome_Click;
             list = new List<String>();
-            Datalist = new List<DataPoint>();
+            Datalist = new List<StockData>();
 
             //DeleteFile("SavedStocks.txt");
             //Add_To_File("AAPL");
@@ -56,9 +69,31 @@ namespace App1
             Console.WriteLine(Read_from_file());
 
             db = GetDataBase();
+            //AddItem();
             LoadItems();
 
            //_ = processAllSavedStocks();
+        }
+
+        private void BtnShowSaved_Click(object sender, EventArgs e)
+        {
+            if(ShowOnlyTracking)
+            {
+                ShowOnlyTracking = false;
+                LoadItems();
+            }
+
+
+        }
+
+        private void BtnShowTrack_Click(object sender, EventArgs e)
+        {
+            if(!ShowOnlyTracking)
+            {
+                ShowOnlyTracking = true;
+                LoadItems();
+            }
+            
         }
 
         private void AddItem()
@@ -69,11 +104,11 @@ namespace App1
             // save data
             // map.Put([field name], content);
             map.Put("symbol", "TSLA");
-            map.Put("LastDate", "TSLA");
-            map.Put("SoundFile", "TSLA");
-            map.Put("", "TSLA");
-            map.Put("", "TSLA");
-            map.Put("", "TSLA");
+            map.Put("LastDate", "");
+            map.Put("SoundFile", "");
+            map.Put("TrackingPrices", "");
+            map.Put("heigh", 0);
+            map.Put("low", 0);
 
             // create an empty document reference for firestore
             DocumentReference docRef = db.Collection("Saved Stocks").Document();
@@ -91,6 +126,8 @@ namespace App1
             .SetApiKey("AIzaSyCjiFrMsBwOFvqUZRdohfIiqMsJC5QG_kc")
             .SetStorageBucket("stock-data-base-finalproject.appspot.com")
             .Build();
+
+
             var app = FirebaseApp.InitializeApp(this, options);
             db = FirebaseFirestore.GetInstance(app);
             return db;
@@ -98,6 +135,10 @@ namespace App1
 
         private void LoadItems()
         {
+            if(Datalist.Count > 0)
+            {
+                Datalist.Clear();
+            }
             // generate a query (request) from the database
             Query q = db.Collection("Saved Stocks");
             q.Get().AddOnSuccessListener(this);
@@ -107,47 +148,53 @@ namespace App1
         {
 
             // gets List of HashMaps whick represent the DB students
+            
             var snapshot = (QuerySnapshot)result;
-            DataPoint data;
+            StockData data;
             int i = 0;
             // iterate through each document in the collection
             foreach (var doc in snapshot.Documents)
             {
-                // save data as a student object
-                //data = new DataPoint((string)doc.Get("symbol"), (int)doc.Get("heigh"), (int)doc.Get("low"), (string)doc.Get("school"));
-                //float[] trackingprices = (float[])doc.Get("TrackingPrice");
-                //List<float> trackingprices2 = (List<float>)doc.Get("TrackingPrice");
-                //ArrayList tr = (ArrayList)doc.Get("TrackingPrice");
-                //List<float> trackingprices2 = new List<float>();
                 
-                
-                //if (tr != null)
-                //{
-                //    for(int g = 0; g < tr.Size() - 1; g++)
-                //    {
-                //        float price = (float)tr.Get(g);
-
-                //        trackingprices2.Add(price);
-                //    }
-                    
-                    
-                //}
                 String tr = (String)doc.Get("TrackingPrice");
                 List<float> trackingprices = new List<float>();
                 if (tr != null)
                 {
                     String[] trs = tr.Split(',');
+                    
                     foreach (String price in trs)
                     {
-                        trackingprices.Add(float.Parse(price));
+                        if(price != null && price != "")
+                        {
+                            trackingprices.Add(float.Parse(price));
+                        }
                     }
                 }
-                   
-                data = new DataPoint((float)doc.Get("heigh"), (float)doc.Get("low"), (string)doc.Get("symbol") , (string)doc.Get("LastDate") , (string)doc.Get("SoundFile") , trackingprices);
-                Datalist.Add(data);
-                _ = GetInfoFromWeb(data.symbol, i);
+                if(trackingprices.Count > 0)
+                {
+                    data = new StockData((float)doc.Get("heigh"), (float)doc.Get("low"), (string)doc.Get("LastDate"), (string)doc.Get("symbol"), (string)doc.Get("SoundFile"), trackingprices);
+                    Datalist.Add(data);
+                     _ = GetInfoFromWeb(data.symbol, i);
+                }
+                else
+                {
+                    //float heigh = (float)doc.Get("heigh");
+                    //float low = (float)doc.Get("low");
+                    //String symbol = (String)doc.Get("symbol");
+                    //String LastDate = (String)doc.Get("LastDate");
+                    if(!ShowOnlyTracking)
+                    {
+                        data = new StockData((float)doc.Get("heigh"), (float)doc.Get("low"), (String)doc.Get("LastDate"), (String)doc.Get("symbol"));
+                        Datalist.Add(data);
+                        _ = GetInfoFromWeb(data.symbol, i);
+                    } 
+                }
 
                 i++;
+            }
+            if(Datalist.Count == 0)
+            {
+                ShowListView();
             }
         }
 
@@ -157,6 +204,7 @@ namespace App1
         {
             using (var httpClient2 = new HttpClient())
             {
+                
 
                 symbol = symbol.Replace("\0","");
                 symbol = symbol.Replace("\n", "");
@@ -166,11 +214,19 @@ namespace App1
                 link = link.Insert(link.Length, symbol);
                 link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
 
-                using (var request2 = new HttpRequestMessage(new HttpMethod("GET"), link))
+                using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
                 {
-                    //Toast.MakeText(this, "sending requast for info", ToastLength.Short).Show();
-                    var response2 = await httpClient2.SendAsync(request2);
+                    Toast.MakeText(this, "sending requast for info", ToastLength.Short).Show();
+                    //CancellationToken token = CTS.Token;
+
+
+                    //ThreadStart MyThreadStart = new ThreadStart(Test_stopCall);
+                    //Thread t = new Thread(MyThreadStart);
+
+                    //var response2 = await httpClient2.SendAsync(request,CTS.Token);
+                    var response2 = await httpClient2.SendAsync(request);
                     response2.EnsureSuccessStatusCode();
+
                     string responseBody = await response2.Content.ReadAsStringAsync();
                     JSONArray HistInfo = new JSONArray(responseBody);
 
@@ -179,18 +235,24 @@ namespace App1
                     Datalist[place].low=((float)(HistInfo.GetJSONObject(0).GetDouble("low")));
                     Datalist[place].heigh =((float)(HistInfo.GetJSONObject(0).GetDouble("high")));
                     Datalist[place].date = ((string)(HistInfo.GetJSONObject(0).Get("date")));
-
+                    
                 }
             }
 
             Toast.MakeText(this, "got the info from web?", ToastLength.Short).Show();
-            if (place >= Datalist.Count-2)
-            { 
-                ShowListView();
-            }
+
+            ShowListView();
+
+            Dispose(true);
             return;
         }
 
+        //public void Test_stopCall()
+        //{
+        //    Thread.Sleep(5000);
+
+        //    CTS.Cancel();
+        //}
         private void ShowListView()
         {
             adapter = new StockAdapter(this, Datalist);
@@ -200,6 +262,8 @@ namespace App1
 
         private void BtnReturnHome_Click(object sender, EventArgs e)
         {
+            db.App.Delete();
+            db.Terminate();
             Finish();
         }
 
@@ -235,7 +299,7 @@ namespace App1
                     list.Add(s2[i]);
                     Console.WriteLine(s2[i]);
                     Console.WriteLine("------------------------------------------------------------------------------------------");
-                    DataPoint d = new DataPoint();
+                    StockData d = new StockData();
                     d.symbol = s2[i];
                     Datalist.Add(d);
                     _ = GetInfoFromWeb(s2[i].ToString(), i);

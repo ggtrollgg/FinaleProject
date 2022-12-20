@@ -18,21 +18,21 @@ using System.Threading.Tasks;
 
 namespace App1
 {
-    internal class StockAdapter : BaseAdapter<DataPoint>
+    internal class StockAdapter : BaseAdapter<StockData>
     {
         Android.Content.Context context;
-        List<DataPoint> objects;
+        List<StockData> objects;
 
 
         List<float> list_high = new List<float>();
         List<float> list_low = new List<float>();
 
-        public StockAdapter(Context context, System.Collections.Generic.List<DataPoint> objects)
+        public StockAdapter(Context context, System.Collections.Generic.List<StockData> objects)
         {
             this.context = context;
             this.objects = objects;
         }
-        public List<DataPoint> GetList()
+        public List<StockData> GetList()
         {
             return objects;
         }
@@ -46,7 +46,7 @@ namespace App1
             Android.Views.LayoutInflater layoutInflater = ((StockViewActivity)context).LayoutInflater;
             Android.Views.View view = SavedLayout(position, convertView, parent);
 
-            DataPoint Temp = objects[position];
+            StockData Temp = objects[position];
             
             if (Temp!=null && Temp.TrackingPrices!=null && Temp.SoundName != null && Temp.SoundName != "")
             {
@@ -72,7 +72,7 @@ namespace App1
 
 
 
-            DataPoint Temp = objects[position];
+            StockData Temp = objects[position];
 
 
             if (Temp != null)
@@ -98,7 +98,7 @@ namespace App1
             tvLow = view.FindViewById<TextView>(Resource.Id.tvLow);
             tvHeigh = view.FindViewById<TextView>(Resource.Id.tvHeigh);
 
-            DataPoint Temp = objects[position];
+            StockData Temp = objects[position];
             if (Temp != null)
             {
                 //Task t = testAsync(Temp);
@@ -116,7 +116,7 @@ namespace App1
         {
             get { return this.objects.Count; }
         }
-        public override DataPoint this[int position]
+        public override StockData this[int position]
         {
             get { return this.objects[position]; }
         }

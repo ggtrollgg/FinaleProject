@@ -64,7 +64,8 @@ namespace App1
 
         private void Btnstart_Click(object sender, EventArgs e)
         {
-            Intent intent = new Intent(this, typeof(ChartActivity));
+            //Intent intent = new Intent(this, typeof(ChartActivity));
+            Intent intent = new Intent(this, typeof(SearchActivity));
             StartActivity(intent);
 
         }
