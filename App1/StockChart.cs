@@ -96,9 +96,13 @@ namespace App1
                 {
                     i = 0;
                 }
-                TheString = Dates[(int)Math.Round(i)];
-                TheString = TheString.Remove(0, 10);
-                canvas.DrawText(TheString, canvas.Width * (float)(2.0 / 9.0) * g, canvas.Height, textPaint);
+                if(Dates.Length != 0)
+                {
+                    TheString = Dates[(int)Math.Round(i)];
+                    TheString = TheString.Remove(0, 10);
+                    canvas.DrawText(TheString, canvas.Width * (float)(2.0 / 9.0) * g, canvas.Height, textPaint);
+                }
+                
             }
             
         }

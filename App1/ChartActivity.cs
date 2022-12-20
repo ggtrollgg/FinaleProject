@@ -99,8 +99,22 @@ namespace App1
             using (var httpClient = new HttpClient())
 
             {
+                string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
+
+                //Intent intent = new Intent(this, typeof(SearchActivity));
+
+                //Intent.GetFloatArrayExtra("Chart_Points_Heigh");
+                //Intent.GetFloatArrayExtra("Chart_Points_Low");
+                //Intent.GetStringArrayExtra("Chart_Points_Date");
+
+
+                string link = "https://financialmodelingprep.com/api/v3/historical-chart/1min/";
+                link = link.Insert(link.Length, symbol);
+                link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
+
                 // using (var request = new HttpRequestMessage(new HttpMethod("GET"), "https://financialmodelingprep.com/api/v3/quote-short/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860"))
-                using (var request = new HttpRequestMessage(new HttpMethod("GET"), "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860"))
+                //using (var request = new HttpRequestMessage(new HttpMethod("GET"), "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860"))
+                using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
                 {
                     //request.Headers.TryAddWithoutValidation("Upgrade-Insecure-Requests", "1");
 
