@@ -28,8 +28,9 @@ namespace App1
     {
         EditText etSearch;
         Button btnSearch;
-
         ListView lvSearchedStocks;
+
+        public static List<StockData> Datalist = new List<StockData>();
         StockAdapter adapter;
 
         List<DataPoint> Chart_Points = new List<DataPoint>();
@@ -85,7 +86,11 @@ namespace App1
                     Console.WriteLine(Data.Length());
                     Console.WriteLine("--------------------------");
 
-                    (string)Data.GetJSONObject(0).Get("synbol");
+                    for(int i = 0; i < Data.Length(); i++)
+                    {
+                        (string)Data.GetJSONObject(0).Get("synbol");
+                    }
+                    
 
 
                     //for (int i = 0; i < HistInfo.Length(); i++)

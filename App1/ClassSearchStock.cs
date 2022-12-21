@@ -18,7 +18,7 @@ namespace App1
         public String companyName;
 
         public float price;
-        Bitmap StockImage;
+        public Bitmap StockImage;
 
 
         public ClassSearchStock()
