@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 
 using System.Text.RegularExpressions;
@@ -30,8 +31,8 @@ namespace App1
         Button btnSearch;
         ListView lvSearchedStocks;
 
-        public static List<StockData> Datalist = new List<StockData>();
-        StockAdapter adapter;
+        public static List<ClassSearchStock> Datalist = new List<ClassSearchStock>();
+        SearchStockAdapter adapter;
 
         List<DataPoint> Chart_Points = new List<DataPoint>();
         protected override void OnCreate(Bundle savedInstanceState)
@@ -49,16 +50,20 @@ namespace App1
 
         private void BtnSearch_Click(object sender, EventArgs e)
         {
+            if(Datalist.Count > 0)
+            {
+                Datalist.Clear();
+            }
             String Stock_name = etSearch.Text;
             if (Stock_name != null && Stock_name != "" && Regex.IsMatch(Stock_name, @"^[a-zA-Z]+$"))
             {
-                _ = GetInfoFromWeb(Stock_name);
+                _ = GetCorrespondingStocks(Stock_name);
             }
         }
 
         
 
-        public async System.Threading.Tasks.Task GetInfoFromWeb(String symbol)
+        public async System.Threading.Tasks.Task GetCorrespondingStocks(String symbol)
         {
             using (var httpClient2 = new HttpClient())
             {
@@ -88,23 +93,66 @@ namespace App1
 
                     for(int i = 0; i < Data.Length(); i++)
                     {
-                        (string)Data.GetJSONObject(0).Get("synbol");
+                        String sym = (string)Data.GetJSONObject(i).Get("symbol");
+                        String compName = (string)Data.GetJSONObject(i).Get("name");
+
+                        //float price = (float)Data.GetJSONObject(i).GetDouble("price");
+                        //String urlImage = (string)Data.GetJSONObject(i).Get("image");
+                        //Datalist.Add(new ClassSearchStock(sym,compName,price,urlImage));
+                        Datalist.Add(new ClassSearchStock(sym, compName));
                     }
-                    
 
-
-                    //for (int i = 0; i < HistInfo.Length(); i++)
-                    //{
-                    //    Chart_Points.Add(new DataPoint((float)HistInfo.GetJSONObject(0).GetDouble("low"), (float)HistInfo.GetJSONObject(0).GetDouble("high"), (string)HistInfo.GetJSONObject(0).Get("date")));
-                    //}
-
-                    Toast.MakeText(this, "got the info from web", ToastLength.Short).Show();
-                    Console.WriteLine("got the info from web");
-                    MoveToChartActivity();
                 }
+                Toast.MakeText(this, "got symbol and company name", ToastLength.Short).Show();
+                Console.WriteLine("got symbol and company name");
+
+                for (int i = 0; i < Datalist.Count; i++)
+                {
+                    _ = GetImageAndPrice_FromWeb(i);
+                }
+
+                //ShowListView();
             }
 
 
+            Dispose(true);
+            return;
+        }
+
+        public async System.Threading.Tasks.Task GetImageAndPrice_FromWeb(int place)
+        {
+            using (var httpClient = new HttpClient())
+            {
+
+                string link = "https://financialmodelingprep.com/api/v3/profile/";
+                link = link.Insert(link.Length, Datalist[place].symbol);
+                link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
+
+
+
+                using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
+                {
+                    //Toast.MakeText(this, "sending requast for info", ToastLength.Short).Show();
+                    var response2 = await httpClient.SendAsync(request);
+                    response2.EnsureSuccessStatusCode();
+
+                    string responseBody = await response2.Content.ReadAsStringAsync();
+                    JSONArray Data = new JSONArray(responseBody);
+
+                    String compName = (string)Data.GetJSONObject(0).Get("companyName");
+                    float price = (float)Data.GetJSONObject(0).GetDouble("price");
+                    String urlImage = (string)Data.GetJSONObject(0).Get("image");
+                    //Datalist.Add(new ClassSearchStock(sym,compName,price,urlImage));
+
+                    Datalist[place].companyName = compName;
+                    Datalist[place].price = price;
+                    Datalist[place].StockImage = urlImage;
+                }
+                Toast.MakeText(this, "got symbol and company name", ToastLength.Short).Show();
+                Console.WriteLine("got symbol and company name");
+
+            }
+            ShowListView();
             Dispose(true);
             return;
         }
@@ -127,6 +175,13 @@ namespace App1
 
 
             StartActivity(intent);
+        }
+
+        private void ShowListView()
+        {
+            adapter = new SearchStockAdapter(this, Datalist);
+            lvSearchedStocks = (ListView)FindViewById(Resource.Id.lvSearchedStoks);
+            lvSearchedStocks.Adapter = adapter;
         }
     }
 }

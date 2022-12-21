@@ -18,12 +18,17 @@ namespace App1
         public String companyName;
 
         public float price;
-        public Bitmap StockImage;
-
+        //public Bitmap StockImage;
+        public String StockImage;
 
         public ClassSearchStock()
         {
             
+        }
+        public ClassSearchStock(String symbol, String companyName)
+        {
+            this.symbol = symbol;
+            this.companyName = companyName;
         }
         public ClassSearchStock(String symbol, String companyName, float price)
         {
@@ -32,7 +37,7 @@ namespace App1
             this.price = price;
 
         }
-        public ClassSearchStock(String symbol, String companyName, float price,Bitmap StockImage)
+        public ClassSearchStock(String symbol, String companyName, float price,String StockImage)
         {
             this.StockImage = StockImage;
             this.symbol = symbol;

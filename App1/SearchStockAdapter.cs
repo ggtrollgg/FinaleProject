@@ -1,13 +1,22 @@
 ﻿using Android.App;
 using Android.Content;
+using Android.Graphics;
+using Android.Net;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Java.IO;
+using Java.Net;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+
+
+
+
 
 namespace App1
 {
@@ -16,9 +25,6 @@ namespace App1
         Android.Content.Context context;
         List<ClassSearchStock> objects;
 
-
-        List<float> list_high = new List<float>();
-        List<float> list_low = new List<float>();
 
         public SearchStockAdapter(Context context, System.Collections.Generic.List<ClassSearchStock> objects)
         {
@@ -36,7 +42,7 @@ namespace App1
 
         public override View GetView(int position, View convertView, ViewGroup parent)
         {
-            Android.Views.LayoutInflater layoutInflater = ((StockViewActivity)context).LayoutInflater;
+            Android.Views.LayoutInflater layoutInflater = ((SearchActivity)context).LayoutInflater;
             TextView tvSymbol, tvPrice, tvName;
             ImageView ivImage;
 
@@ -54,7 +60,37 @@ namespace App1
                 tvPrice.Text ="" + Temp.price;
                 tvName.Text = "" + Temp.companyName;
                 tvSymbol.Text = "" + Temp.symbol;
-                ivImage.SetImageBitmap(Temp.StockImage);
+                //ivImage.SetImageBitmap(Temp.StockImage);
+                //ivImage.SetImageURI((Android.Net.Uri)Temp.StockImage);
+
+                //var image_link = new Android.Net.Uri(Temp.StockImage);
+                //Uri myUri = Uri.parse("http://www.google.com");
+
+
+
+                //var image_link2 = new System.Uri(Temp.StockImage);
+                if(Temp.StockImage != null)
+                {
+                    Android.Net.Uri myUri = Android.Net.Uri.Parse(Temp.StockImage);
+                    ivImage.SetImageURI(myUri);
+
+                    //ivImage.SetImageURI(Android.Net.Uri.Parse(Android.Net.Uri.Decode(Temp.StockImage)));
+                    //ivImage.SetImageURI(myUri);
+
+
+                    //Bitmap bmp = BitmapFactory.DecodeStream(ContentResolver.OpenInputStream(myUri));
+                    //ContentResolver contentResolver;
+                    //Bitmap bmp = BitmapFactory.DecodeStream(contentResolver.OpenInputStream(myUri));
+                    //ivImage.SetImageBitmap(bmp);
+
+                    //Activity activity = new Activity();
+                    //var input = activity.ContentResolver.OpenInputStream(myUri);
+                    //ivImage.SetImageBitmap(BitmapFactory.DecodeStream(input));
+
+
+
+                }
+                
             }
 
             return view;
@@ -72,5 +108,16 @@ namespace App1
         {
             get { return this.objects[position]; }
         }
+
+
+
+
+
+
+
+
+
+
+       
     }
 }
