@@ -43,10 +43,12 @@ namespace App1
         public override View GetView(int position, View convertView, ViewGroup parent)
         {
             Android.Views.LayoutInflater layoutInflater = ((SearchActivity)context).LayoutInflater;
+            Android.Views.View view = layoutInflater.Inflate(Resource.Layout.ListView_Search_Layout, parent, false);
+
             TextView tvSymbol, tvPrice, tvName;
             ImageView ivImage;
 
-            Android.Views.View view = layoutInflater.Inflate(Resource.Layout.ListView_Search_Layout, parent, false);
+           
 
             tvSymbol = view.FindViewById<TextView>(Resource.Id.tvSymbol);
             tvName = view.FindViewById<TextView>(Resource.Id.tvName);
@@ -71,8 +73,10 @@ namespace App1
                 //var image_link2 = new System.Uri(Temp.StockImage);
                 if(Temp.StockImage != null)
                 {
-                    Android.Net.Uri myUri = Android.Net.Uri.Parse(Temp.StockImage);
-                    ivImage.SetImageURI(myUri);
+                    //Android.Net.Uri myUri = Android.Net.Uri.Parse(Temp.StockImage);
+                    //ivImage.SetImageURI(myUri);
+
+                    
 
                     //ivImage.SetImageURI(Android.Net.Uri.Parse(Android.Net.Uri.Decode(Temp.StockImage)));
                     //ivImage.SetImageURI(myUri);

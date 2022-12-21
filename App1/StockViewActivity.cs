@@ -212,7 +212,9 @@ namespace App1
 
                 string link = "https://financialmodelingprep.com/api/v3/historical-chart/1min/";
                 link = link.Insert(link.Length, symbol);
-                link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
+                //link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
+                link = link.Insert(link.Length, "?apikey=8bdedb14d7674def460cb3a84f1fd429");
+                //8bdedb14d7674def460cb3a84f1fd429
 
                 using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
                 {
