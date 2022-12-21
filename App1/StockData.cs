@@ -22,6 +22,7 @@ namespace App1
         public string SoundName = null;
         public List<float> TrackingPrices = null;
 
+
         public StockData()
         {
 

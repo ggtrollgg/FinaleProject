@@ -112,6 +112,10 @@ namespace App1
                 link = link.Insert(link.Length, symbol);
                 link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
 
+
+
+
+
                 // using (var request = new HttpRequestMessage(new HttpMethod("GET"), "https://financialmodelingprep.com/api/v3/quote-short/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860"))
                 //using (var request = new HttpRequestMessage(new HttpMethod("GET"), "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860"))
                 using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))

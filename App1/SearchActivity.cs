@@ -5,6 +5,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using AndroidX.AppCompat.Widget;
 using Java.Util;
 using Org.Json;
 using System;
@@ -28,6 +29,9 @@ namespace App1
         EditText etSearch;
         Button btnSearch;
 
+        ListView lvSearchedStocks;
+        StockAdapter adapter;
+
         List<DataPoint> Chart_Points = new List<DataPoint>();
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -44,10 +48,10 @@ namespace App1
 
         private void BtnSearch_Click(object sender, EventArgs e)
         {
-            String symbol = etSearch.Text;
-            if (symbol != null && symbol != "" && Regex.IsMatch(symbol, @"^[a-zA-Z]+$"))
+            String Stock_name = etSearch.Text;
+            if (Stock_name != null && Stock_name != "" && Regex.IsMatch(Stock_name, @"^[a-zA-Z]+$"))
             {
-                _ = GetInfoFromWeb(symbol);
+                _ = GetInfoFromWeb(Stock_name);
             }
         }
 
@@ -57,9 +61,16 @@ namespace App1
         {
             using (var httpClient2 = new HttpClient())
             {
-                string link = "https://financialmodelingprep.com/api/v3/historical-chart/1min/";
+                //string link = "https://financialmodelingprep.com/api/v3/historical-chart/1min/";
+                //link = link.Insert(link.Length, symbol);
+                //link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
+
+
+                string link = "https://financialmodelingprep.com/api/v3/search?query=";
                 link = link.Insert(link.Length, symbol);
-                link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
+                link = link.Insert(link.Length, "&limit=10&exchange=NASDAQ&apikey=0a0b32a8d57dc7a4d38458de98803860");
+                
+
 
                 using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
                 {
@@ -68,16 +79,19 @@ namespace App1
                     response2.EnsureSuccessStatusCode();
 
                     string responseBody = await response2.Content.ReadAsStringAsync();
-                    JSONArray HistInfo = new JSONArray(responseBody);
+                    JSONArray Data = new JSONArray(responseBody);
 
                     Console.WriteLine("--------------------------");
-                    Console.WriteLine(HistInfo.Length());
+                    Console.WriteLine(Data.Length());
                     Console.WriteLine("--------------------------");
 
-                    for (int i = 0; i < HistInfo.Length(); i++)
-                    {
-                        Chart_Points.Add(new DataPoint((float)HistInfo.GetJSONObject(0).GetDouble("low"), (float)HistInfo.GetJSONObject(0).GetDouble("high"), (string)HistInfo.GetJSONObject(0).Get("date")));
-                    }
+                    (string)Data.GetJSONObject(0).Get("synbol");
+
+
+                    //for (int i = 0; i < HistInfo.Length(); i++)
+                    //{
+                    //    Chart_Points.Add(new DataPoint((float)HistInfo.GetJSONObject(0).GetDouble("low"), (float)HistInfo.GetJSONObject(0).GetDouble("high"), (string)HistInfo.GetJSONObject(0).Get("date")));
+                    //}
 
                     Toast.MakeText(this, "got the info from web", ToastLength.Short).Show();
                     Console.WriteLine("got the info from web");
