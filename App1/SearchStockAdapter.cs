@@ -87,10 +87,11 @@ namespace App1
                     //var input = activity.ContentResolver.OpenInputStream(myUri);
                     //ivImage.SetImageBitmap(BitmapFactory.DecodeStream(input));
 
-
+                    //Bitmap bmp = BitmapFactory.DecodeStream(Activity.ContentResolver.OpenInputStream(myUri));
+                    //ContentResolver contentResolver;
 
                 }
-                
+
             }
 
             return view;
