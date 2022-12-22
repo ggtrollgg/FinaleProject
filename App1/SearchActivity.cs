@@ -21,8 +21,7 @@ using System.Threading;
 //using static Android.Renderscripts.ScriptGroup;
 
 using System.Threading.Tasks;
-
-
+using CancellationTokenSource = System.Threading.CancellationTokenSource;
 
 namespace App1
 {
@@ -36,83 +35,103 @@ namespace App1
         public static List<ClassSearchStock> SearchDatalist = new List<ClassSearchStock>();
         SearchStockAdapter adapter;
 
+        CancellationTokenSource CTS = new CancellationTokenSource();
         List<DataPoint> Chart_Points = new List<DataPoint>();
+
+
+        String lastSearch;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.SearchLayout);
+            lastSearch = "";
             etSearch = FindViewById<EditText>(Resource.Id.etSearch);
             btnSearch = FindViewById<Button>(Resource.Id.btnSearch);
 
-            btnSearch.Click += BtnSearch_Click;
+            //btnSearch.Click += BtnSearch_Click;
 
-
+            lvSearchedStocks = (ListView)FindViewById(Resource.Id.lvSearchedStoks);
+            lvSearchedStocks.ItemClick += LvSearchedStocks_ItemClick;
             //8bdedb14d7674def460cb3a84f1fd429
             //0a0b32a8d57dc7a4d38458de98803860
 
-            etSearch.AfterTextChanged += EtSearch_AfterTextChanged;
+            //etSearch.AfterTextChanged += EtSearch_AfterTextChanged;
+            etSearch.TextChanged += EtSearch_TextChanged;
 
-
-
-            //SearchDatalist.Add(new ClassSearchStock("AAPL", "inc appl", (float)143.5));
-            //ShowListView();
-
-            // Create your application here
         }
 
-        private void EtSearch_AfterTextChanged(object sender, Android.Text.AfterTextChangedEventArgs e)
+        private void EtSearch_TextChanged(object sender, Android.Text.TextChangedEventArgs e)
         {
-            ThreadStart MyThreadStart = new ThreadStart(RefreshList);
-            Thread t = new Thread(MyThreadStart);
-            t.Start();
-            //t.Join();
+            if (lastSearch != null && lastSearch != etSearch.Text)
+            {
+                if(CTS.Token.CanBeCanceled)
+                {
+                    CTS.Cancel();
+                    CTS.Dispose();
+                    CTS = new CancellationTokenSource();
+                }
+                if (etSearch.Text == "")
+                {
+                    lastSearch = "";
+                    if (SearchDatalist != null && SearchDatalist.Count > 0)
+                    {
+                        SearchDatalist.Clear();
+                        ShowListView();
+                    }
+                }
+                else
+                {
+                    lastSearch = etSearch.Text;
+                    RefreshList();
+                }
 
-            test();
-            //ShowListView();
+            }
         }
 
-        public void test()
-        {
-            //Thread.Sleep(1000);
-            ShowListView();
-        }
+        //private void EtSearch_AfterTextChanged(object sender, Android.Text.AfterTextChangedEventArgs e)
+        //{
+            
+        //    if (lastSearch != null && lastSearch != etSearch.Text)
+        //    {
+        //        if (etSearch.Text == "")
+        //        {
+        //            lastSearch = "";
+        //            if (SearchDatalist != null && SearchDatalist.Count > 0)
+        //            {
+        //                SearchDatalist.Clear();
+        //                ShowListView();
+        //            }
+        //        }
+        //        else
+        //        {
+        //            lastSearch = etSearch.Text;
+        //            RefreshList();
+        //        }
+
+        //    }
+        //}
+
         public void RefreshList()
         {
-            if (SearchDatalist.Count > 0)
+            if (SearchDatalist != null && SearchDatalist.Count > 0)
             {
                 SearchDatalist.Clear();
             }
+
             String Stock_name = etSearch.Text;
+
             if (Stock_name != null && Stock_name != "" && Regex.IsMatch(Stock_name, @"^[a-zA-Z]+$"))
             {
                 Console.WriteLine(Stock_name);
                 _ = GetCorrespondingStocks(Stock_name);
             }
-            
         }
 
         private void BtnSearch_Click(object sender, EventArgs e)
         {
-
-            //if (SearchDatalist.Count > 0)
-            //{
-            //    SearchDatalist.Clear();
-            //}
-            //String Stock_name = etSearch.Text;
-            //if (Stock_name != null && Stock_name != "" && Regex.IsMatch(Stock_name, @"^[a-zA-Z]+$"))
-            //{
-            //    _ = GetCorrespondingStocks(Stock_name);
-            //}
-
-            //RefreshList();
-
-            //Console.Write(SearchDatalist);
-            //ShowListView();
-
+            RefreshList();
         }
-
-
 
         public async System.Threading.Tasks.Task GetCorrespondingStocks(String symbol)
         {
@@ -122,10 +141,12 @@ namespace App1
                 link = link.Insert(link.Length, symbol);
                 //link = link.Insert(link.Length, "&limit=10&exchange=NASDAQ&apikey=0a0b32a8d57dc7a4d38458de98803860");
                 link = link.Insert(link.Length, "&limit=10&exchange=NASDAQ&apikey=8bdedb14d7674def460cb3a84f1fd429");
+
                 using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
                 {
                     //Toast.MakeText(this, "sending requast for info", ToastLength.Short).Show();
-                    var response2 = await httpClient2.SendAsync(request);
+
+                    var response2 = await httpClient2.SendAsync(request,CTS.Token);
                     response2.EnsureSuccessStatusCode();
 
                     string responseBody = await response2.Content.ReadAsStringAsync();
@@ -137,31 +158,22 @@ namespace App1
 
                     for(int i = 0; i < Data.Length(); i++)
                     {
-                        String sym = (string)Data.GetJSONObject(i).Get("symbol");
-                        String compName = (string)Data.GetJSONObject(i).Get("name");
+                        String sym = (String)Data.GetJSONObject(i).Get("symbol");
+                        String compName = (String)Data.GetJSONObject(i).Get("name");
 
-                        //float price = (float)Data.GetJSONObject(i).GetDouble("price");
-                        //String urlImage = (string)Data.GetJSONObject(i).Get("image");
-                        //SearchDatalist.Add(new ClassSearchStock(sym,compName,price,urlImage));
                         SearchDatalist.Add(new ClassSearchStock(sym, compName));
-                        _ = GetImageAndPrice_FromWeb(i);
-                        Thread.Sleep(0500);
+
+
+                       // _ = GetImageAndPrice_FromWeb(i);
+                        //Thread.Sleep(0500);
                     }
 
                 }
                 //Toast.MakeText(this, "got symbol and company name", ToastLength.Short).Show();
+
                 Console.WriteLine("got symbol and company name");
                 ShowListView();
-                
-                //for (int i = 0; i < SearchDatalist.Count; i++)
-                //{
-                //   _ = GetImageAndPrice_FromWeb(i);
-                //}
-
-                //ShowListView();
             }
-
-
             Dispose(true);
             return;
         }
@@ -192,8 +204,8 @@ namespace App1
                     //SearchDatalist.Add(new ClassSearchStock(sym,compName,price,urlImage));
 
                     SearchDatalist[place].companyName = compName;
-                    SearchDatalist[place].price = price;
-                    SearchDatalist[place].StockImage = urlImage;
+                    //SearchDatalist[place].price = price;
+                    //SearchDatalist[place].StockImage = urlImage;
                 }
                 //Toast.MakeText(this, "got symbol and company name", ToastLength.Short).Show();
                 Console.WriteLine("got image and price");
@@ -228,13 +240,7 @@ namespace App1
         private void ShowListView()
         {
             adapter = new SearchStockAdapter(this, SearchDatalist);
-            if(lvSearchedStocks == null)
-            {
-                lvSearchedStocks = (ListView)FindViewById(Resource.Id.lvSearchedStoks);
-            }
             lvSearchedStocks.Adapter = adapter;
-
-            lvSearchedStocks.ItemClick += LvSearchedStocks_ItemClick;
         }
 
         private void LvSearchedStocks_ItemClick(object sender, AdapterView.ItemClickEventArgs e)

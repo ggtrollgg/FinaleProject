@@ -43,61 +43,64 @@ namespace App1
         public override View GetView(int position, View convertView, ViewGroup parent)
         {
             Android.Views.LayoutInflater layoutInflater = ((SearchActivity)context).LayoutInflater;
-            Android.Views.View view = layoutInflater.Inflate(Resource.Layout.ListView_Search_Layout, parent, false);
+            Android.Views.View view = layoutInflater.Inflate(Resource.Layout.ListView_Search_OnlyText_Layout2, parent, false);
 
-            TextView tvSymbol, tvPrice, tvName;
-            ImageView ivImage;
+            TextView tvSymbol, tvName;
+
 
            
 
             tvSymbol = view.FindViewById<TextView>(Resource.Id.tvSymbol);
             tvName = view.FindViewById<TextView>(Resource.Id.tvName);
-            tvPrice = view.FindViewById<TextView>(Resource.Id.tvPrice);
+            //tvPrice = view.FindViewById<TextView>(Resource.Id.tvPrice);
 
-            ivImage = view.FindViewById<ImageView>(Resource.Id.ivImage);
-            ClassSearchStock Temp = objects[position];
-
-            if(Temp != null)
+            //ivImage = view.FindViewById<ImageView>(Resource.Id.ivImage);
+            if(objects!= null && objects.Count > 0)
             {
-                tvPrice.Text ="" + Temp.price;
-                tvName.Text = "" + Temp.companyName;
-                tvSymbol.Text = "" + Temp.symbol;
-                //ivImage.SetImageBitmap(Temp.StockImage);
-                //ivImage.SetImageURI((Android.Net.Uri)Temp.StockImage);
+                ClassSearchStock Temp = objects[position];
 
-                //var image_link = new Android.Net.Uri(Temp.StockImage);
-                //Uri myUri = Uri.parse("http://www.google.com");
-
-
-
-                //var image_link2 = new System.Uri(Temp.StockImage);
-                if(Temp.StockImage != null)
+                if (Temp != null)
                 {
-                    //Android.Net.Uri myUri = Android.Net.Uri.Parse(Temp.StockImage);
-                    //ivImage.SetImageURI(myUri);
 
-                    
+                    tvName.Text = "" + Temp.companyName;
+                    tvSymbol.Text = "" + Temp.symbol;
+                    //ivImage.SetImageBitmap(Temp.StockImage);
+                    //ivImage.SetImageURI((Android.Net.Uri)Temp.StockImage);
 
-                    //ivImage.SetImageURI(Android.Net.Uri.Parse(Android.Net.Uri.Decode(Temp.StockImage)));
-                    //ivImage.SetImageURI(myUri);
+                    //var image_link = new Android.Net.Uri(Temp.StockImage);
+                    //Uri myUri = Uri.parse("http://www.google.com");
 
 
-                    //Bitmap bmp = BitmapFactory.DecodeStream(ContentResolver.OpenInputStream(myUri));
-                    //ContentResolver contentResolver;
-                    //Bitmap bmp = BitmapFactory.DecodeStream(contentResolver.OpenInputStream(myUri));
-                    //ivImage.SetImageBitmap(bmp);
 
-                    //Activity activity = new Activity();
-                    //var input = activity.ContentResolver.OpenInputStream(myUri);
-                    //ivImage.SetImageBitmap(BitmapFactory.DecodeStream(input));
+                    //var image_link2 = new System.Uri(Temp.StockImage);
+                    //if(Temp.StockImage != null)
+                    //{
+                    //    tvPrice.Text = "" + Temp.price;
+                    //    //Android.Net.Uri myUri = Android.Net.Uri.Parse(Temp.StockImage);
+                    //    //ivImage.SetImageURI(myUri);
 
-                    //Bitmap bmp = BitmapFactory.DecodeStream(Activity.ContentResolver.OpenInputStream(myUri));
-                    //ContentResolver contentResolver;
+
+
+                    //    //ivImage.SetImageURI(Android.Net.Uri.Parse(Android.Net.Uri.Decode(Temp.StockImage)));
+                    //    //ivImage.SetImageURI(myUri);
+
+
+                    //    //Bitmap bmp = BitmapFactory.DecodeStream(ContentResolver.OpenInputStream(myUri));
+                    //    //ContentResolver contentResolver;
+                    //    //Bitmap bmp = BitmapFactory.DecodeStream(contentResolver.OpenInputStream(myUri));
+                    //    //ivImage.SetImageBitmap(bmp);
+
+                    //    //Activity activity = new Activity();
+                    //    //var input = activity.ContentResolver.OpenInputStream(myUri);
+                    //    //ivImage.SetImageBitmap(BitmapFactory.DecodeStream(input));
+
+                    //    //Bitmap bmp = BitmapFactory.DecodeStream(Activity.ContentResolver.OpenInputStream(myUri));
+                    //    //ContentResolver contentResolver;
+
+                    //}
 
                 }
-
             }
-
             return view;
 
         }
