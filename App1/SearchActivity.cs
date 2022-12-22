@@ -245,7 +245,7 @@ namespace App1
 
         private void LvSearchedStocks_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
         {
-            Console.WriteLine("clicked!");
+            Console.WriteLine("clicked2!");
         }
     }
 }
