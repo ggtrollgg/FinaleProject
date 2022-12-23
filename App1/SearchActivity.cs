@@ -37,14 +37,20 @@ namespace App1
 
         CancellationTokenSource CTS = new CancellationTokenSource();
         List<DataPoint> Chart_Points = new List<DataPoint>();
-
+        Dialog d;
+        LinearLayout l1;
+        Class_LineGraph MiniGraph;
 
         String lastSearch;
+        int LongClick_pos;
+
+        Context content;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.SearchLayout);
+            content = this;
             lastSearch = "";
             etSearch = FindViewById<EditText>(Resource.Id.etSearch);
             btnSearch = FindViewById<Button>(Resource.Id.btnSearch);
@@ -53,6 +59,8 @@ namespace App1
 
             lvSearchedStocks = (ListView)FindViewById(Resource.Id.lvSearchedStoks);
             lvSearchedStocks.ItemClick += LvSearchedStocks_ItemClick;
+            lvSearchedStocks.ItemLongClick += LvSearchedStocks_ItemLongClick;
+
             //8bdedb14d7674def460cb3a84f1fd429
             //0a0b32a8d57dc7a4d38458de98803860
 
@@ -60,6 +68,74 @@ namespace App1
             etSearch.TextChanged += EtSearch_TextChanged;
 
         }
+
+        private void LvSearchedStocks_ItemLongClick(object sender, AdapterView.ItemLongClickEventArgs e)
+        {
+            LongClick_pos= e.Position;
+            d = new Dialog(content);
+
+            d.SetContentView(Resource.Layout.Custom_PopUp_MiniGraph);
+            d.SetTitle(SearchDatalist[LongClick_pos].symbol);
+            d.SetCancelable(true);
+            l1 = d.FindViewById<LinearLayout>(Resource.Id.LLChart);
+
+
+            MiniGraph = new Class_LineGraph(this);
+            if (Chart_Points.Count > 0)
+            {
+                Chart_Points.Clear();
+            }
+            _ = GetPricePoints(SearchDatalist[LongClick_pos].symbol);
+            //activatePopUp();
+
+
+
+        }
+
+
+        public async System.Threading.Tasks.Task GetPricePoints(string symbol)
+        {
+            using (var httpClient = new HttpClient())
+
+            {
+                string link = "https://financialmodelingprep.com/api/v3/historical-chart/1min/";
+                link = link.Insert(link.Length, symbol);
+                link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
+                // using (var request = new HttpRequestMessage(new HttpMethod("GET"), "https://financialmodelingprep.com/api/v3/quote-short/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860"))
+                //using (var request = new HttpRequestMessage(new HttpMethod("GET"), "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860"))
+                using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
+                {
+                    var response = await httpClient.SendAsync(request);
+                    response.EnsureSuccessStatusCode();
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    JSONArray HistInfo = new JSONArray(responseBody);
+                    Console.WriteLine(HistInfo.Length());
+                    if(Chart_Points.Count > 0)
+                    {
+                        Chart_Points.Clear();
+                    }
+                    for (int i = 0; i < HistInfo.Length(); i++)
+                    {
+                        Chart_Points.Add(new DataPoint((float)HistInfo.GetJSONObject(i).GetDouble("high"), (float)HistInfo.GetJSONObject(i).GetDouble("low"), (string)HistInfo.GetJSONObject(i).Get("date")));
+                    }
+
+                }
+            }
+            activatePopUp();
+            //Dispose();
+            return;
+        }
+
+        public void activatePopUp()
+        {
+            MiniGraph.dataPoints = Chart_Points;
+            d.Show();
+            l1.AddView(MiniGraph);
+            
+        }
+
+
+
 
         private void EtSearch_TextChanged(object sender, Android.Text.TextChangedEventArgs e)
         {
@@ -224,11 +300,13 @@ namespace App1
             //List<float> Chart_Points_Low = new List<float>();
 
             Intent intent = new Intent(this, typeof(ChartActivity));
+
             //intent.PutExtra("Chart_Points_Date", Chart_Points_Date);
             //intent.PutParcelableArrayListExtra("Chart_Points_Date", Chart_Points_Date);
             
 
             intent.PutExtra("symbol", etSearch.Text);
+
             //intent.PutStringArrayListExtra("Chart_Points_Date", Chart_Points_Date);
             //intent.PutIntegerArrayListExtra("Chart_Points_Low", Chart_Points_Low);
             //intent.PutIntegerArrayListExtra("Chart_Points_Heigh", Chart_Points_Heigh);
@@ -245,7 +323,7 @@ namespace App1
 
         private void LvSearchedStocks_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
         {
-            Console.WriteLine("clicked2!");
+            Console.WriteLine("clicked!");
         }
     }
 }

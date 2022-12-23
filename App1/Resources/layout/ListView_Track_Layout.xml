@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="#333555">
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,48 +18,46 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Heigh: "
-            android:id="@+id/tvHeigh"/>
+            android:id="@+id/tvHeigh"
+            android:textColor="#008000"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Low: "
-            android:id="@+id/tvLow"/>
+            android:id="@+id/tvLow"
+            android:textColor="#FF0000"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tracking price: "
+            android:textColor="#F6B305"
             />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text=""
-            android:id="@+id/tvTrackingPrices"/>
-        
-        
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+            android:id="@+id/tvTrackingPrices"
+            android:textColor="#F6B305"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Alarm Sound: "
+            android:textColor="#EF1799"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
-            android:id="@+id/tvAlarmSound"
+           android:id="@+id/tvAlarmSound"
+            android:textColor="#EF1799"
             />
-    
+        
+        
     </LinearLayout>
-    
 
     <TextView
         android:layout_width="wrap_content"

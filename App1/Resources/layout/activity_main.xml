@@ -5,25 +5,53 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:orientation="horizontal"
+    android:background="@drawable/bacground3"
+    android:gravity="center_vertical"
     >
+
     <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="test the call request"
-        android:id="@+id/btnstart"/>
+        android:layout_width="86dp"
+        android:layout_height="155.5dp"
+        android:text="graph"
+        android:id="@+id/btnstart"
+        android:layout_weight="1"
+        android:layout_marginEnd="3dp"
+        android:layout_marginLeft="9dp"
+        android:background="#7cba00"
+        />
+
     <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="86.625dp"
+        android:layout_height="152.5dp"
         android:text="To List View"
         android:id="@+id/btnToListView"
+        android:layout_marginHorizontal="3dp"
+        android:background="#DD0000"
+        android:layout_weight="1"
+        android:layout_marginTop="46.5dp" 
         />
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Exit"
-        android:id="@+id/btnExit"/>
 
- 
-    
+    <Button
+        android:layout_width="86dp"
+        android:layout_height="220.5dp"
+        android:text="Exit"
+        android:id="@+id/btnExit"
+        android:layout_marginHorizontal="3dp"
+        android:background="#7cba00"
+        android:layout_weight="1"
+        android:layout_marginBottom="71.0dp" 
+        />
+
+    <Button
+        android:layout_width="86dp"
+        android:layout_height="155.5dp"
+        android:text="work in progress"
+        android:layout_marginLeft="3dp"
+        android:background="#DD0000"
+        android:layout_weight="1"
+        android:layout_marginBottom="65.0dp" 
+        />
+
+
 </LinearLayout>

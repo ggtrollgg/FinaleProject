@@ -26,6 +26,7 @@ namespace App1
 
         Button btnMove, btnZoom;
         LinearLayout l1;
+
         StockChart chart;
 
         protected override void OnCreate(Bundle savedInstanceState)

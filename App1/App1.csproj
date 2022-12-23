@@ -65,6 +65,8 @@
   <ItemGroup>
     <Compile Include="ChartActivity.cs" />
     <Compile Include="ClassSearchStock.cs" />
+    <Compile Include="Class_FatherGraph.cs" />
+    <Compile Include="Class_LineGraph.cs" />
     <Compile Include="DataPoint.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="MyCamera.cs" />
@@ -163,6 +165,14 @@
     <AndroidResource Include="Resources\layout\ListView_Search_OnlyText_Layout2.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\Custom_PopUp_MiniGraph.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\bacground3.PNG" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

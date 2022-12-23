@@ -137,6 +137,7 @@ namespace App1
             }
         }
 
+
         public void findLowHeigh()
         {
             foreach (float i in values)

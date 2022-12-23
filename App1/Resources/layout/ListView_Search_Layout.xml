@@ -27,13 +27,15 @@
                 android:layout_weight="1"
                 android:textSize="20dp"
                 android:id="@+id/tvSymbol"
-                android:hint="stock symbol"/>
+                android:hint="stock symbol"
+                android:textColor="#FFFFFF"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:id="@+id/tvName"
-                android:hint="company name"/>
+                android:hint="company name"
+                android:textColor="#FFFFFF"/>
         </LinearLayout>
 
     </LinearLayout>
