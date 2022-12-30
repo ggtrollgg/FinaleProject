@@ -293,7 +293,9 @@ namespace App1
             return;
         }
 
-        public void MoveToChartActivity()
+
+
+        public void MoveToChartActivity(String symbol)
         {
             //List<String> Chart_Points_Date = new List<String>();
             //List<float> Chart_Points_Heigh = new List<float>();
@@ -305,7 +307,7 @@ namespace App1
             //intent.PutParcelableArrayListExtra("Chart_Points_Date", Chart_Points_Date);
             
 
-            intent.PutExtra("symbol", etSearch.Text);
+            intent.PutExtra("symbol", symbol);
 
             //intent.PutStringArrayListExtra("Chart_Points_Date", Chart_Points_Date);
             //intent.PutIntegerArrayListExtra("Chart_Points_Low", Chart_Points_Low);
@@ -323,7 +325,9 @@ namespace App1
 
         private void LvSearchedStocks_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
         {
-            Console.WriteLine("clicked!");
+            Console.WriteLine("clicked! moving to chartActivity");
+            Console.WriteLine("symbol clicked: " + SearchDatalist[e.Position].symbol);
+            MoveToChartActivity(SearchDatalist[e.Position].symbol);
         }
     }
 }

@@ -164,12 +164,13 @@ namespace App1
         }
         public void DrawPoints()
         {
+            p.StrokeWidth = 3;
             for (int i = 0; i < values.Length; i++)
             {
                 //canvas.DrawCircle( (i * canvas.Width )/ (values.Length-1), canvas.Height + ((lowest- values[i] )*(1/(heighest-lowest)) * canvas.Height), (float)2, p);
                 //canvas.DrawCircle(points[i].x + camera.CameraOffSetX, points[i].y, 2, p);
-                canvas.DrawCircle(Changedpoints[i].x, Changedpoints[i].y, 2, p);
-
+                canvas.DrawCircle(Changedpoints[i].x, Changedpoints[i].y, 4, p);
+                
                 if (i != values.Length - 1)
                 {
                     // canvas.DrawLine( (points[i].x )*test_zoomfactor + camera.CameraOffSetX, points[i].y + camera.CameraOffSetY  , (points[i + 1].x )*test_zoomfactor + camera.CameraOffSetX, points[i + 1].y + camera.CameraOffSetY, p);

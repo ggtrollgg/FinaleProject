@@ -33,14 +33,14 @@ namespace App1
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.ChartLayout);
-            btnMove = FindViewById<Button>(Resource.Id.btnMove);
-            btnZoom = FindViewById<Button>(Resource.Id.btnZoom);
+            //btnMove = FindViewById<Button>(Resource.Id.btnMove);
+            //btnZoom = FindViewById<Button>(Resource.Id.btnZoom);
 
             l1 = FindViewById<LinearLayout>(Resource.Id.LLChart);
 
             
-            btnZoom.Click += BtnZoom_Click;
-            btnMove.Click += BtnMove_Click;
+            //btnZoom.Click += BtnZoom_Click;
+            //btnMove.Click += BtnMove_Click;
 
             chart = new StockChart(this);
 
@@ -132,7 +132,7 @@ namespace App1
 
 
                     JSONArray HistInfo = new JSONArray(responseBody);
-                    Console.WriteLine(HistInfo.Length());
+                     Console.WriteLine(HistInfo.Length());
 
                     for (int i = 0; i < HistInfo.Length(); i++)
                     {
