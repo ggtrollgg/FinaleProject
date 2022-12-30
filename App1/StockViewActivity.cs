@@ -27,6 +27,7 @@ using Firebase;
 using System.Threading.Tasks;
 using System.Threading;
 using Java.Util.Functions;
+using Java.Lang;
 
 namespace App1
 {
@@ -35,7 +36,7 @@ namespace App1
     {
         Button btnReturnHome, btnShowSaved, btnShowTrack;
 
-        public static List<String> list = new List<String>();
+        public static List<string> list = new List<string>();
         public static List<StockData> Datalist = new List<StockData>();
 
         ListView lvStock;
@@ -58,7 +59,7 @@ namespace App1
             btnShowSaved.Click += BtnShowSaved_Click;
 
             btnReturnHome.Click += BtnReturnHome_Click;
-            list = new List<String>();
+            list = new List<string>();
             Datalist = new List<StockData>();
 
             //DeleteFile("SavedStocks.txt");
@@ -156,13 +157,13 @@ namespace App1
             foreach (var doc in snapshot.Documents)
             {
                 
-                String tr = (String)doc.Get("TrackingPrice");
+                string tr = (string)doc.Get("TrackingPrice");
                 List<float> trackingprices = new List<float>();
                 if (tr != null)
                 {
-                    String[] trs = tr.Split(',');
+                    string[] trs = tr.Split(',');
                     
-                    foreach (String price in trs)
+                    foreach (string price in trs)
                     {
                         if(price != null && price != "")
                         {
@@ -180,11 +181,11 @@ namespace App1
                 {
                     //float heigh = (float)doc.Get("heigh");
                     //float low = (float)doc.Get("low");
-                    //String symbol = (String)doc.Get("symbol");
-                    //String LastDate = (String)doc.Get("LastDate");
+                    //string symbol = (string)doc.Get("symbol");
+                    //string LastDate = (string)doc.Get("LastDate");
                     if(!ShowOnlyTracking)
                     {
-                        data = new StockData((float)doc.Get("heigh"), (float)doc.Get("low"), (String)doc.Get("LastDate"), (String)doc.Get("symbol"));
+                        data = new StockData((float)doc.Get("heigh"), (float)doc.Get("low"), (string)doc.Get("LastDate"), (string)doc.Get("symbol"));
                         Datalist.Add(data);
                         _ = GetInfoFromWeb(data.symbol, i);
                     } 
@@ -260,7 +261,25 @@ namespace App1
             adapter = new StockAdapter(this, Datalist);
             lvStock = (ListView)FindViewById(Resource.Id.lvStock);
             lvStock.Adapter = adapter;
+
+            lvStock.ItemClick += LvStock_ItemClick;
         }
+
+        private void LvStock_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
+        {
+            Console.WriteLine("clicked! moving to chartActivity");
+            Console.WriteLine("symbol clicked: " + Datalist[e.Position].symbol);
+            MoveToChartActivity(Datalist[e.Position].symbol);
+        }
+
+        public void MoveToChartActivity(string symbol)
+        {
+            Intent intent = new Intent(this, typeof(ChartActivity));
+            intent.PutExtra("symbol", symbol);
+            StartActivity(intent);
+        }
+
+
 
         private void BtnReturnHome_Click(object sender, EventArgs e)
         {
@@ -269,9 +288,15 @@ namespace App1
             Finish();
         }
 
+        protected override void OnPause()
+        {
+            db.App.Delete();
+            db.Terminate();
+            base.OnPause();
+        }
 
 
-
+        
 
 
 
@@ -284,14 +309,14 @@ namespace App1
 
         private async Task processAllSavedStocks()
         {
-            String s = Read_from_file();
+            string s = Read_from_file();
 
 
 
             s = s.Replace("\0", "");
             s = s.Replace("\n", "");
 
-            String[] s2 = s.Split(',');
+            string[] s2 = s.Split(',');
             Console.WriteLine(s2);
             Console.WriteLine("------------------------------------------------------------------------------------------");
             for (int i = 0; i < s2.Length; i++)
@@ -309,7 +334,7 @@ namespace App1
             }
 
         }
-        private String Read_from_file()
+        private string Read_from_file()
         {
             try
             {
@@ -345,7 +370,7 @@ namespace App1
             return null;
         }
 
-        private void Add_To_File(String the_stock)
+        private void Add_To_File(string the_stock)
         {
             try
             {
