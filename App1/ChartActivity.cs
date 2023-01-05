@@ -25,6 +25,7 @@ namespace App1
         List<string> list_Dates = new List<string>();
 
         Button btnMove, btnZoom;
+        ImageButton ibHome;
         LinearLayout l1;
 
         StockChart chart;
