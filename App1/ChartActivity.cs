@@ -15,20 +15,25 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Org.Json;
 
+using Firebase.Firestore;
+using Firebase;
 
 namespace App1
 {
     [Activity(Label = "ChartActivity")]
-    public class ChartActivity : Activity
+    public class ChartActivity : Activity, Android.Gms.Tasks.IOnSuccessListener
     {
         List<float> list = new List<float>();
         List<string> list_Dates = new List<string>();
 
         Button btnMove, btnZoom;
-        ImageButton ibHome;
+        ImageButton ibHome,ibSave,ibTrack,ibData,ibType;
         LinearLayout l1;
 
         StockChart chart;
+        Dialog d;
+
+        public FirebaseFirestore db;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -38,8 +43,18 @@ namespace App1
             //btnZoom = FindViewById<Button>(Resource.Id.btnZoom);
 
             l1 = FindViewById<LinearLayout>(Resource.Id.LLChart);
+            ibHome = FindViewById<ImageButton>(Resource.Id.ibHome);
+            ibSave = FindViewById<ImageButton>(Resource.Id.ibSave);
+            ibTrack = FindViewById<ImageButton>(Resource.Id.ibTrack);
+            ibData = FindViewById<ImageButton>(Resource.Id.ibGraphData);
+            ibType = FindViewById<ImageButton>(Resource.Id.ibGraphType);
 
-            
+
+            ibHome.Click += IbHome_Click;
+            ibType.Click += IbType_Click;
+            ibData.Click += IbData_Click;
+
+            ibSave.Click += IbSave_Click;
             //btnZoom.Click += BtnZoom_Click;
             //btnMove.Click += BtnMove_Click;
 
@@ -48,7 +63,76 @@ namespace App1
             Console.WriteLine("1");
             _ = testAsync();
 
+            
+        }
 
+        public FirebaseFirestore GetDataBase()
+        {
+            FirebaseFirestore db;
+            // info from "google-services.json"
+            var options = new FirebaseOptions.Builder()
+            .SetProjectId("stock-data-base-finalproject")
+            .SetApplicationId("stock-data-base-finalproject")
+            .SetApiKey("AIzaSyCjiFrMsBwOFvqUZRdohfIiqMsJC5QG_kc")
+            .SetStorageBucket("stock-data-base-finalproject.appspot.com")
+            .Build();
+
+
+            var app = FirebaseApp.InitializeApp(this, options);
+            db = FirebaseFirestore.GetInstance(app);
+            return db;
+        }
+
+
+        private void LoadItems()
+        {
+            // generate a query (request) from the database
+            Query q = db.Collection("Saved Stocks");
+            q.Get().AddOnSuccessListener(this);
+        }
+
+        public void OnSuccess(Java.Lang.Object result)
+        {
+            string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
+            var snapshot = (QuerySnapshot)result;
+            StockData data;
+
+            // iterate through each document in the collection
+            foreach (var doc in snapshot.Documents)
+            {
+               if(symbol== (string)doc.Get("symbol"));
+
+            }
+        }
+
+
+
+        private void IbSave_Click(object sender, EventArgs e)
+        {
+            db = GetDataBase();
+        }
+
+        private void IbData_Click(object sender, EventArgs e)
+        {
+            d = new Dialog(this);
+            d.SetContentView(Resource.Layout.Custom_PopUp_MiniGraph);
+            d.SetTitle("abot the stock");
+            d.SetCancelable(true);
+            d.Show();
+        }
+
+        private void IbType_Click(object sender, EventArgs e)
+        {
+            d = new Dialog(this);
+            d.SetContentView(Resource.Layout.Custom_PopUp_MiniGraph);
+            d.SetTitle("type of graphs");
+            d.SetCancelable(true);
+            d.Show();
+        }
+
+        private void IbHome_Click(object sender, EventArgs e)
+        {
+            Finish();
         }
 
         private void BtnMove_Click(object sender, EventArgs e)

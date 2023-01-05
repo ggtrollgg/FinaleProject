@@ -29,7 +29,7 @@ namespace App1
     public class SearchActivity : Activity
     {
         EditText etSearch;
-        Button btnSearch;
+        Button btnHome;
         ListView lvSearchedStocks;
 
         public static List<ClassSearchStock> SearchDatalist = new List<ClassSearchStock>();
@@ -53,7 +53,7 @@ namespace App1
             content = this;
             lastSearch = "";
             etSearch = FindViewById<EditText>(Resource.Id.etSearch);
-            btnSearch = FindViewById<Button>(Resource.Id.btnSearch);
+            btnHome = FindViewById<Button>(Resource.Id.btnHome);
 
             //btnSearch.Click += BtnSearch_Click;
 
@@ -66,7 +66,13 @@ namespace App1
 
             //etSearch.AfterTextChanged += EtSearch_AfterTextChanged;
             etSearch.TextChanged += EtSearch_TextChanged;
+            btnHome.Click += BtnHome_Click;
 
+        }
+
+        private void BtnHome_Click(object sender, EventArgs e)
+        {
+            Finish();
         }
 
         private void LvSearchedStocks_ItemLongClick(object sender, AdapterView.ItemLongClickEventArgs e)
