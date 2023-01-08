@@ -70,11 +70,19 @@ namespace App1
 
         }
 
+        //buttons
         private void BtnHome_Click(object sender, EventArgs e)
         {
             Finish();
         }
+        private void BtnSearch_Click(object sender, EventArgs e)
+        {
+            RefreshList();
+        }
 
+
+        //-------mini graph------
+        //which item was clicked and what symbol it has, and create popup
         private void LvSearchedStocks_ItemLongClick(object sender, AdapterView.ItemLongClickEventArgs e)
         {
             LongClick_pos= e.Position;
@@ -99,6 +107,7 @@ namespace App1
         }
 
 
+        //get prices of said symbol 
         public async System.Threading.Tasks.Task GetPricePoints(string symbol)
         {
             using (var httpClient = new HttpClient())
@@ -132,6 +141,8 @@ namespace App1
             return;
         }
 
+
+        //put prices and dates of symbol in minigraph and activate popup
         public void activatePopUp()
         {
             MiniGraph.dataPoints = Chart_Points;
@@ -142,7 +153,8 @@ namespace App1
 
 
 
-
+        //search for closest 10 stocks if text was changed in edittext box
+        //if cancaktuin token is cancenlble => meaning a reqwest was already made => i can stop it and not waste resorces on it
         private void EtSearch_TextChanged(object sender, Android.Text.TextChangedEventArgs e)
         {
             if (lastSearch != null && lastSearch != etSearch.Text)
@@ -159,13 +171,13 @@ namespace App1
                     if (SearchDatalist != null && SearchDatalist.Count > 0)
                     {
                         SearchDatalist.Clear();
-                        ShowListView();
+                        ShowListView(); // it will be empty
                     }
                 }
                 else
                 {
                     lastSearch = etSearch.Text;
-                    RefreshList();
+                    RefreshList();//refresh to the new closest 10 stocks
                 }
 
             }
@@ -210,11 +222,10 @@ namespace App1
             }
         }
 
-        private void BtnSearch_Click(object sender, EventArgs e)
-        {
-            RefreshList();
-        }
+        
 
+
+        //reqwesting the 10 closest stocks to the text in the text box from the internet
         public async System.Threading.Tasks.Task GetCorrespondingStocks(String symbol)
         {
             using (var httpClient2 = new HttpClient())
@@ -254,12 +265,16 @@ namespace App1
                 //Toast.MakeText(this, "got symbol and company name", ToastLength.Short).Show();
 
                 Console.WriteLine("got symbol and company name");
-                ShowListView();
+                ShowListView();//Show the new 10 closest stocks
             }
             Dispose(true);
             return;
         }
 
+
+        //when i call for information i can get specific info for each line,
+        //so when i want x of closest stocks i dont get much info aside from name and descripation
+        //so this is to get the image of the stock from web and for the current price of the stock
         public async System.Threading.Tasks.Task GetImageAndPrice_FromWeb(int place)
         {
             using (var httpClient = new HttpClient())
@@ -301,34 +316,24 @@ namespace App1
 
 
 
+        //moving to the chart activity
         public void MoveToChartActivity(String symbol)
         {
-            //List<String> Chart_Points_Date = new List<String>();
-            //List<float> Chart_Points_Heigh = new List<float>();
-            //List<float> Chart_Points_Low = new List<float>();
-
             Intent intent = new Intent(this, typeof(ChartActivity));
-
-            //intent.PutExtra("Chart_Points_Date", Chart_Points_Date);
-            //intent.PutParcelableArrayListExtra("Chart_Points_Date", Chart_Points_Date);
-            
-
             intent.PutExtra("symbol", symbol);
-
-            //intent.PutStringArrayListExtra("Chart_Points_Date", Chart_Points_Date);
-            //intent.PutIntegerArrayListExtra("Chart_Points_Low", Chart_Points_Low);
-            //intent.PutIntegerArrayListExtra("Chart_Points_Heigh", Chart_Points_Heigh);
-
-
             StartActivity(intent);
         }
 
+
+        //refresh/show the listview
         private void ShowListView()
         {
             adapter = new SearchStockAdapter(this, SearchDatalist);
             lvSearchedStocks.Adapter = adapter;
         }
 
+
+        //detect which item was clicked and than move to the chart activity of the stock
         private void LvSearchedStocks_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
         {
             Console.WriteLine("clicked! moving to chartActivity");

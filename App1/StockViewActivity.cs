@@ -76,6 +76,7 @@ namespace App1
            //_ = processAllSavedStocks();
         }
 
+        //buttons
         private void BtnShowSaved_Click(object sender, EventArgs e)
         {
             if(ShowOnlyTracking)
@@ -97,6 +98,16 @@ namespace App1
             
         }
 
+        private void BtnReturnHome_Click(object sender, EventArgs e)
+        {
+            db.App.Delete();
+            db.Terminate();
+            Finish();
+        }
+
+
+
+        //data base
         private void AddItem()
         {
             // Create a HashMap to store your data like an object
@@ -201,6 +212,8 @@ namespace App1
 
         
 
+
+        //get info on stock from internet
         private async Task GetInfoFromWeb(string symbol,int place)
         {
             using (var httpClient2 = new HttpClient())
@@ -219,14 +232,7 @@ namespace App1
 
                 using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
                 {
-                    Toast.MakeText(this, "sending requast for info", ToastLength.Short).Show();
-                    //CancellationToken token = CTS.Token;
 
-
-                    //ThreadStart MyThreadStart = new ThreadStart(Test_stopCall);
-                    //Thread t = new Thread(MyThreadStart);
-
-                    //var response2 = await httpClient2.SendAsync(request,CTS.Token);
                     var response2 = await httpClient2.SendAsync(request);
                     response2.EnsureSuccessStatusCode();
 
@@ -242,20 +248,17 @@ namespace App1
                 }
             }
 
-            Toast.MakeText(this, "got the info from web?", ToastLength.Short).Show();
+           // Toast.MakeText(this, "got the info from web?", ToastLength.Short).Show();
 
+            if(place >= Datalist.Count-1)
             ShowListView();
 
             Dispose(true);
             return;
         }
 
-        //public void Test_stopCall()
-        //{
-        //    Thread.Sleep(5000);
 
-        //    CTS.Cancel();
-        //}
+        //show the listview of stocks
         private void ShowListView()
         {
             adapter = new StockAdapter(this, Datalist);
@@ -265,10 +268,12 @@ namespace App1
             lvStock.ItemClick += LvStock_ItemClick;
         }
 
+        //if stock was clicked than move to the chart of the stock
         private void LvStock_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
         {
             Console.WriteLine("clicked! moving to chartActivity");
             Console.WriteLine("symbol clicked: " + Datalist[e.Position].symbol);
+
             MoveToChartActivity(Datalist[e.Position].symbol);
         }
 
@@ -281,12 +286,7 @@ namespace App1
 
 
 
-        private void BtnReturnHome_Click(object sender, EventArgs e)
-        {
-            db.App.Delete();
-            db.Terminate();
-            Finish();
-        }
+        
 
         protected override void OnPause()
         {

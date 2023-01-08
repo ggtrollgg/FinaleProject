@@ -51,6 +51,7 @@ namespace App1
 
         }
 
+        //buttons
         private void BtnToListView_Click(object sender, EventArgs e)
         {
             Intent intent = new Intent(this, typeof(StockViewActivity));

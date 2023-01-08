@@ -17,6 +17,11 @@ using Org.Json;
 
 using Firebase.Firestore;
 using Firebase;
+//import doc, deleteDoc from firestore;
+using Java.Util;
+using Java.Lang.Reflect;
+using System.Runtime.InteropServices.ComTypes;
+using Android.Graphics;
 
 namespace App1
 {
@@ -26,6 +31,9 @@ namespace App1
         List<float> list = new List<float>();
         List<string> list_Dates = new List<string>();
 
+        List<string> Symbols_In_DataBase = new List<string>();
+        List<DocumentSnapshot> SymDoc_In_DataBase = new List<DocumentSnapshot>();
+
         Button btnMove, btnZoom;
         ImageButton ibHome,ibSave,ibTrack,ibData,ibType;
         LinearLayout l1;
@@ -34,6 +42,7 @@ namespace App1
         Dialog d;
 
         public FirebaseFirestore db;
+        
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -55,6 +64,7 @@ namespace App1
             ibData.Click += IbData_Click;
 
             ibSave.Click += IbSave_Click;
+
             //btnZoom.Click += BtnZoom_Click;
             //btnMove.Click += BtnMove_Click;
 
@@ -63,109 +73,15 @@ namespace App1
             Console.WriteLine("1");
             _ = testAsync();
 
+            SetUpDataBase_AndStuff();
             
         }
 
-        public FirebaseFirestore GetDataBase()
-        {
-            FirebaseFirestore db;
-            // info from "google-services.json"
-            var options = new FirebaseOptions.Builder()
-            .SetProjectId("stock-data-base-finalproject")
-            .SetApplicationId("stock-data-base-finalproject")
-            .SetApiKey("AIzaSyCjiFrMsBwOFvqUZRdohfIiqMsJC5QG_kc")
-            .SetStorageBucket("stock-data-base-finalproject.appspot.com")
-            .Build();
 
-
-            var app = FirebaseApp.InitializeApp(this, options);
-            db = FirebaseFirestore.GetInstance(app);
-            return db;
-        }
-
-
-        private void LoadItems()
-        {
-            // generate a query (request) from the database
-            Query q = db.Collection("Saved Stocks");
-            q.Get().AddOnSuccessListener(this);
-        }
-
-        public void OnSuccess(Java.Lang.Object result)
-        {
-            string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
-            var snapshot = (QuerySnapshot)result;
-            StockData data;
-
-            // iterate through each document in the collection
-            foreach (var doc in snapshot.Documents)
-            {
-               if(symbol== (string)doc.Get("symbol"));
-
-            }
-        }
-
-
-
-        private void IbSave_Click(object sender, EventArgs e)
-        {
-            db = GetDataBase();
-        }
-
-        private void IbData_Click(object sender, EventArgs e)
-        {
-            d = new Dialog(this);
-            d.SetContentView(Resource.Layout.Custom_PopUp_MiniGraph);
-            d.SetTitle("abot the stock");
-            d.SetCancelable(true);
-            d.Show();
-        }
-
-        private void IbType_Click(object sender, EventArgs e)
-        {
-            d = new Dialog(this);
-            d.SetContentView(Resource.Layout.Custom_PopUp_MiniGraph);
-            d.SetTitle("type of graphs");
-            d.SetCancelable(true);
-            d.Show();
-        }
-
-        private void IbHome_Click(object sender, EventArgs e)
-        {
-            Finish();
-        }
-
-        private void BtnMove_Click(object sender, EventArgs e)
-        {
-            chart.Move = !chart.Move;
-            if (chart.Move)
-            {
-                btnMove.SetBackgroundColor(Android.Graphics.Color.Green);
-            }
-            else
-            {
-                btnMove.SetBackgroundColor(Android.Graphics.Color.Red);
-            }
-        }
-
-        private void BtnZoom_Click(object sender, EventArgs e)
-        {
-            chart.Zoom = !chart.Zoom;
-            if (chart.Zoom)
-            {
-                btnZoom.SetBackgroundColor(Android.Graphics.Color.Green);
-                //btnZoom.Background = (Android.Graphics.Drawables.Drawable)"green";
-            }
-            else
-            {
-                btnZoom.SetBackgroundColor(Android.Graphics.Color.Red);
-                //btnZoom.Background = (Android.Graphics.Drawables.Drawable)"red";
-            }
-        }
-
+        //putting the info into the class and putting the class in the linear layout
         public void test()
         {
-            
+
             float[] arrey = new float[list.Count];
             String[] arrey2 = new string[list.Count];
             for (int i = 0; i < arrey.Length; i++)
@@ -177,8 +93,7 @@ namespace App1
             chart.Dates = arrey2;
             l1.AddView(chart);
         }
-
-
+        //taking information about stock from the internet
         public async Task testAsync()
         {
             Console.WriteLine("2");
@@ -217,7 +132,7 @@ namespace App1
 
 
                     JSONArray HistInfo = new JSONArray(responseBody);
-                     Console.WriteLine(HistInfo.Length());
+                    Console.WriteLine(HistInfo.Length());
 
                     for (int i = 0; i < HistInfo.Length(); i++)
                     {
@@ -225,7 +140,7 @@ namespace App1
                         //Console.WriteLine(avr);
                         list.Add(avr);
                         list_Dates.Add((string)(HistInfo.GetJSONObject(i).Get("date")));
-                        Console.WriteLine((string)(HistInfo.GetJSONObject(i).Get("date")));
+                        //Console.WriteLine((string)(HistInfo.GetJSONObject(i).Get("date")));
                     }
 
 
@@ -234,6 +149,195 @@ namespace App1
             Console.WriteLine("3");
             test();
             return;
+        }
+
+
+
+        //suppose to be about data base
+        //currently doesnt work properly
+
+        public void SetUpDataBase_AndStuff()
+        {
+            db = GetDataBase();
+            LoadItems();
+
+            //db.Collection("Saved Stocks").Get();
+            //Console.WriteLine("\n1-------------------------------------------------------------------------\n from here:");
+            //Console.WriteLine(db.Collection("Saved Stocks").Get().ToString());
+
+
+            string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
+            if (Symbols_In_DataBase.Contains(symbol))
+            {
+                Color c = new Color();
+                c = Color.Green;
+                ibSave.SetColorFilter(c);
+            }
+           
+        }
+        public FirebaseFirestore GetDataBase()
+        {
+
+            // info from "google-services.json"
+            var options = new FirebaseOptions.Builder()
+            .SetProjectId("stock-data-base-finalproject")
+            .SetApplicationId("stock-data-base-finalproject")
+            .SetApiKey("AIzaSyCjiFrMsBwOFvqUZRdohfIiqMsJC5QG_kc")
+            .SetStorageBucket("stock-data-base-finalproject.appspot.com")
+            .Build();
+
+
+            var app = FirebaseApp.InitializeApp(this, options);
+            db = FirebaseFirestore.GetInstance(app);
+            return db;
+        }
+
+        private void LoadItems()
+        {
+            // generate a query (request) from the database
+            Query q = db.Collection("Saved Stocks");
+            if (Symbols_In_DataBase.Count > 0)
+            {
+                Symbols_In_DataBase.Clear();
+                SymDoc_In_DataBase.Clear();
+            }
+            
+            
+            q.Get().AddOnSuccessListener(this);
+            
+           
+            
+           
+        }
+
+        public void OnSuccess(Java.Lang.Object result)
+        {
+            string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
+            var snapshot = (QuerySnapshot)result;
+            StockData data;
+            int i = 0;
+            // iterate through each document in the collection
+            foreach (var doc in snapshot.Documents)
+            {
+                Symbols_In_DataBase.Add((string)doc.Get("symbol"));
+                SymDoc_In_DataBase.Add(doc);
+               //if(symbol== (string)doc.Get("symbol"))
+               // {
+               //     Console.WriteLine("The stock is already in the data base");
+               //     return;
+               // }
+
+            }
+            //Console.WriteLine("the stock wasnt in the data base");
+            //AddItemSave(symbol);
+        }
+
+        private void AddItemSave(string symbol)
+        {
+            Console.WriteLine("Adding the stock: " + symbol + " to the data base");
+
+            HashMap map = new HashMap();
+            map.Put("symbol", symbol);
+            map.Put("LastDate", "");
+            map.Put("SoundFile", "");
+            map.Put("TrackingPrices", "");
+            map.Put("heigh", 0);
+            map.Put("low", 0);
+            DocumentReference docRef = db.Collection("Saved Stocks").Document();
+            
+            docRef.Set(map);
+
+            db.App.Dispose();
+            db.App.Delete();
+            //db.Terminate();
+        }
+
+
+
+
+        //buttons
+
+        private void IbSave_Click(object sender, EventArgs e)
+        {            
+            LoadItems();
+            string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
+            if (!Symbols_In_DataBase.Contains(symbol))
+            {
+                AddItemSave(symbol);
+                Console.WriteLine("Added the symbol: " + symbol + " to the data base");
+            }
+            else
+            {
+                Console.WriteLine("the symbol: " + symbol +" was already in the data base");
+                
+
+                int index = Symbols_In_DataBase.IndexOf(symbol);
+                if (index != -1) {
+                    Console.WriteLine("Removing the symbol: " + symbol + " from the data base");
+                    db.Collection("Saved Stocks").Document(SymDoc_In_DataBase[index].Id).Delete();
+                    SymDoc_In_DataBase.RemoveAt(index);
+                    Symbols_In_DataBase.RemoveAt((int)index);
+                }
+                
+            }
+        }
+
+        private void IbData_Click(object sender, EventArgs e)
+        {
+            d = new Dialog(this);
+            d.SetContentView(Resource.Layout.Custom_PopUp_MiniGraph);
+            d.SetTitle("abot the stock");
+            d.SetCancelable(true);
+            d.Show();
+        }
+
+        private void IbType_Click(object sender, EventArgs e)
+        {
+            d = new Dialog(this);
+            d.SetContentView(Resource.Layout.Custom_PopUp_MiniGraph);
+            d.SetTitle("type of graphs");
+            d.SetCancelable(true);
+            d.Show();
+        }
+
+        private void IbHome_Click(object sender, EventArgs e)
+        {
+            db.App.Delete();
+            db.Dispose();
+
+            Finish();
+        }
+
+
+
+
+        //not used
+        private void BtnMove_Click(object sender, EventArgs e)
+        {
+            chart.Move = !chart.Move;
+            if (chart.Move)
+            {
+                btnMove.SetBackgroundColor(Android.Graphics.Color.Green);
+            }
+            else
+            {
+                btnMove.SetBackgroundColor(Android.Graphics.Color.Red);
+            }
+        }
+
+        private void BtnZoom_Click(object sender, EventArgs e)
+        {
+            chart.Zoom = !chart.Zoom;
+            if (chart.Zoom)
+            {
+                btnZoom.SetBackgroundColor(Android.Graphics.Color.Green);
+                //btnZoom.Background = (Android.Graphics.Drawables.Drawable)"green";
+            }
+            else
+            {
+                btnZoom.SetBackgroundColor(Android.Graphics.Color.Red);
+                //btnZoom.Background = (Android.Graphics.Drawables.Drawable)"red";
+            }
         }
 
         public String[] CleanAndSaperet(String TheContent)
