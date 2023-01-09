@@ -19,7 +19,7 @@ namespace App1
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
     public class MainActivity : Activity
     {
-        Button btnstart,btnToListView,btnExit;
+        Button btnstart,btnToListView,btnExit,btnTest;
         
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -31,11 +31,12 @@ namespace App1
             btnstart = FindViewById<Button>(Resource.Id.btnstart);
             btnExit = FindViewById<Button>(Resource.Id.btnExit);
             btnToListView = FindViewById<Button>(Resource.Id.btnToListView);
-
+            btnTest = FindViewById<Button>(Resource.Id.btnTest);
 
             btnstart.Click += Btnstart_Click;
             btnExit.Click += BtnExit_Click;
             btnToListView.Click += BtnToListView_Click;
+            btnTest.Click += BtnTest_Click;
 
             String symbol = "AAPL";
             string link = "https://financialmodelingprep.com/api/v3/historical-chart/1min/";
@@ -49,6 +50,13 @@ namespace App1
                 Console.WriteLine("https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860");
             }
 
+        }
+
+        private void BtnTest_Click(object sender, EventArgs e)
+        {
+            Intent intent = new Intent(this, typeof(Testing_Database_Activity));
+            intent.PutExtra("symbol", "OB");
+            StartActivity(intent);
         }
 
         //buttons

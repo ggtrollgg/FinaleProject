@@ -22,6 +22,9 @@ using Java.Util;
 using Java.Lang.Reflect;
 using System.Runtime.InteropServices.ComTypes;
 using Android.Graphics;
+using Firestore.Admin.V1;
+using System.Collections.ObjectModel;
+using Android.Gms.Extensions;
 
 namespace App1
 {
@@ -32,7 +35,7 @@ namespace App1
         List<string> list_Dates = new List<string>();
 
         List<string> Symbols_In_DataBase = new List<string>();
-        List<DocumentSnapshot> SymDoc_In_DataBase = new List<DocumentSnapshot>();
+        List<DocumentSnapshot> Docs_In_DataBase = new List<DocumentSnapshot>();
 
         Button btnMove, btnZoom;
         ImageButton ibHome,ibSave,ibTrack,ibData,ibType;
@@ -64,6 +67,7 @@ namespace App1
             ibData.Click += IbData_Click;
 
             ibSave.Click += IbSave_Click;
+            ibTrack.Click += IbTrack_Click;
 
             //btnZoom.Click += BtnZoom_Click;
             //btnMove.Click += BtnMove_Click;
@@ -73,9 +77,16 @@ namespace App1
             Console.WriteLine("1");
             _ = testAsync();
 
-            SetUpDataBase_AndStuff();
+            SetUpDataBase();
             
         }
+
+        private void IbTrack_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
 
 
         //putting the info into the class and putting the class in the linear layout
@@ -156,23 +167,21 @@ namespace App1
         //suppose to be about data base
         //currently doesnt work properly
 
-        public void SetUpDataBase_AndStuff()
+        public void SetUpDataBase()
         {
             db = GetDataBase();
-            LoadItems();
-
-            //db.Collection("Saved Stocks").Get();
-            //Console.WriteLine("\n1-------------------------------------------------------------------------\n from here:");
-            //Console.WriteLine(db.Collection("Saved Stocks").Get().ToString());
+            _ = LoadItemsAsync();
 
 
-            string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
-            if (Symbols_In_DataBase.Contains(symbol))
-            {
-                Color c = new Color();
-                c = Color.Green;
-                ibSave.SetColorFilter(c);
-            }
+
+
+            //string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
+            //if (Symbols_In_DataBase.Contains(symbol))
+            //{
+            //    Color c = new Color();
+            //    c = Color.Green;
+            //    ibSave.SetColorFilter(c);
+            //}
            
         }
         public FirebaseFirestore GetDataBase()
@@ -192,50 +201,67 @@ namespace App1
             return db;
         }
 
-        private void LoadItems()
-        {
-            // generate a query (request) from the database
-            Query q = db.Collection("Saved Stocks");
-            if (Symbols_In_DataBase.Count > 0)
-            {
-                Symbols_In_DataBase.Clear();
-                SymDoc_In_DataBase.Clear();
-            }
-            
-            
-            q.Get().AddOnSuccessListener(this);
-            
-           
-            
-           
-        }
+        //private void LoadItems()
+        //{
+        //    // generate a query (request) from the database
+        //    Query q = db.Collection("Saved Stocks");
+        //    if (Symbols_In_DataBase.Count > 0)
+        //    {
+        //        Symbols_In_DataBase.Clear();
+        //        SymDoc_In_DataBase.Clear();
+        //    }
+        //    q.Get().AddOnSuccessListener(this); 
+        //}
 
+        //public void OnSuccess(Java.Lang.Object result)
+        //{
+        //    string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
+        //    var snapshot = (QuerySnapshot)result;
+        //    StockData data;
+        //    int i = 0;
+        //    // iterate through each document in the collection
+        //    foreach (var doc in snapshot.Documents)
+        //    {
+        //        Symbols_In_DataBase.Add((string)doc.Get("symbol"));
+        //        SymDoc_In_DataBase.Add(doc);
+        //       //if(symbol== (string)doc.Get("symbol"))
+        //       // {
+        //       //     Console.WriteLine("The stock is already in the data base");
+        //       //     return;
+        //       // }
+
+        //    }
+        //    //Console.WriteLine("the stock wasnt in the data base");
+        //    //AddItemSave(symbol);
+        //}
+
+        private async Task LoadItemsAsync()
+        {
+            Docs_In_DataBase.Clear();
+
+            Query q = db.Collection("Saved Stocks");
+            await q.Get().AddOnSuccessListener(this);
+
+        }
         public void OnSuccess(Java.Lang.Object result)
         {
-            string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
             var snapshot = (QuerySnapshot)result;
-            StockData data;
-            int i = 0;
-            // iterate through each document in the collection
             foreach (var doc in snapshot.Documents)
             {
-                Symbols_In_DataBase.Add((string)doc.Get("symbol"));
-                SymDoc_In_DataBase.Add(doc);
-               //if(symbol== (string)doc.Get("symbol"))
-               // {
-               //     Console.WriteLine("The stock is already in the data base");
-               //     return;
-               // }
-
+                Docs_In_DataBase.Add(doc);
             }
-            //Console.WriteLine("the stock wasnt in the data base");
-            //AddItemSave(symbol);
         }
 
-        private void AddItemSave(string symbol)
-        {
-            Console.WriteLine("Adding the stock: " + symbol + " to the data base");
 
+
+        private void DeleteItem_fromDataBase(int index)
+        {
+            DocumentReference doc = db.Collection("Saved Stocks").Document(Docs_In_DataBase[index].Id);
+            doc.Delete();
+            Docs_In_DataBase.RemoveAt(index);
+        }
+        private void AddItem_ToDataBAse(string symbol)
+        {
             HashMap map = new HashMap();
             map.Put("symbol", symbol);
             map.Put("LastDate", "");
@@ -243,43 +269,98 @@ namespace App1
             map.Put("TrackingPrices", "");
             map.Put("heigh", 0);
             map.Put("low", 0);
-            DocumentReference docRef = db.Collection("Saved Stocks").Document();
-            
-            docRef.Set(map);
 
-            db.App.Dispose();
-            db.App.Delete();
-            //db.Terminate();
+            CollectionReference collection = db.Collection("Saved Stocks");
+            collection.Add(map);
         }
+
+
+        //private void AddItemSave(string symbol)
+        //{
+        //    Console.WriteLine("Adding the stock: " + symbol + " to the data base");
+
+        //    HashMap map = new HashMap();
+        //    map.Put("symbol", symbol);
+        //    map.Put("LastDate", "");
+        //    map.Put("SoundFile", "");
+        //    map.Put("TrackingPrices", "");
+        //    map.Put("heigh", 0);
+        //    map.Put("low", 0);
+        //    DocumentReference docRef = db.Collection("Saved Stocks").Document();
+
+        //    docRef.Set(map);
+
+        //    db.App.Dispose();
+        //    db.App.Delete();
+        //    //db.Terminate();
+        //}
+
+        //private void DeleteItemSave( int index)
+        //{
+        //    //db.Collection("Saved Stocks").Document(SymDoc_In_DataBase[index].Id).Delete();
+        //    DocumentReference doc = db.Collection("Saved Stocks").Document(SymDoc_In_DataBase[index].Id);
+        //    doc.Delete();
+
+
+        //    SymDoc_In_DataBase.RemoveAt(index);
+        //    Symbols_In_DataBase.RemoveAt((int)index);
+        //}
 
 
 
 
         //buttons
-
         private void IbSave_Click(object sender, EventArgs e)
-        {            
-            LoadItems();
-            string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
-            if (!Symbols_In_DataBase.Contains(symbol))
-            {
-                AddItemSave(symbol);
-                Console.WriteLine("Added the symbol: " + symbol + " to the data base");
-            }
-            else
-            {
-                Console.WriteLine("the symbol: " + symbol +" was already in the data base");
-                
+        {
+            //LoadItems();
+            //string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
+            //if (!Symbols_In_DataBase.Contains(symbol))
+            //{
+            //    AddItemSave(symbol);
+            //    Console.WriteLine("Added the symbol: " + symbol + " to the data base");
+            //}
+            //else
+            //{
+            //    Console.WriteLine("the symbol: " + symbol +" was already in the data base");
 
-                int index = Symbols_In_DataBase.IndexOf(symbol);
-                if (index != -1) {
-                    Console.WriteLine("Removing the symbol: " + symbol + " from the data base");
-                    db.Collection("Saved Stocks").Document(SymDoc_In_DataBase[index].Id).Delete();
-                    SymDoc_In_DataBase.RemoveAt(index);
-                    Symbols_In_DataBase.RemoveAt((int)index);
+            //    int index = Symbols_In_DataBase.IndexOf(symbol);
+            //    if (index != -1) { //if exists
+            //        Console.WriteLine("Removing the symbol: " + symbol + " from the data base");
+            //        DeleteItemSave(index);
+            //    }
+
+            //}
+
+            int index = -1;
+            int i = 0;
+
+            string symbol = "OB";
+            bool IsInDataBase = false;
+
+            foreach (var doc in Docs_In_DataBase)
+            {
+                if (symbol == (string)doc.Get("symbol"))
+                {
+                    IsInDataBase = true;
+                    index = i;
                 }
-                
+                i++;
             }
+
+            if (IsInDataBase) //it is in the data base
+            {
+                Console.WriteLine("deleting from database");
+                DeleteItem_fromDataBase(index);
+                return;
+            }
+            else //it isn't in the data base
+            {
+                Console.WriteLine("adding to database");
+                AddItem_ToDataBAse(symbol);
+                _ = LoadItemsAsync(); //refresh to the real oreder of items in the data base
+                return;
+            }
+
         }
 
         private void IbData_Click(object sender, EventArgs e)

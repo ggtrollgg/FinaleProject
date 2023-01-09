@@ -47,10 +47,11 @@
         android:layout_width="86dp"
         android:layout_height="155.5dp"
         android:text="work in progress"
+        android:id="@+id/btnTest"
         android:layout_marginLeft="3dp"
         android:background="#DD0000"
         android:layout_weight="1"
-        android:layout_marginBottom="65.0dp" 
+        android:layout_marginBottom="65dp" 
         />
 
 

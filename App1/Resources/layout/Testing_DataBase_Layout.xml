@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="print data to consol"
+        android:id="@+id/btnPrintDataBase"
+        />
+   
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add 'OB'"
+        android:id="@+id/btnAdd"
+        />
+
+     <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete 'OB'"
+        android:id="@+id/btnDelete"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="adding or deleting"
+        android:id="@+id/btnAddDelete"
+        />
+
+</LinearLayout>
