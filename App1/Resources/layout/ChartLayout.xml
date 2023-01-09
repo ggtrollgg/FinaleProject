@@ -99,7 +99,7 @@
             android:layout_height="match_parent"
             android:layout_weight="5"
             android:background="#333555"
-            android:src="@drawable/icon_save2"
+            android:src="@drawable/icon_favorite"
             android:id="@+id/ibSave"
             android:scaleType="fitXY"
             android:padding="1dp"/>
