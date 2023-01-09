@@ -34,7 +34,7 @@ namespace App1
         List<float> list = new List<float>();
         List<string> list_Dates = new List<string>();
 
-        List<string> Symbols_In_DataBase = new List<string>();
+        //List<string> Symbols_In_DataBase = new List<string>();
         List<DocumentSnapshot> Docs_In_DataBase = new List<DocumentSnapshot>();
 
         Button btnMove, btnZoom;
@@ -312,29 +312,10 @@ namespace App1
         //buttons
         private void IbSave_Click(object sender, EventArgs e)
         {
-            //LoadItems();
-            //string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
-            //if (!Symbols_In_DataBase.Contains(symbol))
-            //{
-            //    AddItemSave(symbol);
-            //    Console.WriteLine("Added the symbol: " + symbol + " to the data base");
-            //}
-            //else
-            //{
-            //    Console.WriteLine("the symbol: " + symbol +" was already in the data base");
-
-            //    int index = Symbols_In_DataBase.IndexOf(symbol);
-            //    if (index != -1) { //if exists
-            //        Console.WriteLine("Removing the symbol: " + symbol + " from the data base");
-            //        DeleteItemSave(index);
-            //    }
-
-            //}
-
             int index = -1;
             int i = 0;
 
-            string symbol = "OB";
+            string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
             bool IsInDataBase = false;
 
             foreach (var doc in Docs_In_DataBase)
