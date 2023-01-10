@@ -304,7 +304,23 @@ namespace App1
             CollectionReference collection = db.Collection("Saved Stocks");
             collection.Add(map);
         }
+        private void AddTrackItem_ToDataBAse(string symbol)
+        {
+            HashMap map = new HashMap();
+            map.Put("symbol", symbol);
+            map.Put("LastDate", "");
+            map.Put("SoundFile", "");
+            map.Put("TrackingPrices", "");
+            map.Put("heigh", 0);
+            map.Put("low", 0);
 
+            CollectionReference collection = db.Collection("Saved Stocks");
+            collection.Add(map);
+        }
+        private void UpdateTrackItem(string symbol)
+        {
+
+        }
 
         //private void AddItemSave(string symbol)
         //{
