@@ -233,6 +233,7 @@ namespace App1
             foreach (var doc in snapshot.Documents)
             {
                 Docs_In_DataBase.Add(doc);
+                
             }
         }
 

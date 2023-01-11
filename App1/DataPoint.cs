@@ -16,7 +16,7 @@ namespace App1
         public float heigh;
         public float low;
         public string date;
-
+        //
        
         public DataPoint()
         {

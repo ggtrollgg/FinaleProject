@@ -20,7 +20,7 @@ namespace App1
     public class MainActivity : Activity
     {
         Button btnstart,btnToListView,btnExit,btnTest;
-        
+        //
 
         protected override void OnCreate(Bundle savedInstanceState)
         {

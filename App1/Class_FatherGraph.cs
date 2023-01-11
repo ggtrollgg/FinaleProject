@@ -19,7 +19,10 @@ namespace App1
         public Context context;
         public Canvas canvas;
         public List<DataPoint> dataPoints;
-        //
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
 
         public Class_FatherGraph(Context context) : base(context)
         {

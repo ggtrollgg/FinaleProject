@@ -38,6 +38,10 @@ namespace App1
         List<DocumentSnapshot> Docs_In_DataBase = new List<DocumentSnapshot>();
 
         Button btnMove, btnZoom;
+
+        Button btnTrack, btnCancel;
+        EditText etTrackingPrices;
+
         ImageButton ibHome,ibSave,ibTrack,ibData,ibType;
         LinearLayout l1;
 
@@ -81,10 +85,7 @@ namespace App1
             
         }
 
-        private void IbTrack_Click(object sender, EventArgs e)
-        {
-
-        }
+        
 
 
 
@@ -289,7 +290,7 @@ namespace App1
             doc.Delete();
             Docs_In_DataBase.RemoveAt(index);
             //ibSave.SetImageDrawable((Android.Graphics.Drawables.Drawable)Resource.Drawable.Icon_Favorite);
-            ibSave.SetImageResource(Resource.Drawable.Icon_Favorite2);
+            //ibSave.SetImageResource(Resource.Drawable.Icon_Favorite2);
         }
         private void AddItem_ToDataBAse(string symbol)
         {
@@ -304,22 +305,39 @@ namespace App1
             CollectionReference collection = db.Collection("Saved Stocks");
             collection.Add(map);
         }
+
+
+
         private void AddTrackItem_ToDataBAse(string symbol)
         {
             HashMap map = new HashMap();
             map.Put("symbol", symbol);
             map.Put("LastDate", "");
-            map.Put("SoundFile", "");
-            map.Put("TrackingPrices", "");
+            map.Put("SoundFile", "default");
+            map.Put("TrackingPrices", etTrackingPrices.Text);
             map.Put("heigh", 0);
             map.Put("low", 0);
 
             CollectionReference collection = db.Collection("Saved Stocks");
             collection.Add(map);
         }
-        private void UpdateTrackItem(string symbol)
+        private void UpdateTrackItemAsync(string symbol,int index)
         {
+            //Docs_In_DataBase[index].("TrackingPrices").Set(etTrackingPrices.Text);
+            //await Docs_In_DataBase[index].UpdateAsync("Capital", false);
+            string soundfile = (string)Docs_In_DataBase[index].Get("SoundFile");
+            DeleteItem_fromDataBase(index);
 
+            HashMap map = new HashMap();
+            map.Put("symbol", symbol);
+            map.Put("LastDate", "");
+            map.Put("SoundFile", soundfile);
+            map.Put("TrackingPrices", etTrackingPrices.Text);
+            map.Put("heigh", 0);
+            map.Put("low", 0);
+
+            CollectionReference collection = db.Collection("Saved Stocks");
+            collection.Add(map);
         }
 
         //private void AddItemSave(string symbol)
@@ -357,6 +375,57 @@ namespace App1
 
 
         //buttons
+        private void IbTrack_Click(object sender, EventArgs e)
+        {
+            string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
+            d = new Dialog(this);
+            d.SetContentView(Resource.Layout.Custom_PopUp_Track);
+            d.SetTitle(symbol);
+            d.SetCancelable(true);
+
+            btnCancel = d.FindViewById<Button>(Resource.Id.btnCancel);
+            btnTrack = d.FindViewById<Button>(Resource.Id.btnTrack);
+            etTrackingPrices = d.FindViewById<EditText>(Resource.Id.etTrackingPrices);
+
+            btnCancel.Click += BtnCancel_Click;
+            btnTrack.Click += BtnTrack_Click;
+            d.Show();
+        }
+
+        private void BtnTrack_Click(object sender, EventArgs e)
+        {
+            string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
+            bool IsInDataBase = false;
+            int i = 0,index = -1;
+            foreach (var doc in Docs_In_DataBase)
+            {
+                if (symbol == (string)doc.Get("symbol"))
+                {
+                    IsInDataBase = true;
+                    index = i;
+                }
+                i++;
+            }
+            if (IsInDataBase)//if in data base than update to new values
+            {
+                UpdateTrackItemAsync(symbol,index);
+                _ = LoadItemsAsync();
+                d.Cancel();
+            }
+            else//if not in data than add new
+            {
+                AddTrackItem_ToDataBAse(symbol);
+                _ = LoadItemsAsync();
+                d.Cancel();
+            }
+        }
+
+        private void BtnCancel_Click(object sender, EventArgs e)
+        {
+            btnTrack.Click -= BtnTrack_Click;
+            d.Cancel();
+        }
+
         private void IbSave_Click(object sender, EventArgs e)
         {
             int index = -1;

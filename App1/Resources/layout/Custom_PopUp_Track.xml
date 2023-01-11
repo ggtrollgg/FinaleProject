@@ -43,8 +43,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="40dp"
                 android:text="Cancel"
-                android:background="#068A43"
-                android:id="@+id/btnTrack"
+                android:background="#F40404"
+                android:id="@+id/btnCancel"
                 />
         
         </LinearLayout>
@@ -67,8 +67,8 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="40dp"
                     android:text="Track"
-                    android:background="#F40404"
-                    android:id="@+id/btnCancel"
+                    android:background="#068A43"
+                    android:id="@+id/btnTrack"
                     />
             </LinearLayout>
 

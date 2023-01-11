@@ -15,7 +15,7 @@ namespace App1
     {
         public float CameraOffSetX = 0;
         public float CameraOffSetY = 0;
-
+        //
         public MyCamera(float cameraOffSetX, float cameraOffSetY)
         {
             CameraOffSetX = cameraOffSetX;

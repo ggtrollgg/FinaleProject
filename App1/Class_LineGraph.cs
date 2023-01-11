@@ -15,7 +15,7 @@ namespace App1
 {
     public class Class_LineGraph : Class_FatherGraph
     {
-        //
+        ///
         List<float> values = new List<float>();
         float heighest = 0, lowest = -1;
 

@@ -16,7 +16,7 @@ namespace App1
     {
         public String symbol;
         public String companyName;
-
+        //
         //public float price;
         //public Bitmap StockImage;
         //public String StockImage;
