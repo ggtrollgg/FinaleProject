@@ -177,7 +177,9 @@ namespace App1
                     //points.Add(new MyPoint((i * canvas.Width) / (dataPoints.Count - 1), canvas.Height + ((lowest - values[i]) * (1 / (heighest - lowest)) * canvas.Height)));
                     //UpLeft = new MyPoint(i * (squars_Width + 1), canvas.Height- (dataPoints[i].heigh )* canvas.Height);
                     //UpLeft = new MyPoint(i * (squars_Width)+ i*2, canvas.Height +  (lowest-dataPoints[i].heigh) *(1/(highest-lowest)) * canvas.Height);
-                    UpLeft = new MyPoint(i * (squars_Width) + i * 2, canvas.Height + ((lowest - dataPoints[i].heigh) * (1 / (highest - lowest)) * canvas.Height));
+                    //UpLeft = new MyPoint(i * (squars_Width) + i * 2, canvas.Height + ((lowest - dataPoints[i].heigh) * (1 / (highest - lowest)) * canvas.Height));
+                    //UpLeft = new MyPoint((i * squars_Width + i * canvas.Width ) / (dataPoints.Count - 1 ), canvas.Height + ((lowest - dataPoints[i].heigh) * (1 / (highest - lowest)) * canvas.Height));
+                    UpLeft = new MyPoint(( i * canvas.Width) / (i * squars_Width + dataPoints.Count - 1), canvas.Height + ((lowest - dataPoints[i].heigh) * (1 / (highest - lowest)) * canvas.Height));
                     DownRight = new MyPoint(UpLeft.x+squars_Width, canvas.Height);
 
                     Squares.Add(new MySquare(UpLeft,DownRight));
@@ -207,7 +209,7 @@ namespace App1
             {
                 UpLeft = ChangedSquares[i].UpLeft;
                 DownRight = ChangedSquares[i].DownRight;
-                canvas.DrawRect(UpLeft.x+camera.CameraOffSetX,UpLeft.y,DownRight.x + camera.CameraOffSetX, DownRight.y,p);
+                canvas.DrawRect(UpLeft.x+camera.CameraOffSetX,UpLeft.y,DownRight.x+camera.CameraOffSetX,DownRight.y,p);
             }
         }
 

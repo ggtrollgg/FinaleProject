@@ -196,12 +196,17 @@ namespace App1
         {
             string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
             bool IsInDataBase = false;
+            bool Istracked = false;
 
             foreach (var doc in Docs_In_DataBase)
             {
                 if (symbol == (string)doc.Get("symbol"))
                 {
                     IsInDataBase = true;
+                    if ((string)doc.Get("TrackingPrices") != "")
+                    {
+                        Istracked= true;
+                    }
                 }
             }
 
@@ -210,13 +215,18 @@ namespace App1
                 Console.WriteLine("change to colored icon");
                 //ibSave.SetImageDrawable((Android.Graphics.Drawables.Drawable)"@drawble/icon_favorite_colored");
                 ibSave.SetImageResource(Resource.Drawable.Icon_Favorite_colored2);
-
+                if (Istracked)
+                {
+                    ibTrack.SetImageResource(Resource.Drawable.Icon_Track_Colored);
+                }
+                
             }
             else
             {
                 Console.WriteLine("change to uncolored icon");
                 //ibSave.SetImageDrawable((Android.Graphics.Drawables.Drawable)Resource.Drawable.Icon_Favorite);
                 ibSave.SetImageResource(Resource.Drawable.Icon_Favorite2);
+                ibTrack.SetImageResource(Resource.Drawable.Icon_Track);
             }
         }
 
@@ -314,7 +324,7 @@ namespace App1
             doc.Delete();
             Docs_In_DataBase.RemoveAt(index);
             //ibSave.SetImageDrawable((Android.Graphics.Drawables.Drawable)Resource.Drawable.Icon_Favorite);
-            //ibSave.SetImageResource(Resource.Drawable.Icon_Favorite2);
+            ibSave.SetImageResource(Resource.Drawable.Icon_Favorite2);
         }
         private void AddItem_ToDataBAse(string symbol)
         {
