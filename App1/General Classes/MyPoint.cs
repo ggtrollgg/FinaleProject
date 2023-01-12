@@ -11,10 +11,14 @@ using System.Text;
 
 namespace App1
 {
-    internal class MyPoint
+    public class MyPoint
     {
         public float x;
         public float y;
+        public MyPoint()
+        {
+
+        }
         
         public MyPoint(float x, float y)
         {

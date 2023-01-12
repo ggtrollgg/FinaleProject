@@ -63,7 +63,9 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="General Classes\MySquare.cs" />
     <Compile Include="Graph\ChartActivity.cs" />
+    <Compile Include="Graph\ColumGraph.cs" />
     <Compile Include="Search\ClassSearchStock.cs" />
     <Compile Include="Graph\Class_CandleGraph.cs" />
     <Compile Include="Graph\Class_FatherGraph.cs" />

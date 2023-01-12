@@ -44,7 +44,7 @@ namespace App1
         {
             p = new Paint();
             p.Color= Color.Red;
-            p.StrokeWidth= 3;
+            p.StrokeWidth= 6;
         }
 
         public Class_LineGraph(Context context, Canvas canvas, List<DataPoint> dataPoints) : base(context,canvas,dataPoints) { }
@@ -56,19 +56,11 @@ namespace App1
             {
                 if(values == null || values.Count == 0) { calculateValues(); }
                 if (heighest == 0) { findLowHeigh(); }
-                CreatChartPoints();
+                CreateChartPoints();
                 DrawPoints();
-
-                //for (int i = 0; i < values.Count; i++)
-                //{
-                //    canvas.DrawCircle(Changedpoints[i].x, Changedpoints[i].y, 2, p);
-                //    if (i != values.Count - 1)
-                //    {
-                //        canvas.DrawLine(Changedpoints[i].x, Changedpoints[i].y, Changedpoints[i + 1].x, Changedpoints[i + 1].y, p);
-                //    }
-                //}
                 //DrawTouching();
                 //DrawXexis();
+                
                 Invalidate();
             }
         }
@@ -89,7 +81,7 @@ namespace App1
                 if (i < lowest || lowest == -1) lowest = i;
             }
         }
-        public void CreatChartPoints()
+        public void CreateChartPoints()
         {
             if (points == null || points.Count == 0)
             {

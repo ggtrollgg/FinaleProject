@@ -37,7 +37,7 @@ namespace App1
 
         //List<string> Symbols_In_DataBase = new List<string>();
         List<DocumentSnapshot> Docs_In_DataBase = new List<DocumentSnapshot>();
-
+        List<Class_FatherGraph> Charts = new List<Class_FatherGraph>();
         //Button btnMove, btnZoom;
 
         Button btnTrack, btnCancel;
@@ -80,7 +80,16 @@ namespace App1
             //btnMove.Click += BtnMove_Click;
 
             chart = new StockChart(this);
+
+            
+
+            ColumGraph chart1= new ColumGraph(this);
             chart2 = new Class_LineGraph(this);
+
+            Charts.Add(chart2);
+            Charts.Add(chart1);
+            
+
             Console.WriteLine("1");
             _ = testAsync();
 
@@ -107,8 +116,10 @@ namespace App1
             chart.values = arrey;
             chart.Dates = arrey2;
 
-            chart2.dataPoints = list_DataPoints;
-            l1.AddView(chart2);
+            //chart2.dataPoints = list_DataPoints;
+            //l1.AddView(chart2);
+            Charts[1].dataPoints = list_DataPoints;
+            l1.AddView(Charts[1]);
             //l1.AddView(chart);
         }
         //taking information about stock from the internet
