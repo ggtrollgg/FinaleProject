@@ -63,23 +63,23 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChartActivity.cs" />
-    <Compile Include="ClassSearchStock.cs" />
-    <Compile Include="Class_CandleGraph.cs" />
-    <Compile Include="Class_FatherGraph.cs" />
-    <Compile Include="Class_LineGraph.cs" />
-    <Compile Include="DataPoint.cs" />
+    <Compile Include="Graph\ChartActivity.cs" />
+    <Compile Include="Search\ClassSearchStock.cs" />
+    <Compile Include="Graph\Class_CandleGraph.cs" />
+    <Compile Include="Graph\Class_FatherGraph.cs" />
+    <Compile Include="Graph\Class_LineGraph.cs" />
+    <Compile Include="General Classes\DataPoint.cs" />
     <Compile Include="MainActivity.cs" />
-    <Compile Include="MyCamera.cs" />
-    <Compile Include="MyPoint.cs" />
+    <Compile Include="General Classes\MyCamera.cs" />
+    <Compile Include="General Classes\MyPoint.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SearchActivity.cs" />
-    <Compile Include="SearchStockAdapter.cs" />
-    <Compile Include="StockAdapter.cs" />
-    <Compile Include="StockChart.cs" />
-    <Compile Include="StockData.cs" />
-    <Compile Include="StockViewActivity.cs" />
+    <Compile Include="Search\SearchActivity.cs" />
+    <Compile Include="Search\SearchStockAdapter.cs" />
+    <Compile Include="StockVIew\StockAdapter.cs" />
+    <Compile Include="Graph\StockChart.cs" />
+    <Compile Include="General Classes\StockData.cs" />
+    <Compile Include="StockVIew\StockViewActivity.cs" />
     <Compile Include="Testing_Database_Activity.cs" />
   </ItemGroup>
   <ItemGroup>
