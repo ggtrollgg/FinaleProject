@@ -33,11 +33,12 @@ namespace App1
     {
         List<float> list = new List<float>();
         List<string> list_Dates = new List<string>();
+        List<DataPoint> list_DataPoints= new List<DataPoint>();
 
         //List<string> Symbols_In_DataBase = new List<string>();
         List<DocumentSnapshot> Docs_In_DataBase = new List<DocumentSnapshot>();
 
-        Button btnMove, btnZoom;
+        //Button btnMove, btnZoom;
 
         Button btnTrack, btnCancel;
         EditText etTrackingPrices;
@@ -46,6 +47,8 @@ namespace App1
         LinearLayout l1;
 
         StockChart chart;
+        Class_LineGraph chart2;
+        
         Dialog d;
 
         public FirebaseFirestore db;
@@ -77,7 +80,7 @@ namespace App1
             //btnMove.Click += BtnMove_Click;
 
             chart = new StockChart(this);
-
+            chart2 = new Class_LineGraph(this);
             Console.WriteLine("1");
             _ = testAsync();
 
@@ -103,7 +106,10 @@ namespace App1
             }
             chart.values = arrey;
             chart.Dates = arrey2;
-            l1.AddView(chart);
+
+            chart2.dataPoints = list_DataPoints;
+            l1.AddView(chart2);
+            //l1.AddView(chart);
         }
         //taking information about stock from the internet
         public async Task testAsync()
@@ -148,10 +154,17 @@ namespace App1
 
                     for (int i = 0; i < HistInfo.Length(); i++)
                     {
-                        float avr = (float)((HistInfo.GetJSONObject(i).GetDouble("low") + HistInfo.GetJSONObject(i).GetDouble("high")) / 2);
+                        float high = (float)HistInfo.GetJSONObject(i).GetDouble("high");
+                        float low = (float)HistInfo.GetJSONObject(i).GetDouble("low");
+                        string date = (string)HistInfo.GetJSONObject(i).Get("date");
+
+                        float avr = (float)(high + low) / 2;
+
                         //Console.WriteLine(avr);
                         list.Add(avr);
-                        list_Dates.Add((string)(HistInfo.GetJSONObject(i).Get("date")));
+                        list_Dates.Add(date);
+                        list_DataPoints.Add(new DataPoint(high, low, date));
+
                         //Console.WriteLine((string)(HistInfo.GetJSONObject(i).Get("date")));
                     }
 
@@ -340,6 +353,7 @@ namespace App1
             collection.Add(map);
         }
 
+
         //private void AddItemSave(string symbol)
         //{
         //    Console.WriteLine("Adding the stock: " + symbol + " to the data base");
@@ -490,53 +504,53 @@ namespace App1
 
 
         //not used
-        private void BtnMove_Click(object sender, EventArgs e)
-        {
-            chart.Move = !chart.Move;
-            if (chart.Move)
-            {
-                btnMove.SetBackgroundColor(Android.Graphics.Color.Green);
-            }
-            else
-            {
-                btnMove.SetBackgroundColor(Android.Graphics.Color.Red);
-            }
-        }
+        //private void BtnMove_Click(object sender, EventArgs e)
+        //{
+        //    chart.Move = !chart.Move;
+        //    if (chart.Move)
+        //    {
+        //        btnMove.SetBackgroundColor(Android.Graphics.Color.Green);
+        //    }
+        //    else
+        //    {
+        //        btnMove.SetBackgroundColor(Android.Graphics.Color.Red);
+        //    }
+        //}
 
-        private void BtnZoom_Click(object sender, EventArgs e)
-        {
-            chart.Zoom = !chart.Zoom;
-            if (chart.Zoom)
-            {
-                btnZoom.SetBackgroundColor(Android.Graphics.Color.Green);
-                //btnZoom.Background = (Android.Graphics.Drawables.Drawable)"green";
-            }
-            else
-            {
-                btnZoom.SetBackgroundColor(Android.Graphics.Color.Red);
-                //btnZoom.Background = (Android.Graphics.Drawables.Drawable)"red";
-            }
-        }
+        //private void BtnZoom_Click(object sender, EventArgs e)
+        //{
+        //    chart.Zoom = !chart.Zoom;
+        //    if (chart.Zoom)
+        //    {
+        //        btnZoom.SetBackgroundColor(Android.Graphics.Color.Green);
+        //        //btnZoom.Background = (Android.Graphics.Drawables.Drawable)"green";
+        //    }
+        //    else
+        //    {
+        //        btnZoom.SetBackgroundColor(Android.Graphics.Color.Red);
+        //        //btnZoom.Background = (Android.Graphics.Drawables.Drawable)"red";
+        //    }
+        //}
 
-        public String[] CleanAndSaperet(String TheContent)
-        {
-            if (TheContent == null) { Console.WriteLine("the content is null"); return null; }
+        //public String[] CleanAndSaperet(String TheContent)
+        //{
+        //    if (TheContent == null) { Console.WriteLine("the content is null"); return null; }
 
-            if (TheContent.Contains("\n")) TheContent = TheContent.Replace("\n", "");
-            if (TheContent.Contains("\r")) TheContent = TheContent.Replace("\r", "");
+        //    if (TheContent.Contains("\n")) TheContent = TheContent.Replace("\n", "");
+        //    if (TheContent.Contains("\r")) TheContent = TheContent.Replace("\r", "");
 
-            TheContent = TheContent.Replace('{', ' ');
-            TheContent = TheContent.Replace('}', ' ');
-            TheContent = TheContent.Replace('[', ' ');
-            TheContent = TheContent.Replace(']', ' ');
-            TheContent = TheContent.Replace('(', ' ');
-            TheContent = TheContent.Replace(')', ' ');
-            TheContent = TheContent.Replace(':', ',');
-            TheContent = TheContent.Replace('"', ' ');
-            TheContent = TheContent.Replace(" ", "");
+        //    TheContent = TheContent.Replace('{', ' ');
+        //    TheContent = TheContent.Replace('}', ' ');
+        //    TheContent = TheContent.Replace('[', ' ');
+        //    TheContent = TheContent.Replace(']', ' ');
+        //    TheContent = TheContent.Replace('(', ' ');
+        //    TheContent = TheContent.Replace(')', ' ');
+        //    TheContent = TheContent.Replace(':', ',');
+        //    TheContent = TheContent.Replace('"', ' ');
+        //    TheContent = TheContent.Replace(" ", "");
 
-            String[] s = TheContent.Split(',');
-            return s;
-        }
+        //    String[] s = TheContent.Split(',');
+        //    return s;
+        //}
     }
 }

@@ -22,10 +22,8 @@ namespace App1
 
         List<MyPoint> points = new List<MyPoint>();
         List<MyPoint> Changedpoints = new List<MyPoint>();
+        
         MyCamera camera = new MyCamera(0, 0);
-
-
-
 
         MyPoint lastPlace;
         MyPoint lastPlace2;
@@ -59,16 +57,16 @@ namespace App1
                 if(values == null || values.Count == 0) { calculateValues(); }
                 if (heighest == 0) { findLowHeigh(); }
                 CreatChartPoints();
-                //DrawPoints();
+                DrawPoints();
 
-                for (int i = 0; i < values.Count; i++)
-                {
-                    canvas.DrawCircle(Changedpoints[i].x, Changedpoints[i].y, 2, p);
-                    if (i != values.Count - 1)
-                    {
-                        canvas.DrawLine(Changedpoints[i].x, Changedpoints[i].y, Changedpoints[i + 1].x, Changedpoints[i + 1].y, p);
-                    }
-                }
+                //for (int i = 0; i < values.Count; i++)
+                //{
+                //    canvas.DrawCircle(Changedpoints[i].x, Changedpoints[i].y, 2, p);
+                //    if (i != values.Count - 1)
+                //    {
+                //        canvas.DrawLine(Changedpoints[i].x, Changedpoints[i].y, Changedpoints[i + 1].x, Changedpoints[i + 1].y, p);
+                //    }
+                //}
                 //DrawTouching();
                 //DrawXexis();
                 Invalidate();
@@ -126,5 +124,6 @@ namespace App1
             }
         }
 
+        
     }
 }

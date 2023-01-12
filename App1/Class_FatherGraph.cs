@@ -13,15 +13,15 @@ using System.Text;
 
 namespace App1
 {
-    public  class Class_FatherGraph : View
+    public class Class_FatherGraph : View
     {
-        
+
         public Context context;
         public Canvas canvas;
         public List<DataPoint> dataPoints;
-        /// <summary>
-        /// 
-        /// </summary>
+
+
+
         /// <param name="context"></param>
 
         public Class_FatherGraph(Context context) : base(context)
@@ -29,11 +29,39 @@ namespace App1
 
         }
 
-        public Class_FatherGraph(Context context,Canvas canvas, List<DataPoint> dataPoints) : base(context)
+        public Class_FatherGraph(Context context, Canvas canvas, List<DataPoint> dataPoints) : base(context)
         {
             this.context = context;
             this.canvas = canvas;
             this.dataPoints = dataPoints;
         }
+        public void SetDataPoints(List<DataPoint> points)
+        {
+            this.dataPoints = points;
+        }
     }
+
+    //public interface Class_FatherGraph : View
+    //{
+
+    //    public Context context;
+    //    public Canvas canvas;
+    //    public List<DataPoint> dataPoints;
+
+
+
+    //    /// <param name="context"></param>
+
+    //    public Class_FatherGraph(Context context) : base(context)
+    //    {
+
+    //    }
+
+    //    public Class_FatherGraph(Context context, Canvas canvas, List<DataPoint> dataPoints) : base(context)
+    //    {
+    //        this.context = context;
+    //        this.canvas = canvas;
+    //        this.dataPoints = dataPoints;
+    //    }
+    //}
 }

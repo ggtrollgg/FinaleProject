@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="ChartActivity.cs" />
     <Compile Include="ClassSearchStock.cs" />
+    <Compile Include="Class_CandleGraph.cs" />
     <Compile Include="Class_FatherGraph.cs" />
     <Compile Include="Class_LineGraph.cs" />
     <Compile Include="DataPoint.cs" />
