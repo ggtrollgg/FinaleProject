@@ -124,11 +124,13 @@ namespace App1
                     }
                     else
                     {
-                            if (!(camera.CameraOffSetX + (float)e.GetX() - lastPlace.x >= 0))
-                            {
-                                camera.CameraOffSetX += (float)e.GetX() - lastPlace.x;
-                            }
-                            camera.CameraOffSetY += (float)e.GetY() - lastPlace.y;
+                        //if (!(camera.CameraOffSetX + (float)e.GetX() - lastPlace.x >= 0))
+                        //{
+                        //    camera.CameraOffSetX += (float)e.GetX() - lastPlace.x;
+                        //}
+                        camera.CameraOffSetX += (float)e.GetX() - lastPlace.x;
+                        camera.CameraOffSetY += (float)e.GetY() - lastPlace.y;
+                        Console.WriteLine("The camera ofsetx is: " + camera.CameraOffSetX);
                     }
                 }
             }
@@ -177,6 +179,7 @@ namespace App1
                     //UpLeft = new MyPoint(i * (squars_Width)+ i*2, canvas.Height +  (lowest-dataPoints[i].heigh) *(1/(highest-lowest)) * canvas.Height);
                     UpLeft = new MyPoint(i * (squars_Width) + i * 2, canvas.Height + ((lowest - dataPoints[i].heigh) * (1 / (highest - lowest)) * canvas.Height));
                     DownRight = new MyPoint(UpLeft.x+squars_Width, canvas.Height);
+
                     Squares.Add(new MySquare(UpLeft,DownRight));
                 }
                 CalculateNewPointes();
@@ -185,14 +188,14 @@ namespace App1
 
         private void CalculateNewPointes()
         {
-            MyPoint UpLeft;
-            MyPoint DownRight;
+            MyPoint upLeft;
+            MyPoint downRight;
             for (int i = 0; i < dataPoints.Count; i++)
             {
                 //Changedpoints.Add(new MyPoint((points[i].x) * test_zoomfactor + camera.CameraOffSetX, points[i].y + camera.CameraOffSetY));
-                UpLeft = new MyPoint(Squares[i].UpLeft.x + camera.CameraOffSetX,Squares[i].UpLeft.y + camera.CameraOffSetY);
-                DownRight = new MyPoint(UpLeft.x + squars_Width*test_zoomfactor, canvas.Height+camera.CameraOffSetY);
-                ChangedSquares.Add(new MySquare(UpLeft,DownRight));
+                upLeft = new MyPoint(Squares[i].UpLeft.x + camera.CameraOffSetX,Squares[i].UpLeft.y + camera.CameraOffSetY);
+                downRight = new MyPoint(upLeft.x + squars_Width*test_zoomfactor, canvas.Height+camera.CameraOffSetY);
+                ChangedSquares.Add(new MySquare(upLeft,downRight));
             }
         }
 
@@ -204,7 +207,7 @@ namespace App1
             {
                 UpLeft = ChangedSquares[i].UpLeft;
                 DownRight = ChangedSquares[i].DownRight;
-                canvas.DrawRect(UpLeft.x,UpLeft.y,DownRight.x,DownRight.y,p);
+                canvas.DrawRect(UpLeft.x+camera.CameraOffSetX,UpLeft.y,DownRight.x + camera.CameraOffSetX, DownRight.y,p);
             }
         }
 
