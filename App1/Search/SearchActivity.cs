@@ -65,6 +65,7 @@ namespace App1
             //0a0b32a8d57dc7a4d38458de98803860
 
             //etSearch.AfterTextChanged += EtSearch_AfterTextChanged;
+
             etSearch.TextChanged += EtSearch_TextChanged;
             btnHome.Click += BtnHome_Click;
 

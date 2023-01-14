@@ -22,7 +22,8 @@ namespace App1
         List<MySquare> Squares= new List<MySquare>();
         List<MySquare> ChangedSquares = new List<MySquare>();
 
-        float squars_Width = 3;
+        float squars_Width = 2;
+        float distance = 2;
         float lowest = -1, highest = 0;
         bool doOnce = true;
 
@@ -171,15 +172,17 @@ namespace App1
                 ChangedSquares = new List<MySquare>();
                 MyPoint UpLeft;
                 MyPoint DownRight;
+                squars_Width = 2;
+                distance = 2;
 
                 for (int i = 0; i < dataPoints.Count; i++)
                 {
                     //points.Add(new MyPoint((i * canvas.Width) / (dataPoints.Count - 1), canvas.Height + ((lowest - values[i]) * (1 / (heighest - lowest)) * canvas.Height)));
                     //UpLeft = new MyPoint(i * (squars_Width + 1), canvas.Height- (dataPoints[i].heigh )* canvas.Height);
-                    //UpLeft = new MyPoint(i * (squars_Width)+ i*2, canvas.Height +  (lowest-dataPoints[i].heigh) *(1/(highest-lowest)) * canvas.Height);
-                    //UpLeft = new MyPoint(i * (squars_Width) + i * 2, canvas.Height + ((lowest - dataPoints[i].heigh) * (1 / (highest - lowest)) * canvas.Height));
+                    //UpLeft = new MyPoint(i * (squars_Width)+ i*distance, canvas.Height +  (lowest-dataPoints[i].heigh) *(1/(highest-lowest)) * canvas.Height);
+                    //UpLeft = new MyPoint(i * (squars_Width) + i * distance, canvas.Height + ((lowest - dataPoints[i].heigh) * (1 / (highest - lowest)) * canvas.Height));
                     //UpLeft = new MyPoint((i * squars_Width + i * canvas.Width ) / (dataPoints.Count - 1 ), canvas.Height + ((lowest - dataPoints[i].heigh) * (1 / (highest - lowest)) * canvas.Height));
-                    UpLeft = new MyPoint(( i * canvas.Width) / (i * squars_Width + dataPoints.Count - 1), canvas.Height + ((lowest - dataPoints[i].heigh) * (1 / (highest - lowest)) * canvas.Height));
+                    UpLeft = new MyPoint(i*(canvas.Width-squars_Width) / (dataPoints.Count - 1), canvas.Height + ((lowest - dataPoints[i].heigh) * (1 / (highest - lowest)) * canvas.Height));
                     DownRight = new MyPoint(UpLeft.x+squars_Width, canvas.Height);
 
                     Squares.Add(new MySquare(UpLeft,DownRight));

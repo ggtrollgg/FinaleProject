@@ -67,7 +67,7 @@ namespace App1
             //Add_To_File("TSLA");
             
 
-            Console.WriteLine(Read_from_file());
+            //Console.WriteLine(Read_from_file());
 
             db = GetDataBase();
             //AddItem();
@@ -93,6 +93,9 @@ namespace App1
             if(!ShowOnlyTracking)
             {
                 ShowOnlyTracking = true;
+                Datalist.Clear();
+                ShowListView();
+
                 LoadItems();
             }
             
@@ -168,9 +171,9 @@ namespace App1
             foreach (var doc in snapshot.Documents)
             {
                 
-                string tr = (string)doc.Get("TrackingPrice");
+                string tr = (string)doc.Get("TrackingPrices");
                 List<float> trackingprices = new List<float>();
-                if (tr != null)
+                if (tr != null && tr != "")
                 {
                     string[] trs = tr.Split(',');
                     
@@ -179,12 +182,13 @@ namespace App1
                         if(price != null && price != "")
                         {
                             trackingprices.Add(float.Parse(price));
+                            Console.WriteLine("The tracking prices of: " + doc.Get("Symbol") + " are: " + " price");
                         }
                     }
                 }
                 if(trackingprices.Count > 0)
                 {
-                    data = new StockData((float)doc.Get("heigh"), (float)doc.Get("low"), (string)doc.Get("LastDate"), (string)doc.Get("symbol"), (string)doc.Get("SoundFile"), trackingprices);
+                    data = new StockData((float)doc.Get("heigh"), (float)doc.Get("low"), (string)doc.Get("symbol"), (string)doc.Get("LastDate"),  (string)doc.Get("SoundFile"), trackingprices);
                     Datalist.Add(data);
                      _ = GetInfoFromWeb(data.symbol, i);
                 }
@@ -204,13 +208,25 @@ namespace App1
 
                 i++;
             }
-            if(Datalist.Count == 0)
-            {
-                ShowListView();
-            }
+
+            //if(Datalist.Count != 0)
+            //{
+            //    ThreadStart MyThreadStart = new ThreadStart(TimeOut);
+            //    System.Threading.Thread t = new System.Threading.Thread(MyThreadStart);
+            //    t.Start();
+            //    t.Join();
+            //    Console.WriteLine("Good Day!");
+            //    ShowListView();
+            //}
         }
 
-        
+        private void TimeOut()
+        {
+            System.Threading.Thread.Sleep(3000);
+            Console.WriteLine("I am Function");
+        }
+
+
 
 
         //get info on stock from internet
@@ -226,8 +242,8 @@ namespace App1
 
                 string link = "https://financialmodelingprep.com/api/v3/historical-chart/1min/";
                 link = link.Insert(link.Length, symbol);
-                //link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
-                link = link.Insert(link.Length, "?apikey=8bdedb14d7674def460cb3a84f1fd429");
+                link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
+                //link = link.Insert(link.Length, "?apikey=8bdedb14d7674def460cb3a84f1fd429");
                 //8bdedb14d7674def460cb3a84f1fd429
 
                 using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
@@ -245,13 +261,17 @@ namespace App1
                     Datalist[place].heigh =((float)(HistInfo.GetJSONObject(0).GetDouble("high")));
                     Datalist[place].date = ((string)(HistInfo.GetJSONObject(0).Get("date")));
                     
+                    
                 }
             }
 
            // Toast.MakeText(this, "got the info from web?", ToastLength.Short).Show();
 
-            if(place >= Datalist.Count-1)
-            ShowListView();
+            if(place >= Datalist.Count - 1)
+            {
+                ShowListView();
+            }
+                
 
             Dispose(true);
             return;
@@ -306,7 +326,7 @@ namespace App1
 
 
 
-
+        //not in use
         private async Task processAllSavedStocks()
         {
             string s = Read_from_file();

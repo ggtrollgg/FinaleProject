@@ -51,6 +51,7 @@ namespace App1
         
         Dialog d;
 
+
         public FirebaseFirestore db;
         
 
@@ -94,11 +95,43 @@ namespace App1
             _ = testAsync();
 
             SetUpDataBase();
-            
+
+            RegisterForContextMenu(ibType);
+
         }
 
-        
+        public override void OnCreateContextMenu(IContextMenu menu, View v, IContextMenuContextMenuInfo menuInfo)
+        {
+            base.OnCreateContextMenu(menu, v, menuInfo);
+            MenuInflater.Inflate(Resource.Menu.Type_Menu, menu);
+        }
+        public override bool OnContextItemSelected(IMenuItem item)
+        {
+            if (item.ItemId == Resource.Id.action_LineGraph1)
+            {
+                l1.RemoveAllViews();
+                Charts[0].dataPoints = list_DataPoints;
+                l1.AddView(Charts[0]);
+                return true;
+            }
+            else if (item.ItemId == Resource.Id.action_ColumGraph1)
+            {
+                l1.RemoveAllViews();
+                Charts[1].dataPoints = list_DataPoints;
+                l1.AddView(Charts[1]);
+                return true;
+            }
+            else if (item.ItemId == Resource.Id.action_CandleGraph1)
+            {
+                l1.RemoveAllViews();
+                Charts[1].dataPoints = list_DataPoints;
+                l1.AddView(Charts[2]);
+                return true;
+            }
+            
+            return false;
 
+        }
 
 
 
@@ -118,8 +151,8 @@ namespace App1
 
             //chart2.dataPoints = list_DataPoints;
             //l1.AddView(chart2);
-            Charts[1].dataPoints = list_DataPoints;
-            l1.AddView(Charts[1]);
+            Charts[0].dataPoints = list_DataPoints;
+            l1.AddView(Charts[0]);
             //l1.AddView(chart);
         }
         //taking information about stock from the internet

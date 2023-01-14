@@ -44,11 +44,10 @@ namespace App1
         public override View GetView(int position, View convertView, ViewGroup parent)
         {
             Android.Views.LayoutInflater layoutInflater = ((StockViewActivity)context).LayoutInflater;
-
             Android.Views.View view = SavedLayout(position, convertView, parent);
-
             StockData Temp = objects[position];
-            if (Temp!=null && Temp.TrackingPrices!=null && Temp.SoundName != null && Temp.SoundName != "")
+
+            if (Temp!=null && Temp.TrackingPrices!=null )//&& Temp.SoundName != null && Temp.SoundName != "")
             {
                 view = TrackingLayout(position, convertView, parent);
             }
@@ -84,7 +83,18 @@ namespace App1
                 tvSymbol.Text = Temp.symbol;
                 tvLow.Text = "Low: " + Temp.low;
                 tvHeigh.Text = "Heigh: " + Temp.heigh;
+                tvTrackingPrices.Text = "";
+                foreach (int num in Temp.TrackingPrices)
+                {
+                    tvTrackingPrices.Text += num.ToString() + ",";
+                }
 
+                string text = tvTrackingPrices.Text;
+                int index = text.Length -1;
+                text = text.Remove(index);
+                tvTrackingPrices.Text = text;
+
+                tvAlarmSound.Text = "" + Temp.SoundName;
             }
             return view;
         }
