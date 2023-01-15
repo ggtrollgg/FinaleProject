@@ -56,7 +56,6 @@ namespace App1
             {
                 if(values == null || values.Count == 0) { calculateValues(); }
                 if (heighest == 0) { findLowHeigh(); }
-
                 DrawGraph();
                 
                 //DrawTouching();
