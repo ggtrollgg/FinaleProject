@@ -59,13 +59,19 @@ namespace App1
             if (dataPoints != null)
             {
                 DoOnce();
-                CreateChartSquars();
-                DrawPoints();
-                DrawTouching();
+                DrawGraph();
+                
+                //DrawTouching();
                 //DrawXexis();
 
                 Invalidate();
             }
+        }
+
+        private void DrawGraph()
+        {
+            CreateChartSquars();
+            DrawSquers();
         }
 
         private void DrawTouching()
@@ -204,7 +210,7 @@ namespace App1
             }
         }
 
-        public void DrawPoints()
+        public void DrawSquers()
         {
             MyPoint UpLeft;
             MyPoint DownRight;

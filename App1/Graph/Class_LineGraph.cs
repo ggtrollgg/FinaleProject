@@ -56,13 +56,20 @@ namespace App1
             {
                 if(values == null || values.Count == 0) { calculateValues(); }
                 if (heighest == 0) { findLowHeigh(); }
-                CreateChartPoints();
-                DrawPoints();
+
+                DrawGraph();
+                
                 //DrawTouching();
                 //DrawXexis();
                 
                 Invalidate();
             }
+        }
+
+        private void DrawGraph()
+        {
+            CreateChartPoints();
+            DrawPoints();
         }
 
         private void calculateValues()

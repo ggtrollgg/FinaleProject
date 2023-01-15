@@ -39,6 +39,7 @@ namespace App1
         {
             this.dataPoints = points;
         }
+
     }
 
     //public interface Class_FatherGraph : View
