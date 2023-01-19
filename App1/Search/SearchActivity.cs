@@ -241,6 +241,12 @@ namespace App1
                     //Toast.MakeText(this, "sending requast for info", ToastLength.Short).Show();
 
                     var response2 = await httpClient2.SendAsync(request,CTS.Token);
+                    var temp = response2.StatusCode;
+                    if (temp == System.Net.HttpStatusCode.TooManyRequests)
+                    {
+                        Toast.MakeText(this, "the serever is full right now, try again later", ToastLength.Long).Show();
+                        return;
+                    }
                     response2.EnsureSuccessStatusCode();
 
                     string responseBody = await response2.Content.ReadAsStringAsync();
