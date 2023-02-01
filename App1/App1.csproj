@@ -83,6 +83,7 @@
     <Compile Include="General Classes\StockData.cs" />
     <Compile Include="StockVIew\StockViewActivity.cs" />
     <Compile Include="Testing_Database_Activity.cs" />
+    <Compile Include="Test_ZoomCanvas.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

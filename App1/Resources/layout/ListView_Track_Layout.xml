@@ -7,7 +7,9 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:background="@drawable/img_placeholder"/>
+
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -28,21 +30,33 @@
             android:id="@+id/tvLow"
             android:textColor="#FF0000"/>
 
-        <TextView
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tracking price: "
             android:textColor="#F6B305"
             />
 
-        <TextView
+            <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text=""
             android:id="@+id/tvTrackingPrices"
             android:textColor="#F6B305"/>
-
-        <TextView
+        
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Alarm Sound: "
@@ -56,17 +70,31 @@
             android:textColor="#EF1799"
             />
         
+        </LinearLayout>
+
+        
+        
         
     </LinearLayout>
 
-    <TextView
+    
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:text="APPL"
         android:layout_weight="1"
+        android:orientation="vertical"
         android:gravity="center"
+        >
+
+        <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="APPL"
+        android:gravity="end"
         android:textSize="20dp"
         android:id="@+id/tvSymbol"
+            android:layout_marginEnd="10dp"
             />
-
+    
+    </LinearLayout>
 </LinearLayout>

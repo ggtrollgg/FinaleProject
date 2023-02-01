@@ -34,10 +34,13 @@ namespace App1
         List<DocumentSnapshot> Docs_In_DataBase = new List<DocumentSnapshot>();
 
         Button btnPrintDataBase,btnDelete,btnAdd,btnAddDelete;
-
+        Test_ZoomCanvas TZC;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+            TZC = new Test_ZoomCanvas(this);
+            SetContentView(TZC);
+            /*
             SetContentView(Resource.Layout.Testing_DataBase_Layout);
             // Create your application here
             btnPrintDataBase = FindViewById<Button>(Resource.Id.btnPrintDataBase);
@@ -52,7 +55,7 @@ namespace App1
 
 
             SetUpDataBase();
-
+            */
 
         }
 

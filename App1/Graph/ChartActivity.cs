@@ -550,11 +550,20 @@ namespace App1
         {
             db.App.Delete();
             db.Dispose();
-
+            db = null;
             Finish();
         }
 
-
+        protected override void OnPause()
+        {
+            if(db.App!= null)
+            {
+                db.App.Delete();
+                db.Terminate();
+            }
+            
+            base.OnPause();
+        }
 
 
         //not used

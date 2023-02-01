@@ -312,11 +312,24 @@ namespace App1
         {
             db.App.Delete();
             db.Terminate();
+            db.Dispose();
+            db= null;
             base.OnPause();
         }
 
 
-        
+        protected override void OnResume()
+        {
+            if(db == null)
+            {
+                db = GetDataBase();
+                //AddItem();
+                //LoadItems();
+            }
+            
+
+            base.OnResume();
+        }
 
 
 
