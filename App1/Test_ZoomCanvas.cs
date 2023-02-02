@@ -29,6 +29,7 @@ namespace App1
         MyPoint LastmidPoint;
 
         float zoomfactorX = 1;
+        float zoomfactorY = 1;
         bool doOnce = true;
 
         
@@ -82,8 +83,8 @@ namespace App1
             float posX = canvas.Width / 2;
             float posY = canvas.Height / 2;
             //canvas.Translate(0, 0);
-            canvas.Scale(2, 2, posX, posY);
-            //canvas.Scale(zoomfactorX, zoomfactorY);
+            //canvas.Scale(2, 2, posX, posY);
+            canvas.Scale(zoomfactorX, zoomfactorY, posX, posY);
 
 
 
@@ -94,10 +95,11 @@ namespace App1
             //}
             //canvas.Translate(posX, posY);
 
+
             //if (midPoint!= null)
-            //    canvas.Scale(zoomfactorX, 2, midPoint.x, midPoint.y);
+            //    canvas.Scale(zoomfactorX, zoomfactorY, midPoint.x, midPoint.y);
             //else
-            //    canvas.Scale(zoomfactorX, 2, posX, posY);
+            //     canvas.Scale(zoomfactorX, zoomfactorY, posX, posY);
         }
 
         private void DoOnce()
@@ -196,8 +198,8 @@ namespace App1
                             lastPlace2 = new MyPoint(point2.x, point2.y);
                         }
 
-                        zoomfactorX += ((float)e.GetX() - lastPlace.x) / 1000;// + ((float)point2.x - lastPlace2.x) / 100;
-
+                        zoomfactorX += ((float)e.GetX() - lastPlace.x) / 10000;// + ((float)point2.x - lastPlace2.x) / 100;
+                        zoomfactorY += ((float)e.GetY() - lastPlace.y) / 10000;
                         lastPlace2.x = point2.x;
                         lastPlace2.y = point2.y;
 
@@ -211,7 +213,7 @@ namespace App1
                lastPlace.x = e.GetX();
                lastPlace.y = e.GetY();
            }
-           if (e.Action == MotionEventActions.Up)
+           if (e.Action == MotionEventActions.Up && e.PointerCount == 1)
            {
              lastPlace = null;
            }
