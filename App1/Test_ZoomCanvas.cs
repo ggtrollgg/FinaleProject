@@ -38,6 +38,7 @@ namespace App1
 
         
         Paint p1 = new Paint();
+        Paint p2 = new Paint();
 
         Paint pBig;
         Paint pNorm;
@@ -56,16 +57,23 @@ namespace App1
             this.context = context;
             pSmall = new Paint();
             pSmall.Color = Color.Pink;
+
+            p2.Color= Color.Red;
         }
 
         protected override void OnDraw(Canvas canvas1)
         {
             this.canvas = canvas1;
             DoOnce();
+            ScaleCanvas();
             DrawSquers();
             DrawTouching();
+            canvas.DrawCircle(canvas.Width / 2 + camera.CameraOffSetX, canvas.Height / 2 + camera.CameraOffSetY, 25, p2);
+            canvas.DrawCircle(canvas.Width / 2 + camera.CameraOffSetX, canvas.Height / 2 + camera.CameraOffSetY, 25, p1);
 
-            ScaleCanvas();
+            Console.WriteLine(zoomfactorX);
+            Console.WriteLine(camera.CameraOffSetX);
+            Console.WriteLine(camera.CameraOffSetY);
             Invalidate();
         }
 
@@ -73,7 +81,11 @@ namespace App1
         {
             float posX = canvas.Width / 2;
             float posY = canvas.Height / 2;
-            //Console.WriteLine(zoomfactorX);
+            //canvas.Translate(0, 0);
+            canvas.Scale(2, 2, posX, posY);
+            //canvas.Scale(zoomfactorX, zoomfactorY);
+
+
 
 
             //if(LastmidPoint!= null) {
@@ -141,6 +153,7 @@ namespace App1
                 camera.CameraOffSetX += (float)e.GetX() - lastPlace.x;
                 camera.CameraOffSetY += (float)e.GetY() - lastPlace.y;
             }
+
             else if (e.PointerCount > 1)
             {
                 p1.Color = Color.Black;
@@ -166,14 +179,14 @@ namespace App1
 
 
 
-            if (lastPlace == null)
-            {
-                lastPlace = new MyPoint(e.GetX(), e.GetY());
-                return true;
-            }
-            else
-            {
-                if (e.Action == MotionEventActions.Move)
+            //if (lastPlace == null)
+            //{
+            //    lastPlace = new MyPoint(e.GetX(), e.GetY());
+            //    return true;
+            //}
+            //else
+            //{
+                if (e.Action == MotionEventActions.Move && lastPlace != null)
                 {
                     if (e.PointerCount > 1 && midPoint != null)
                     {
@@ -190,16 +203,18 @@ namespace App1
 
                     }
                 }
-            }
+           // }
 
             
-
-            lastPlace.x = e.GetX();
-            lastPlace.y = e.GetY();
+           if(lastPlace!= null && e.PointerCount == 1)
+           {
+               lastPlace.x = e.GetX();
+               lastPlace.y = e.GetY();
+           }
            if (e.Action == MotionEventActions.Up)
-                {
-                    lastPlace = null;
-                }
+           {
+             lastPlace = null;
+           }
             return true;
 
 
