@@ -35,11 +35,15 @@ namespace App1
 
         Button btnPrintDataBase,btnDelete,btnAdd,btnAddDelete;
         Test_ZoomCanvas TZC;
+        ZoomableCanvasView ZCV;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            TZC = new Test_ZoomCanvas(this);
-            SetContentView(TZC);
+            //TZC = new Test_ZoomCanvas(this);
+            //SetContentView(TZC);
+
+            ZCV = new ZoomableCanvasView(this);
+            SetContentView(ZCV);
             /*
             SetContentView(Resource.Layout.Testing_DataBase_Layout);
             // Create your application here

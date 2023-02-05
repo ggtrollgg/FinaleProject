@@ -25,5 +25,11 @@ namespace App1
             this.x = x;
             this.y = y;
         }
+
+        public MyPoint(MyPoint p)
+        {
+            x = p.x;
+            y = p.y;
+        }
     }
 }
