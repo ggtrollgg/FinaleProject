@@ -712,6 +712,8 @@ namespace App1
         MyPoint LastPivotPoint = new MyPoint();
         float ScaleX = 1.0f;
         float ScaleY = 1.0f;
+        float w;
+        float h;
         // Variables to store the current scale factor, focus point for scaling, and translation values
         private float scaleFactor = 1.0f;
 
@@ -728,12 +730,18 @@ namespace App1
         Paint p3 = new Paint();
         Paint brown = new Paint();
         Paint yellow = new Paint();
+        Paint red = new Paint();
+        Paint green = new Paint();
+        Paint blue = new Paint();
         // Constructor for the custom view
         public ZoomableCanvasView(Context context) : base(context)
         {
             p3.Color = Color.Purple;
             yellow.Color = Color.Yellow;
             brown.Color = Color.Brown;
+            green.Color = Color.Green;
+            blue.Color = Color.Blue;
+            red.Color = Color.Red;
 
             PivotPoint.x = 0.0f;
             PivotPoint.y = 0.0f;
@@ -750,16 +758,16 @@ namespace App1
         {
             base.OnDraw(canvas);
             Thecanvas= canvas;
+            w = Thecanvas.Width;
+            h = Thecanvas.Height;
 
-            //Thecanvas.DrawCircle(focusX, focusY, 25, p3);
-            
-
-            ReScaleCanvas();
+            Test_Multupale_ZoominIn();
+            //ReScaleCanvas();
 
             //// Apply the zoom and translation transformations to the canvas
             //Thecanvas.Save();
             ////matrix.Reset();
-            
+
             ////matrix.PostScale(scaleFactor, scaleFactor, focusX, focusY);
             //if (PivotPoint != null)
             //    matrix.PostScale(scaleFactor, scaleFactor, PivotPoint.x, PivotPoint.y);
@@ -770,18 +778,51 @@ namespace App1
             //Thecanvas.Concat(matrix);
 
             // Draw your graph here
-
-            Thecanvas.DrawRect(0, 0, 100, 100, p3);
-            Thecanvas.DrawRect(100, 100, 200, 200, yellow);
-            Thecanvas.DrawRect(200, 200, 300, 300, brown);
-            Thecanvas.DrawRect(300, 300, 400, 400, p3);
-            Thecanvas.DrawRect(400, 400, 500, 500, yellow);
-            Thecanvas.DrawRect(500, 500, 600, 600, brown);
+            DrawStaff();
+            
 
 
             
             Thecanvas.Restore();
             Thecanvas.DrawCircle(focusX, focusY, 25, p3);
+        }
+
+        private void DrawStaff()
+        {
+            //Thecanvas.DrawRect(0, 0, 100, 100, p3);
+            //Thecanvas.DrawRect(100, 100, 200, 200, yellow);
+            //Thecanvas.DrawRect(200, 200, 300, 300, brown);
+            //Thecanvas.DrawRect(300, 300, 400, 400, p3);
+            //Thecanvas.DrawRect(400, 400, 500, 500, yellow);
+            //Thecanvas.DrawRect(500, 500, 600, 600, brown);
+
+            
+
+            Thecanvas.DrawRect(w / 4, h / 4, w * (3/4.0f), h*(3/4.0f), brown); //half size of canvas and in the middle of it;
+            Thecanvas.DrawRect(w / 4, h / 4, w * (2 / 4.0f), h * (2 / 4.0f),red);//
+            Thecanvas.DrawRect(w / 4, h / 4, w * (3 / 8.0f), h * (3 / 8.0f), green);//
+
+            Thecanvas.DrawRect(w / 4, h / 4, w * (5 / 16.0f), h * (5 / 16.0f), blue);//
+            Thecanvas.DrawRect(w / 4, h / 4, w * (9 / 32.0f), h * (9 / 32.0f), yellow);//
+            Thecanvas.DrawRect(w / 4, h / 4, w * (17 / 64.0f), h * (17 / 64.0f), p3);//
+            Thecanvas.DrawRect(w / 4, h / 4, w * (33 / 128.0f), h * (33 / 128.0f), brown);//
+            Thecanvas.DrawRect(w / 4, h / 4, w * (65 / 256.0f), h * (65 / 256.0f), red);//
+        }
+
+        public void Test_Multupale_ZoominIn()
+        {
+            Thecanvas.Save();
+            matrix.Reset();
+
+
+            matrix.PostScale(2, 2, w / 2, h / 2);
+            matrix.PostScale(2, 2, w / 2, h / 2);
+            //matrix.PostScale(2, 2, w * (1 / 4.0f), h * (1 / 4.0f));
+            //matrix.PostScale(2, 2, w * (3 / 8.0f), h * (3 / 8.0f));
+
+            //matrix.PostTranslate(translateX, translateY);
+            Thecanvas.Concat(matrix);
+            //Thecanvas.Save();
         }
 
         private void ReScaleCanvas()
@@ -822,9 +863,17 @@ namespace App1
             if (PivotPoint.x != focusX)
             {
                 //Thecanvas.Save();
+                PivotPoint.y = focusY;
+                PivotPoint.x = focusX;
+                Console.WriteLine("PivotPoint.x: + " + PivotPoint.x);
+                Console.WriteLine("PivotPoint.y : + " + PivotPoint.y);
+                Console.WriteLine(" ");
             }
-            PivotPoint.y = focusY;
-            PivotPoint.x = focusX;
+            //PivotPoint.y = focusY;
+           // PivotPoint.x = focusX;
+
+            
+
 
             this.Invalidate();
         }
