@@ -95,11 +95,10 @@ namespace App1
                 ShowOnlyTracking = true;
                 Datalist.Clear();
                 LoadItems();
-                ShowListView();
+                //ShowListView();
 
-                
+                return;
             }
-            
         }
 
         private void BtnReturnHome_Click(object sender, EventArgs e)
