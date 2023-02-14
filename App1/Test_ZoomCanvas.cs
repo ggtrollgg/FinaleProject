@@ -160,7 +160,7 @@ namespace App1
 
 
             // ScaleCanvas();
-            ReSizeCanvas();
+             ReSizeCanvas();
 
             DrawSquers();
 
@@ -185,6 +185,7 @@ namespace App1
 
         public void ReSizeCanvas()
         {
+            
             Matrix matrix = new Matrix();
 
             // Save the current matrix
@@ -206,6 +207,7 @@ namespace App1
 
             // Restore the matrix
             //canvas.Restore();
+            
         }
 
         private void ScaleCanvas()
@@ -761,21 +763,21 @@ namespace App1
             w = Thecanvas.Width;
             h = Thecanvas.Height;
 
-            Test_Multupale_ZoominIn();
+           //Test_Multupale_ZoominIn();
             //ReScaleCanvas();
 
             //// Apply the zoom and translation transformations to the canvas
-            //Thecanvas.Save();
-            ////matrix.Reset();
+            Thecanvas.Save();
+            matrix.Reset();
 
-            ////matrix.PostScale(scaleFactor, scaleFactor, focusX, focusY);
-            //if (PivotPoint != null)
-            //    matrix.PostScale(scaleFactor, scaleFactor, PivotPoint.x, PivotPoint.y);
-            //else
-            //    matrix.PostScale(scaleFactor, scaleFactor, LastPivotPoint.x, LastPivotPoint.y);
+            //matrix.PostScale(scaleFactor, scaleFactor, focusX, focusY);
+            if (PivotPoint != null)
+                matrix.PostScale(scaleFactor, scaleFactor, PivotPoint.x, PivotPoint.y);
+            else
+               matrix.PostScale(scaleFactor, scaleFactor, LastPivotPoint.x, LastPivotPoint.y);
             //matrix.PostTranslate(translateX, translateY);
 
-            //Thecanvas.Concat(matrix);
+            Thecanvas.Concat(matrix);
 
             // Draw your graph here
             DrawStaff();
@@ -783,8 +785,10 @@ namespace App1
 
 
             
-            Thecanvas.Restore();
+            //Thecanvas.Restore();
             Thecanvas.DrawCircle(focusX, focusY, 25, p3);
+
+            this.Invalidate();
         }
 
         private void DrawStaff()
@@ -823,6 +827,7 @@ namespace App1
             //matrix.PostTranslate(translateX, translateY);
             Thecanvas.Concat(matrix);
             //Thecanvas.Save();
+           
         }
 
         private void ReScaleCanvas()

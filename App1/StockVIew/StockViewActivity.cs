@@ -94,9 +94,10 @@ namespace App1
             {
                 ShowOnlyTracking = true;
                 Datalist.Clear();
+                LoadItems();
                 ShowListView();
 
-                LoadItems();
+                
             }
             
         }
