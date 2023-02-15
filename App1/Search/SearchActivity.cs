@@ -123,8 +123,10 @@ namespace App1
                 {
                     var response = await httpClient.SendAsync(request);
                     response.EnsureSuccessStatusCode();
+
                     string responseBody = await response.Content.ReadAsStringAsync();
                     JSONArray HistInfo = new JSONArray(responseBody);
+
                     Console.WriteLine(HistInfo.Length());
                     if(Chart_Points.Count > 0)
                     {

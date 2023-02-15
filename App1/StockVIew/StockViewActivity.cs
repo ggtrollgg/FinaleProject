@@ -38,9 +38,12 @@ namespace App1
 
         public static List<string> list = new List<string>();
         public static List<StockData> Datalist = new List<StockData>();
+        public static List<StockData> Temp_Datalist = new List<StockData>();
 
+        bool IsDataCountFull = false;
         ListView lvStock;
         StockAdapter adapter;
+        string queryType = "normal";
 
         public FirebaseFirestore db;
         CancellationTokenSource CTS = new CancellationTokenSource();
@@ -81,10 +84,11 @@ namespace App1
         {
             if(ShowOnlyTracking)
             {
+                queryType = "normal";
                 ShowOnlyTracking = false;
                 LoadItems();
             }
-
+            
 
         }
 
@@ -92,20 +96,43 @@ namespace App1
         {
             if(!ShowOnlyTracking)
             {
+                queryType = "Tracking";
                 ShowOnlyTracking = true;
-                Datalist.Clear();
-                LoadItems();
+                LoadTrackingItems();
                 //ShowListView();
 
                 return;
             }
         }
 
+        private void LoadTrackingItems()
+        {
+            if (Datalist.Count > 0)
+            {
+                Datalist.Clear();
+            }
+            if (list.Count > 0)
+            {
+                list.Clear();
+            }
+            if (Temp_Datalist.Count > 0)
+            {
+                Temp_Datalist.Clear();
+            }
+            // generate a query (request) from the database
+            Query q = 
+                db
+                .Collection("Saved Stocks")
+                .WhereNotEqualTo("TrackingPrices", "");
+            q.Get().AddOnSuccessListener(this);
+        }
+
         private void BtnReturnHome_Click(object sender, EventArgs e)
         {
-            db.App.Delete();
-            db.Terminate();
-            Finish();
+            ShowListView();
+            // db.App.Delete();
+            // db.Terminate();
+            // Finish();
         }
 
 
@@ -154,6 +181,14 @@ namespace App1
             {
                 Datalist.Clear();
             }
+            if (list.Count > 0)
+            {
+                list.Clear();
+            }
+            if(Temp_Datalist.Count > 0)
+            {
+                Temp_Datalist.Clear();
+            }
             // generate a query (request) from the database
             Query q = db.Collection("Saved Stocks");
             q.Get().AddOnSuccessListener(this);
@@ -161,63 +196,92 @@ namespace App1
 
         public void OnSuccess(Java.Lang.Object result)
         {
-
-            // gets List of HashMaps whick represent the DB students
-            
-            var snapshot = (QuerySnapshot)result;
-            StockData data;
-            int i = 0;
-            // iterate through each document in the collection
-            foreach (var doc in snapshot.Documents)
+            IsDataCountFull = false;
+            Console.WriteLine("OnSuccess");
+            if (queryType == "normal")
             {
-                
-                string tr = (string)doc.Get("TrackingPrices");
-                List<float> trackingprices = new List<float>();
-                if (tr != null && tr != "")
+                // gets List of HashMaps whick represent the DB students
+                var snapshot = (QuerySnapshot)result;
+                StockData data;
+                int i = 0;
+                // iterate through each document in the collection
+                foreach (var doc in snapshot.Documents)
                 {
-                    string[] trs = tr.Split(',');
-                    
-                    foreach (string price in trs)
+
+                    string tr = (string)doc.Get("TrackingPrices");
+                    List<float> trackingprices = new List<float>();
+                    if (tr != null && tr != "")
                     {
-                        if(price != null && price != "")
+                        string[] trs = tr.Split(',');
+
+                        foreach (string price in trs)
                         {
-                            trackingprices.Add(float.Parse(price));
-                            Console.WriteLine("The tracking prices of: " + doc.Get("Symbol") + " are: " + " price");
+                            if (price != null && price != "")
+                            {
+                                trackingprices.Add(float.Parse(price));
+                                Console.WriteLine("The tracking prices of: " + doc.Get("Symbol") + " are: " + price);
+                            }
                         }
                     }
-                }
-                if(trackingprices.Count > 0)
-                {
-                    data = new StockData((float)doc.Get("heigh"), (float)doc.Get("low"), (string)doc.Get("symbol"), (string)doc.Get("LastDate"),  (string)doc.Get("SoundFile"), trackingprices);
-                    Datalist.Add(data);
-                     _ = GetInfoFromWeb(data.symbol, i);
-                }
-                else
-                {
-                    //float heigh = (float)doc.Get("heigh");
-                    //float low = (float)doc.Get("low");
-                    //string symbol = (string)doc.Get("symbol");
-                    //string LastDate = (string)doc.Get("LastDate");
-                    if(!ShowOnlyTracking)
+                    if (trackingprices.Count > 0)
                     {
+                        data = new StockData((float)doc.Get("heigh"), (float)doc.Get("low"), (string)doc.Get("symbol"), (string)doc.Get("LastDate"), (string)doc.Get("SoundFile"), trackingprices);
+                        Datalist.Add(data);
+                        _ = GetInfoFromWeb(data.symbol, i);
+                    }
+                    else
+                    {
+                        //float heigh = (float)doc.Get("heigh");
+                        //float low = (float)doc.Get("low");
+                        //string symbol = (string)doc.Get("symbol");
+                        //string LastDate = (string)doc.Get("LastDate");
+                        //if (!ShowOnlyTracking)
+                        //{
                         data = new StockData((float)doc.Get("heigh"), (float)doc.Get("low"), (string)doc.Get("LastDate"), (string)doc.Get("symbol"));
                         Datalist.Add(data);
                         _ = GetInfoFromWeb(data.symbol, i);
-                    } 
-                }
+                        //}
+                    }
 
-                i++;
+                    i++;
+                }
             }
 
-            //if(Datalist.Count != 0)
-            //{
-            //    ThreadStart MyThreadStart = new ThreadStart(TimeOut);
-            //    System.Threading.Thread t = new System.Threading.Thread(MyThreadStart);
-            //    t.Start();
-            //    t.Join();
-            //    Console.WriteLine("Good Day!");
-            //    ShowListView();
-            //}
+            if (queryType == "Tracking")
+            {
+                var snapshot = (QuerySnapshot)result;
+                StockData data;
+                int i = 0;
+                // iterate through each document in the collection
+                foreach (var doc in snapshot.Documents)
+                {
+
+                    string tr = (string)doc.Get("TrackingPrices");
+                    List<float> trackingprices = new List<float>();
+                    if (tr != null && tr != "")
+                    {
+                        string[] trs = tr.Split(',');
+
+                        foreach (string price in trs)
+                        {
+                            if (price != null && price != "")
+                            {
+                                trackingprices.Add(float.Parse(price));
+                                Console.WriteLine("The tracking prices of: " + doc.Get("Symbol") + " are: " + price);
+                            }
+                        }
+                    }
+                    if (trackingprices.Count > 0)
+                    {
+                        data = new StockData((float)doc.Get("heigh"), (float)doc.Get("low"), (string)doc.Get("symbol"), (string)doc.Get("LastDate"), (string)doc.Get("SoundFile"), trackingprices);
+                        Datalist.Add(data);
+                        _ = GetInfoFromWeb(data.symbol, i);
+                    }
+                    i++;
+                }
+            }
+
+            IsDataCountFull = true;
         }
 
         private void TimeOut()
@@ -265,12 +329,24 @@ namespace App1
                 }
             }
 
-           // Toast.MakeText(this, "got the info from web?", ToastLength.Short).Show();
+           //Toast.MakeText(this, "data list count is: " + Datalist.Count, ToastLength.Short).Show();
+            Console.WriteLine("data list count is: " + Datalist.Count);
+            Console.WriteLine("Temp_Datalist count is: " + Datalist.Count);
+            Console.WriteLine("place is: " + place);
 
-            if(place >= Datalist.Count - 1)
+            Temp_Datalist.Add(Datalist[place]);
+
+
+            if(IsDataCountFull && Temp_Datalist.Count == Datalist.Count)
             {
                 ShowListView();
             }
+
+            //if (place >= Datalist.Count - 1)
+            //{
+                //Toast.MakeText(this, "last data point", ToastLength.Short).Show();
+                ////ShowListView();
+            //}
                 
 
             Dispose(true);
@@ -281,7 +357,7 @@ namespace App1
         //show the listview of stocks
         private void ShowListView()
         {
-            adapter = new StockAdapter(this, Datalist);
+            adapter = new StockAdapter(this, Temp_Datalist);
             lvStock = (ListView)FindViewById(Resource.Id.lvStock);
             lvStock.Adapter = adapter;
 
