@@ -64,11 +64,11 @@ namespace App1
             btnReturnHome.Click += BtnReturnHome_Click;
             list = new List<string>();
             Datalist = new List<StockData>();
-
+            lvStock = (ListView)FindViewById(Resource.Id.lvStock);
             //DeleteFile("SavedStocks.txt");
             //Add_To_File("AAPL");
             //Add_To_File("TSLA");
-            
+
 
             //Console.WriteLine(Read_from_file());
 
@@ -86,6 +86,7 @@ namespace App1
             {
                 queryType = "normal";
                 ShowOnlyTracking = false;
+                lvStock.ItemClick -= LvStock_ItemClick;
                 LoadItems();
             }
             
@@ -98,6 +99,7 @@ namespace App1
             {
                 queryType = "Tracking";
                 ShowOnlyTracking = true;
+                lvStock.ItemClick -= LvStock_ItemClick;
                 LoadTrackingItems();
                 //ShowListView();
 
@@ -358,7 +360,7 @@ namespace App1
         private void ShowListView()
         {
             adapter = new StockAdapter(this, Temp_Datalist);
-            lvStock = (ListView)FindViewById(Resource.Id.lvStock);
+            
             lvStock.Adapter = adapter;
 
             lvStock.ItemClick += LvStock_ItemClick;
