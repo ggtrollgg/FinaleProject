@@ -20,6 +20,7 @@ namespace App1
         float heighest = 0, lowest = -1;
 
 
+
         List<MyPoint> points = new List<MyPoint>();
         List<MyPoint> Changedpoints = new List<MyPoint>();
         
@@ -38,6 +39,7 @@ namespace App1
         MyPoint point2;
         MyPoint midPoint;
 
+        Paint TextPaint_X;
         Paint p;
 
         public Class_LineGraph(Context context) : base(context) 
@@ -45,6 +47,12 @@ namespace App1
             p = new Paint();
             p.Color= Color.Red;
             p.StrokeWidth= 6;
+
+            TextPaint_X= new Paint();
+            TextPaint_X.Color= Color.Black; 
+            TextPaint_X.StrokeWidth= 6;
+            TextPaint_X.TextSize = 60;
+            TextPaint_X.TextAlign= Paint.Align.Center;
         }
 
         public Class_LineGraph(Context context, Canvas canvas, List<DataPoint> dataPoints) : base(context,canvas,dataPoints) { }
@@ -59,7 +67,11 @@ namespace App1
                 DrawGraph();
                 
                 DrawTouching();
-                //DrawXexis();
+                DrawXexis();
+
+
+                canvas.DrawText("hello", 0, 3,110, 110, TextPaint_X);
+
                 
                 Invalidate();
             }
@@ -96,7 +108,7 @@ namespace App1
 
                 for (int i = 0; i < values.Count; i++)
                 {
-                    points.Add(new MyPoint((i * canvas.Width) / (values.Count - 1), canvas.Height + ((lowest - values[i]) * (1 / (heighest - lowest)) * canvas.Height)));
+                    points.Add(new MyPoint((i * 9/10 * canvas.Width) / (values.Count - 1), canvas.Height * 19/20 + ((lowest - values[i]) * (1 / (heighest - lowest)) * canvas.Height * 19 / 20)));
                 }
                 CalculateNewPointes();
             }
@@ -121,6 +133,44 @@ namespace App1
                     canvas.DrawLine(Changedpoints[i].x, Changedpoints[i].y, Changedpoints[i + 1].x, Changedpoints[i + 1].y, p);
                 }
             }
+        }
+
+
+        private void DrawXexis()
+        {
+            //MyPoint textlocation = new MyPoint(canvas.Width/(2/9),canvas.Height);
+            Paint textPaint = new Paint();
+            //textPaint.AntiAlias = true;
+            textPaint.Color = Color.Black;
+            //textPaint.StrokeWidth = 1;
+            textPaint.TextSize = canvas.Height / 40;
+            String TheString;
+            for (int g = 1; g < 4; g++)
+            {
+
+                float defualtPointx = ((float)this.canvas.Width * (float)(2.0 / 9.0) * g - camera.CameraOffSetX) / test_zoomfactor;
+                float defualtI = (defualtPointx * (values.Count - 1)) / canvas.Width;
+                float i = ((((float)canvas.Width * ((float)(2.0 / 9.0) * g) - camera.CameraOffSetX) / test_zoomfactor) / ((float)canvas.Width / (dataPoints.Count - 1)));
+
+
+
+                if ((int)Math.Round(i) >= dataPoints.Count)
+                {
+                    i = dataPoints.Count - 1;
+                }
+                if (i < 0)
+                {
+                    i = 0;
+                }
+                if (dataPoints.Count != 0)
+                {
+                    TheString = dataPoints[(int)Math.Round(i)].date;
+                    TheString = TheString.Remove(0, 10);
+                    canvas.DrawText(TheString, canvas.Width * (float)(2.0 / 9.0) * g, canvas.Height, textPaint);
+                }
+
+            }
+
         }
 
 
