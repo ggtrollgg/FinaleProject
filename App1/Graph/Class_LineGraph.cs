@@ -50,7 +50,7 @@ namespace App1
 
             TextPaint_X= new Paint();
             TextPaint_X.Color= Color.Black; 
-            TextPaint_X.StrokeWidth= 6;
+            TextPaint_X.StrokeWidth= 2;
             TextPaint_X.TextSize = 60;
             TextPaint_X.TextAlign= Paint.Align.Center;
         }
@@ -70,7 +70,7 @@ namespace App1
                 DrawXexis();
 
 
-                canvas.DrawText("hello", 0, 3,110, 110, TextPaint_X);
+                //canvas.DrawText("hello", 0, 3,110, canvas.Height, TextPaint_X);
 
                 
                 Invalidate();
@@ -130,7 +130,7 @@ namespace App1
                 canvas.DrawCircle(Changedpoints[i].x, Changedpoints[i].y, 2, p);
                 if (i != values.Count - 1)
                 {
-                    canvas.DrawLine(Changedpoints[i].x, Changedpoints[i].y, Changedpoints[i + 1].x, Changedpoints[i + 1].y, p);
+                    //canvas.DrawLine(Changedpoints[i].x, Changedpoints[i].y, Changedpoints[i + 1].x, Changedpoints[i + 1].y, p);
                 }
             }
         }
@@ -138,35 +138,49 @@ namespace App1
 
         private void DrawXexis()
         {
-            //MyPoint textlocation = new MyPoint(canvas.Width/(2/9),canvas.Height);
-            Paint textPaint = new Paint();
-            //textPaint.AntiAlias = true;
-            textPaint.Color = Color.Black;
-            //textPaint.StrokeWidth = 1;
-            textPaint.TextSize = canvas.Height / 40;
+            ////MyPoint textlocation = new MyPoint(canvas.Width/(2/9),canvas.Height);
+            //Paint textPaint = new Paint();
+            ////textPaint.AntiAlias = true;
+            //textPaint.Color = Color.Black;
+            ////textPaint.StrokeWidth = 1;
+            //textPaint.TextSize = canvas.Height / 40;
             String TheString;
-            for (int g = 1; g < 4; g++)
+
+
+
+            //for (int g = 1; g < 4; g++)
+            //{
+
+            //    float defualtPointx = ((float)this.canvas.Width * (float)(2.0 / 9.0) * g - camera.CameraOffSetX) / test_zoomfactor;
+            //    float defualtI = (defualtPointx * (values.Count - 1)) / canvas.Width;
+            //    float i = ((((float)canvas.Width * ((float)(2.0 / 9.0) * g) - camera.CameraOffSetX) / test_zoomfactor) / ((float)canvas.Width / (dataPoints.Count - 1)));
+
+
+
+            //    if ((int)Math.Round(i) >= dataPoints.Count)
+            //    {
+            //        i = dataPoints.Count - 1;
+            //    }
+            //    if (i < 0)
+            //    {
+            //        i = 0;
+            //    }
+            //    if (dataPoints.Count != 0)
+            //    {
+            //        TheString = dataPoints[(int)Math.Round(i)].date;
+            //        TheString = TheString.Remove(0, 10);
+            //        canvas.DrawText(TheString, canvas.Width * (float)(2.0 / 9.0) * g, canvas.Height, textPaint);
+            //    }
+
+            //}
+            for (int i = 0; i < dataPoints.Count; i++)
             {
 
-                float defualtPointx = ((float)this.canvas.Width * (float)(2.0 / 9.0) * g - camera.CameraOffSetX) / test_zoomfactor;
-                float defualtI = (defualtPointx * (values.Count - 1)) / canvas.Width;
-                float i = ((((float)canvas.Width * ((float)(2.0 / 9.0) * g) - camera.CameraOffSetX) / test_zoomfactor) / ((float)canvas.Width / (dataPoints.Count - 1)));
-
-
-
-                if ((int)Math.Round(i) >= dataPoints.Count)
-                {
-                    i = dataPoints.Count - 1;
-                }
-                if (i < 0)
-                {
-                    i = 0;
-                }
                 if (dataPoints.Count != 0)
                 {
-                    TheString = dataPoints[(int)Math.Round(i)].date;
+                    TheString = dataPoints[i].date;
                     TheString = TheString.Remove(0, 10);
-                    canvas.DrawText(TheString, canvas.Width * (float)(2.0 / 9.0) * g, canvas.Height, textPaint);
+                    canvas.DrawText(TheString, Changedpoints[i].x, canvas.Height, TextPaint_X);
                 }
 
             }
@@ -177,16 +191,23 @@ namespace App1
 
         private int CalculatePointZoomingOn()
         {
-            float defualtPointx = (midPoint.x - camera.CameraOffSetX) / test_zoomfactor;
+            //float defualtPointx = (midPoint.x - camera.CameraOffSetX) / test_zoomfactor;
+            float defualtPointx = ((midPoint.x ) / test_zoomfactor )- camera.CameraOffSetX;
+
+            //float x = (i * 9 / 10 * canvas.Width) / (values.Count - 1);
+            float g = ((values.Count - 1) * midPoint.x) / (9 / 10 * canvas.Width);
+
             float defualtI = (defualtPointx * (points.Count - 1)) / canvas.Width;
 
 
-            float i = (((midPoint.x - camera.CameraOffSetX) / test_zoomfactor) / (canvas.Width / (points.Count - 1)));
-
+            //float i = (((midPoint.x - camera.CameraOffSetX) / test_zoomfactor) / (canvas.Width / (points.Count - 1)));
+            float i = (((midPoint.x / test_zoomfactor) - camera.CameraOffSetX) / (canvas.Width / (points.Count - 1)));
             Console.WriteLine("dedualtI is: " + defualtI);
             Console.WriteLine("i is: " + i);
+            Console.WriteLine("g is: " + g);
 
             //Console.WriteLine("the soposed x from the calculation is: " + ((midPoint.x - camera.CameraOffSetX) / test_zoomfactor));
+            //Console.WriteLine("the soposed x from the calculation is: " + ((midPoint.x ) / test_zoomfactor)- camera.CameraOffSetX);
             int defualtI2 = (int)Math.Round(defualtI);
             int i2 = (int)Math.Round(i);
             //Console.WriteLine("i2 is:" + i2);
