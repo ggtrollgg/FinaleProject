@@ -123,10 +123,18 @@ namespace App1
             }
             else if (item.ItemId == Resource.Id.action_CandleGraph1)
             {
-                l1.RemoveAllViews();
-                Charts[2].dataPoints = list_DataPoints;
-                l1.AddView(Charts[2]);
-                return true;
+                try
+                {
+                    l1.RemoveAllViews();
+                    Charts[2].dataPoints = list_DataPoints;
+                    l1.AddView(Charts[2]);
+                    return true;
+                }
+                catch
+                {
+
+                }
+                
             }
             
             return false;

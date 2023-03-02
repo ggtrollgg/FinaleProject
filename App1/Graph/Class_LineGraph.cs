@@ -191,28 +191,46 @@ namespace App1
 
         private int CalculatePointZoomingOn()
         {
-            //float defualtPointx = (midPoint.x - camera.CameraOffSetX) / test_zoomfactor;
-            float defualtPointx = ((midPoint.x ) / test_zoomfactor )- camera.CameraOffSetX;
+            double defualtPointx = (midPoint.x - camera.CameraOffSetX) / test_zoomfactor;
+            //double defualtPointx = ((midPoint.x ) / test_zoomfactor ) - camera.CameraOffSetX;
+            Console.WriteLine("defalt x ix :" + defualtPointx);
 
             //float x = (i * 9 / 10 * canvas.Width) / (values.Count - 1);
-            float g = ((values.Count - 1) * midPoint.x) / (9 / 10 * canvas.Width);
+            double g = ((values.Count - 1) * midPoint.x * 10) / (9  * canvas.Width);
 
-            float defualtI = (defualtPointx * (points.Count - 1)) / canvas.Width;
-
+            double defualtI = (defualtPointx * (points.Count - 1)) / canvas.Width;
+            //float defualtI = ((midPoint.x) * (points.Count - 1)) / (canvas.Width );
+            Console.WriteLine("mid point x:" + midPoint.x);
 
             //float i = (((midPoint.x - camera.CameraOffSetX) / test_zoomfactor) / (canvas.Width / (points.Count - 1)));
             float i = (((midPoint.x / test_zoomfactor) - camera.CameraOffSetX) / (canvas.Width / (points.Count - 1)));
+            //float i = ((((midPoint.x / test_zoomfactor) - camera.CameraOffSetX) * (points.Count - 1) )/ (canvas.Width));
+
+            double itest = (defualtPointx * (values.Count - 1) ) / ( canvas.Width);
+            itest = itest * (10 / 9);
+
+
             Console.WriteLine("dedualtI is: " + defualtI);
             Console.WriteLine("i is: " + i);
+            Console.WriteLine("itest is: " + itest);
             Console.WriteLine("g is: " + g);
 
             //Console.WriteLine("the soposed x from the calculation is: " + ((midPoint.x - camera.CameraOffSetX) / test_zoomfactor));
             //Console.WriteLine("the soposed x from the calculation is: " + ((midPoint.x ) / test_zoomfactor)- camera.CameraOffSetX);
+
+
+
+            double changed_x = midPoint.x * test_zoomfactor + camera.CameraOffSetX;
+            double def_x = (changed_x - camera.CameraOffSetX) / test_zoomfactor;
+            double itest2 = ((defualtPointx * (points.Count - 1))*10) / (canvas.Width*9);
+            Console.WriteLine("itest2 : " + itest2);
+
+
             int defualtI2 = (int)Math.Round(defualtI);
-            int i2 = (int)Math.Round(i);
-            //Console.WriteLine("i2 is:" + i2);
-            //return i2;
-            return defualtI2;
+            //int i2 = (int)Math.Round(i);
+            int i2 = (int)Math.Round(itest);
+            //return defualtI2;
+            return i2;
         }
         private void DrawTouching()
         {
