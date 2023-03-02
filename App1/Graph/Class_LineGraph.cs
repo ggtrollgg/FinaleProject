@@ -108,7 +108,7 @@ namespace App1
 
                 for (int i = 0; i < values.Count; i++)
                 {
-                    points.Add(new MyPoint((i * 9/10 * canvas.Width) / (values.Count - 1), canvas.Height * 19/20 + ((lowest - values[i]) * (1 / (heighest - lowest)) * canvas.Height * 19 / 20)));
+                    points.Add(new MyPoint(((i  * canvas.Width) * (float)(9.0 / 10.0)) / (values.Count - 1), canvas.Height * 19/20 + ((lowest - values[i]) * (1 / (heighest - lowest)) * canvas.Height * 19 / 20)));
                 }
                 CalculateNewPointes();
             }
@@ -220,15 +220,16 @@ namespace App1
 
 
 
-            double changed_x = midPoint.x * test_zoomfactor + camera.CameraOffSetX;
-            double def_x = (changed_x - camera.CameraOffSetX) / test_zoomfactor;
-            double itest2 = ((defualtPointx * (points.Count - 1))*10) / (canvas.Width*9);
+            //double changed_x = midPoint.x * test_zoomfactor + camera.CameraOffSetX;
+            //double def_x = (changed_x - camera.CameraOffSetX) / test_zoomfactor;
+            double itest2 = ((defualtPointx * (points.Count))*20) / (canvas.Width*18);
             Console.WriteLine("itest2 : " + itest2);
 
 
             int defualtI2 = (int)Math.Round(defualtI);
             //int i2 = (int)Math.Round(i);
-            int i2 = (int)Math.Round(itest);
+            //int i2 = (int)Math.Round(itest);
+            int i2 = (int)Math.Round(itest2);
             //return defualtI2;
             return i2;
         }

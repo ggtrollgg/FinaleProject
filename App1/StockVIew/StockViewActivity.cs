@@ -307,7 +307,7 @@ namespace App1
                 if (IsDataCountFull && Temp_Datalist.Count == Datalist.Count)
                 {
                     //Toast.MakeText(this, "something went wrong", ToastLength.Short).Show();
-                    Console.WriteLine("something went wrong");
+                    //Console.WriteLine("something went wrong");
                     flag = false;
 
                 }
@@ -368,7 +368,7 @@ namespace App1
 
            //Toast.MakeText(this, "data list count is: " + Datalist.Count, ToastLength.Short).Show();
             Console.WriteLine("data list count is: " + Datalist.Count);
-            Console.WriteLine("Temp_Datalist count is: " + Datalist.Count);
+            Console.WriteLine("Temp_Datalist count is: " + Temp_Datalist.Count);
             Console.WriteLine("place is: " + place);
             Console.WriteLine("adding to temp data list in place: " + place);
             Temp_Datalist.Add(Datalist[place]);
