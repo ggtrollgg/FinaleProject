@@ -131,10 +131,10 @@ namespace App1
 
         private void BtnReturnHome_Click(object sender, EventArgs e)
         {
-            ShowListView();
-            // db.App.Delete();
-            // db.Terminate();
-            // Finish();
+            //ShowListView();
+             db.App.Delete();
+             db.Terminate();
+             Finish();
         }
 
 
@@ -282,8 +282,13 @@ namespace App1
                     i++;
                 }
             }
-
+            ThreadStart MyThreadStart = new ThreadStart(Checkifstillloading);
+            System.Threading.Thread t = new System.Threading.Thread(MyThreadStart);
+            
+            t.Start();
+            Toast.MakeText(this, "sent all data requests", ToastLength.Short).Show();
             IsDataCountFull = true;
+            
         }
 
         private void TimeOut()
@@ -292,7 +297,39 @@ namespace App1
             Console.WriteLine("I am Function");
         }
 
+        private void Checkifstillloading()
+        {
+            bool flag = true;
+            int counter = 0;
+            while(flag)
+            {
+                System.Threading.Thread.Sleep(10000);
+                if (IsDataCountFull && Temp_Datalist.Count == Datalist.Count)
+                {
+                    //Toast.MakeText(this, "something went wrong", ToastLength.Short).Show();
+                    Console.WriteLine("something went wrong");
+                    flag = false;
 
+                }
+                else
+                {
+                    if (counter == 12)
+                    {
+                        Console.WriteLine("the code should not be stuck in loading for 2 min L :(");
+                        //Toast.MakeText(this, "loading... for 2 min", ToastLength.Short).Show();
+                    }
+                    else
+                    {
+                        Console.WriteLine("loading...");
+                        //Toast.MakeText(this, "loading...", ToastLength.Short).Show();
+                    }
+                     
+
+                }
+                counter++;
+            }
+            return;
+        }
 
 
         //get info on stock from internet
@@ -300,8 +337,6 @@ namespace App1
         {
             using (var httpClient2 = new HttpClient())
             {
-                
-
                 symbol = symbol.Replace("\0","");
                 symbol = symbol.Replace("\n", "");
                 symbol = symbol.Replace(",", "");
@@ -335,12 +370,13 @@ namespace App1
             Console.WriteLine("data list count is: " + Datalist.Count);
             Console.WriteLine("Temp_Datalist count is: " + Datalist.Count);
             Console.WriteLine("place is: " + place);
-
+            Console.WriteLine("adding to temp data list in place: " + place);
             Temp_Datalist.Add(Datalist[place]);
 
 
             if(IsDataCountFull && Temp_Datalist.Count == Datalist.Count)
             {
+                Toast.MakeText(this, "presenting the list", ToastLength.Short).Show();
                 ShowListView();
             }
 
