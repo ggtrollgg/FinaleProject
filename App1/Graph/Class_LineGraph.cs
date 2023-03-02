@@ -53,6 +53,7 @@ namespace App1
             TextPaint_X.StrokeWidth= 2;
             TextPaint_X.TextSize = 60;
             TextPaint_X.TextAlign= Paint.Align.Center;
+            
         }
 
         public Class_LineGraph(Context context, Canvas canvas, List<DataPoint> dataPoints) : base(context,canvas,dataPoints) { }
@@ -138,41 +139,7 @@ namespace App1
 
         private void DrawXexis()
         {
-            ////MyPoint textlocation = new MyPoint(canvas.Width/(2/9),canvas.Height);
-            //Paint textPaint = new Paint();
-            ////textPaint.AntiAlias = true;
-            //textPaint.Color = Color.Black;
-            ////textPaint.StrokeWidth = 1;
-            //textPaint.TextSize = canvas.Height / 40;
             String TheString;
-
-
-
-            //for (int g = 1; g < 4; g++)
-            //{
-
-            //    float defualtPointx = ((float)this.canvas.Width * (float)(2.0 / 9.0) * g - camera.CameraOffSetX) / test_zoomfactor;
-            //    float defualtI = (defualtPointx * (values.Count - 1)) / canvas.Width;
-            //    float i = ((((float)canvas.Width * ((float)(2.0 / 9.0) * g) - camera.CameraOffSetX) / test_zoomfactor) / ((float)canvas.Width / (dataPoints.Count - 1)));
-
-
-
-            //    if ((int)Math.Round(i) >= dataPoints.Count)
-            //    {
-            //        i = dataPoints.Count - 1;
-            //    }
-            //    if (i < 0)
-            //    {
-            //        i = 0;
-            //    }
-            //    if (dataPoints.Count != 0)
-            //    {
-            //        TheString = dataPoints[(int)Math.Round(i)].date;
-            //        TheString = TheString.Remove(0, 10);
-            //        canvas.DrawText(TheString, canvas.Width * (float)(2.0 / 9.0) * g, canvas.Height, textPaint);
-            //    }
-
-            //}
             for (int i = 0; i < dataPoints.Count; i++)
             {
 
