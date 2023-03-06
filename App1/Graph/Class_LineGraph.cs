@@ -329,8 +329,13 @@ namespace App1
                         //    test_zoomfactor += ((float)point2.x - lastPlace2.x) / 100;
                         //}
 
-                        test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100;// + ((float)point2.x - lastPlace2.x) / 100;
-                        ChangeInTextPlace((float)e.GetX() - lastPlace.x);
+                        if((test_zoomfactor + ((float)e.GetX() - lastPlace.x) / 100) > 1)
+                        {
+                            test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100;// + ((float)point2.x - lastPlace2.x) / 100;
+                            ChangeInTextPlace((float)e.GetX() - lastPlace.x);
+                        }
+                        
+                        
 
 
                         
@@ -342,18 +347,16 @@ namespace App1
                     }
                     else
                     {
-                        if (Zoom)
+                        //if (Zoom)
+                        //{
+                        //    test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100;
+                        //}
+                        if (!(camera.CameraOffSetX + (float)e.GetX() - lastPlace.x >= 0))
                         {
-                            test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100;
+                            camera.CameraOffSetX += (float)e.GetX() - lastPlace.x;
                         }
-                        if (Move)
-                        {
-                            if (!(camera.CameraOffSetX + (float)e.GetX() - lastPlace.x >= 0))
-                            {
-                                camera.CameraOffSetX += (float)e.GetX() - lastPlace.x;
-                            }
-                            camera.CameraOffSetY += (float)e.GetY() - lastPlace.y;
-                        }
+                        camera.CameraOffSetY += (float)e.GetY() - lastPlace.y;
+                        
                     }
                 }
             }
