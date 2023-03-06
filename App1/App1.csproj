@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="General Classes\MySquare.cs" />
+    <Compile Include="General Classes\TextBlock.cs" />
     <Compile Include="Graph\ChartActivity.cs" />
     <Compile Include="Graph\ColumGraph.cs" />
     <Compile Include="Search\ClassSearchStock.cs" />

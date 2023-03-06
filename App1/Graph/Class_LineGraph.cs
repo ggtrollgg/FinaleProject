@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace App1
 {
@@ -23,7 +24,8 @@ namespace App1
 
         List<MyPoint> points = new List<MyPoint>();
         List<MyPoint> Changedpoints = new List<MyPoint>();
-        
+        List<TextBlock> TextBlocks = new List<TextBlock>();
+
         MyCamera camera = new MyCamera(0, 0);
 
         MyPoint lastPlace;
@@ -41,6 +43,9 @@ namespace App1
 
         Paint TextPaint_X;
         Paint p;
+        Paint red;
+        Paint green;
+        Paint black;
 
         public Class_LineGraph(Context context) : base(context) 
         {
@@ -48,8 +53,17 @@ namespace App1
             p.Color= Color.Red;
             p.StrokeWidth= 6;
 
-            TextPaint_X= new Paint();
-            TextPaint_X.Color= Color.Black; 
+            black = new Paint();
+            black.Color= Color.ParseColor("#333555");
+
+            red = new Paint();
+            red.Color = Color.Red;
+            
+            green = new Paint();
+            green.Color = Color.Green;
+
+            TextPaint_X = new Paint();
+            TextPaint_X.Color = Color.Black; 
             TextPaint_X.StrokeWidth= 2;
             TextPaint_X.TextSize = 60;
             TextPaint_X.TextAlign= Paint.Align.Center;
@@ -63,19 +77,23 @@ namespace App1
             canvas = canvas1;
             if (dataPoints != null)
             {
-                if(values == null || values.Count == 0) { calculateValues(); }
-                if (heighest == 0) { findLowHeigh(); }
+                doOnce();
+
                 DrawGraph();
-                
                 DrawTouching();
                 DrawXexis();
 
-
-                //canvas.DrawText("hello", 0, 3,110, canvas.Height, TextPaint_X);
-
-                
                 Invalidate();
             }
+        }
+
+        public void doOnce()
+        {
+            if (values == null || values.Count == 0) { calculateValues(); }
+            if (heighest == 0) { findLowHeigh(); }
+
+            
+
         }
 
         private void DrawGraph()
@@ -140,14 +158,44 @@ namespace App1
         private void DrawXexis()
         {
             String TheString;
-            for (int i = 0; i < dataPoints.Count; i++)
+            float width = 0;
+            canvas.DrawRect(0,canvas.Height-TextPaint_X.TextSize,canvas.Width,canvas.Height,black);
+
+            if (TextBlocks == null || TextBlocks.Count == 0)
+            {
+                for (int i = 0; i < dataPoints.Count; i++)
+                {
+
+                    if (dataPoints.Count != 0)
+                    {
+                        TheString = dataPoints[i].date;
+                        TheString = TheString.Remove(0, 10);
+                        TextBlocks.Add(new TextBlock(TheString, TextPaint_X, Changedpoints[i].x, canvas.Height));
+
+                    }
+
+                }
+            }
+
+            for (int i = 0; i < TextBlocks.Count; i++)
             {
 
-                if (dataPoints.Count != 0)
+                if (TextBlocks.Count != 0)
                 {
-                    TheString = dataPoints[i].date;
-                    TheString = TheString.Remove(0, 10);
+                    TheString = TextBlocks[i].Text;
+                    //TheString = TheString.Remove(0, 10);
                     canvas.DrawText(TheString, Changedpoints[i].x, canvas.Height, TextPaint_X);
+
+                    width = TextPaint_X.MeasureText(TheString);
+
+
+                    //canvas.DrawCircle(TextBlocks[i].LeftDown.x * test_zoomfactor + camera.CameraOffSetX, TextBlocks[i].LeftDown.y, 5, red);
+                    //canvas.DrawCircle(TextBlocks[i].RightDown.x * test_zoomfactor + camera.CameraOffSetX, TextBlocks[i].RightDown.y, 5, green);
+
+                    //canvas.DrawCircle(TextBlocks[i].LeftDown.x * test_zoomfactor + camera.CameraOffSetX - width / 2, TextBlocks[i].LeftDown.y, 5, red);
+                    canvas.DrawCircle(Changedpoints[i].x - width / 2, TextBlocks[i].LeftDown.y, 5, red);
+                    canvas.DrawCircle(Changedpoints[i].x  + width / 2, TextBlocks[i].RightDown.y, 5, green);
+
                 }
 
             }
@@ -160,14 +208,14 @@ namespace App1
         {
             double defualtPointx = (midPoint.x - camera.CameraOffSetX) / test_zoomfactor;
             //double defualtPointx = ((midPoint.x ) / test_zoomfactor ) - camera.CameraOffSetX;
-            Console.WriteLine("defalt x ix :" + defualtPointx);
+           // Console.WriteLine("defalt x ix :" + defualtPointx);
 
             //float x = (i * 9 / 10 * canvas.Width) / (values.Count - 1);
             double g = ((values.Count - 1) * midPoint.x * 10) / (9  * canvas.Width);
 
             double defualtI = (defualtPointx * (points.Count - 1)) / canvas.Width;
             //float defualtI = ((midPoint.x) * (points.Count - 1)) / (canvas.Width );
-            Console.WriteLine("mid point x:" + midPoint.x);
+            //Console.WriteLine("mid point x:" + midPoint.x);
 
             //float i = (((midPoint.x - camera.CameraOffSetX) / test_zoomfactor) / (canvas.Width / (points.Count - 1)));
             float i = (((midPoint.x / test_zoomfactor) - camera.CameraOffSetX) / (canvas.Width / (points.Count - 1)));
@@ -177,10 +225,10 @@ namespace App1
             itest = itest * (10 / 9);
 
 
-            Console.WriteLine("dedualtI is: " + defualtI);
-            Console.WriteLine("i is: " + i);
-            Console.WriteLine("itest is: " + itest);
-            Console.WriteLine("g is: " + g);
+           // Console.WriteLine("dedualtI is: " + defualtI);
+            //Console.WriteLine("i is: " + i);
+            //Console.WriteLine("itest is: " + itest);
+            //Console.WriteLine("g is: " + g);
 
             //Console.WriteLine("the soposed x from the calculation is: " + ((midPoint.x - camera.CameraOffSetX) / test_zoomfactor));
             //Console.WriteLine("the soposed x from the calculation is: " + ((midPoint.x ) / test_zoomfactor)- camera.CameraOffSetX);
@@ -190,7 +238,7 @@ namespace App1
             //double changed_x = midPoint.x * test_zoomfactor + camera.CameraOffSetX;
             //double def_x = (changed_x - camera.CameraOffSetX) / test_zoomfactor;
             double itest2 = ((defualtPointx * (points.Count))*20) / (canvas.Width*18);
-            Console.WriteLine("itest2 : " + itest2);
+           // Console.WriteLine("itest2 : " + itest2);
 
 
             int defualtI2 = (int)Math.Round(defualtI);
