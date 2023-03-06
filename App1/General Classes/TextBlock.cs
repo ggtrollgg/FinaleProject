@@ -22,6 +22,8 @@ namespace App1
         public MyPoint RightDown;
         float width = 0;
 
+        public bool Hidden = false;
+        
         public TextBlock()
         {
         }

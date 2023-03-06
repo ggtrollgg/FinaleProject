@@ -180,7 +180,7 @@ namespace App1
             for (int i = 0; i < TextBlocks.Count; i++)
             {
 
-                if (TextBlocks.Count != 0)
+                if (TextBlocks.Count != 0 && !TextBlocks[i].Hidden)
                 {
                     TheString = TextBlocks[i].Text;
                     //TheString = TheString.Remove(0, 10);
@@ -330,6 +330,11 @@ namespace App1
                         //}
 
                         test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100;// + ((float)point2.x - lastPlace2.x) / 100;
+                        ChangeInTextPlace((float)e.GetX() - lastPlace.x);
+
+
+                        
+
 
                         lastPlace2.x = point2.x;
                         lastPlace2.y = point2.y;
@@ -362,5 +367,62 @@ namespace App1
 
         }
 
+        private void ChangeInTextPlace(float v)
+        {
+            int Anchor_place = 0;
+            int place = 0;
+            if (v > 0)
+            {
+                for(int i = 1; i < TextBlocks.Count; i++)
+                {
+                    if (!TextBlocks[i].Hidden)
+                    {
+                        float width = TextPaint_X.MeasureText(TextBlocks[0].Text);
+                        float RightX = Changedpoints[0].x + width / 2;
+                        float LeftX = Changedpoints[i].x - width / 2;
+
+
+                        float distance = LeftX - RightX;
+                        if(distance > width)
+                        {
+                            place = (i+1) / 2; //rounding up 
+                            for (int g = place; g < TextBlocks.Count; g +=  i)
+                            {
+                                TextBlocks[g].Hidden = false;
+                            }
+                            return;
+                        }
+
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 1; i < TextBlocks.Count; i++)
+                {
+                    if (!TextBlocks[i].Hidden)
+                    {
+                        float width = TextPaint_X.MeasureText(TextBlocks[0].Text);
+                        float RightX = Changedpoints[0].x + width/2;
+                        float LeftX = Changedpoints[i].x - width / 2;
+
+
+
+                        if(RightX >= LeftX)
+                        {
+                            TextBlocks[i].Hidden = true;
+                            for(int g = i; g < TextBlocks.Count; g += 2*i) 
+                            {
+                                TextBlocks[g].Hidden = true;
+                            }
+                            return;
+                        }
+
+
+
+                    }
+                }
+            }
+        }
     }
 }
