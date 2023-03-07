@@ -556,7 +556,7 @@ namespace App1
 
         private void IbHome_Click(object sender, EventArgs e)
         {
-            //db.App.Delete();
+            db.App.Delete();
             db.Dispose();
             db = null;
 

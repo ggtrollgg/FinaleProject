@@ -424,10 +424,18 @@ namespace App1
 
         protected override void OnPause()
         {
-            db.App.Delete();
-            db.Terminate();
-            db.Dispose();
-            db= null;
+            //db.App.Delete();
+            //db.Terminate();
+            //db.Dispose();
+            //db= null;
+            if (db != null)
+            {
+                if (db.App != null)
+                {
+                    db.App.Delete();
+                    db.Terminate();
+                }
+            }
             base.OnPause();
         }
 
