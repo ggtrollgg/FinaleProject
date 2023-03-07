@@ -397,31 +397,24 @@ namespace App1
             float point_x = Changedpoints[i].x;
             float point_y = Changedpoints[i].y;
 
-            float box_width = canvas.Width/3;
-            float box_height = canvas.Height/3;
+            Paint p_text1 = new Paint();
+            p_text1.Color = Color.White;
+            p_text1.TextSize = 50;
+
+            
+
+           
 
             float Bordar_x = point_x / 2;
             float Bordar_y = point_y / 2;
 
 
+
+
             Paint paint= new Paint();
             paint.Color = Color.ParseColor("#999999");
 
-
-            canvas.DrawRect(Bordar_x - 50, Bordar_y - 50, Bordar_x + box_width + 50, Bordar_y + box_height + 50, black);
-            canvas.DrawRect(Bordar_x, Bordar_y, Bordar_x + box_width, Bordar_y + box_height, paint);
-
-            //canvas.DrawRect((float)(point_x / 2.5), 100, (float)(point_x * 2.5), 400, black);
-            //canvas.DrawRect(point_x / 2, 120, point_x * 2, 320, paint);
-
-            //float Bordar_x = point_x / 2;
-            //float Bordar_y = 120;
-
             
-
-            Paint p_text1 = new Paint();
-            p_text1.Color = Color.White;
-            p_text1.TextSize= 50;
 
             Paint p_low = new Paint();
             p_low.Color = Color.Red;
@@ -430,6 +423,18 @@ namespace App1
             Paint p_heigh = new Paint();
             p_heigh.Color = Color.Green;
             p_heigh.TextSize = 40;
+
+            float box_width = Math.Max(canvas.Width / 3, p_text1.MeasureText(dataPoints[i].date) + 100);
+            float box_height = p_text1.TextSize + p_low.TextSize + p_heigh.TextSize + 10;
+            //canvas.DrawRect((float)(point_x / 2.5), 100, (float)(point_x * 2.5), 400, black);
+            //canvas.DrawRect(point_x / 2, 120, point_x * 2, 320, paint);
+
+            //float Bordar_x = point_x / 2;
+            //float Bordar_y = 120;
+
+            canvas.DrawRect(Bordar_x - 50, Bordar_y - 50, Bordar_x + box_width + 50, Bordar_y + box_height + 50, black);
+            canvas.DrawRect(Bordar_x, Bordar_y, Bordar_x + box_width, Bordar_y + box_height, paint);
+
 
             canvas.DrawText(dataPoints[i].date, Bordar_x + 1, Bordar_y + p_text1.TextSize, p_text1);
 
