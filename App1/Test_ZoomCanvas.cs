@@ -679,7 +679,7 @@ namespace App1
         public ScaleGestureListener(ZoomableCanvasView view)
         {
             this.view = view;
-            this.detector = new ScaleGestureDetector(view.Context, new ScaleListener(view));
+            this.detector = new ScaleGestureDetector(view.Context, new Temp_ScaleListener(view));
         }
 
         public bool OnTouch(View v, MotionEvent e)
@@ -689,11 +689,11 @@ namespace App1
         }
     }
 
-    class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener
+    class Temp_ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener
     {
         private readonly ZoomableCanvasView view;
 
-        public ScaleListener(ZoomableCanvasView view)
+        public Temp_ScaleListener(ZoomableCanvasView view)
         {
             this.view = view;
         }
@@ -752,7 +752,7 @@ namespace App1
             LastPivotPoint.y = 0.0f;
 
             // Enable scaling and translation gestures on the view
-            this.SetOnTouchListener(new ScaleAndTranslateGestureListener(this,PivotPoint));
+            this.SetOnTouchListener(new Temp_ScaleAndTranslateGestureListener(this,PivotPoint));
         }
 
         // Method to draw the graph on the canvas
@@ -918,7 +918,7 @@ namespace App1
     }
 
     // Class to handle scaling and translation gestures
-    class ScaleAndTranslateGestureListener : Java.Lang.Object, View.IOnTouchListener
+    class Temp_ScaleAndTranslateGestureListener : Java.Lang.Object, View.IOnTouchListener
     {
         private readonly ZoomableCanvasView view;
         private ScaleGestureDetector scaleDetector;
@@ -927,12 +927,12 @@ namespace App1
         private float lastTouchX;
         private float lastTouchY;
 
-        public ScaleAndTranslateGestureListener(ZoomableCanvasView view, MyPoint PivotPoint1)
+        public Temp_ScaleAndTranslateGestureListener(ZoomableCanvasView view, MyPoint PivotPoint1)
         {
             PivotPoint= PivotPoint1;
 
             this.view = view;
-            this.scaleDetector = new ScaleGestureDetector(view.Context, new ScaleListener(view));
+            this.scaleDetector = new ScaleGestureDetector(view.Context, new Temp_ScaleListener(view));
 
 
         }
@@ -997,12 +997,12 @@ namespace App1
         }
 
         // Class to handle scaling gestures
-        private class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener
+        private class Temp_ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener
         {
             private readonly ZoomableCanvasView view;
             float ScaleY = 1.0f;
             float ScaleX = 1.0f;
-            public ScaleListener(ZoomableCanvasView view)
+            public Temp_ScaleListener(ZoomableCanvasView view)
             {
                 this.view = view;
             }

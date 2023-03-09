@@ -27,11 +27,11 @@ namespace App1
         List<TextBlock> TextBlocks = new List<TextBlock>();
         List<TextBlock> TextBlocks_Y = new List<TextBlock>();
 
-        MyCamera camera = new MyCamera(0, 0);
+        
 
         MyPoint lastPlace;
         MyPoint lastPlace2;
-        float test_zoomfactor = 1;
+        //float test_zoomfactor = 1;
 
 
         public bool Zoom = false;
@@ -82,6 +82,9 @@ namespace App1
             TextPaint_Y.TextSize = 30;
             TextPaint_Y.TextAlign = Paint.Align.Center;
 
+
+
+
         }
 
         public Class_LineGraph(Context context, Canvas canvas, List<DataPoint> dataPoints) : base(context,canvas,dataPoints) { }
@@ -92,9 +95,16 @@ namespace App1
             if (dataPoints != null)
             {
                 doOnce();
-
                 DrawGraph();
                 
+                if(camera!= null && (camera.X_changed || camera.Y_changed || camera.X_zoom_changed || camera.Y_zoom_changed)) 
+                {
+                    camera.X_zoom_changed = false;
+                    camera.Y_zoom_changed = false;
+                    camera.X_changed = false;
+                    camera.Y_changed = false;
+                    CalculateNewPointes();
+                }
 
                 DrawXexis();
                 DrawYexis();
@@ -158,6 +168,7 @@ namespace App1
             for (int i = 0; i < values.Count; i++)
             {
                 Changedpoints.Add( new MyPoint((points[i].x) * test_zoomfactor + camera.CameraOffSetX, points[i].y + camera.CameraOffSetY));
+                //Console.WriteLine("test zoom factor is: " + test_zoomfactor);
             }
         }
 
@@ -443,63 +454,63 @@ namespace App1
             
         }
 
-        public override bool OnTouchEvent(MotionEvent e)
-        {
-            if (e.PointerCount > 1)
-            {
-                p1.Color = Color.Black;
+        //public override bool OnTouchEvent(MotionEvent e)
+        //{
+        //    if (e.PointerCount > 1)
+        //    {
+        //        p1.Color = Color.Black;
 
-                point1 = new MyPoint((float)e.GetX(), (float)e.GetY());
-                point2 = new MyPoint(e.GetAxisValue(Axis.X, e.FindPointerIndex(e.GetPointerId(1))), e.GetAxisValue(Axis.Y, e.FindPointerIndex(e.GetPointerId(1))));
+        //        point1 = new MyPoint((float)e.GetX(), (float)e.GetY());
+        //        point2 = new MyPoint(e.GetAxisValue(Axis.X, e.FindPointerIndex(e.GetPointerId(1))), e.GetAxisValue(Axis.Y, e.FindPointerIndex(e.GetPointerId(1))));
 
-                if (e.Action == MotionEventActions.Pointer2Down || e.Action == MotionEventActions.Down)
-                {
-                    midPoint = new MyPoint((point1.x + point2.x) / 2, (point1.y + point2.y) / 2);
-                }
-            }
-            if (e.Action == MotionEventActions.Up)
-            {
-                point1 = null;
-                point2 = null;
-                midPoint = null;
-            }
-
-
-
-            if (lastPlace == null)
-            {
-                lastPlace = new MyPoint(e.GetX(), e.GetY());
-                return true;
-            }
-            else
-            {
-                if (e.Action == MotionEventActions.Move)
-                {
-                    if (e.PointerCount > 1 && midPoint != null)
-                    {
-                        point2 = new MyPoint(e.GetAxisValue(Axis.X, e.FindPointerIndex(e.GetPointerId(1))), e.GetAxisValue(Axis.Y, e.FindPointerIndex(e.GetPointerId(1))));
-                        if (lastPlace2 == null)
-                        {
-                            lastPlace2 = new MyPoint(point2.x, point2.y);
-                        }
+        //        if (e.Action == MotionEventActions.Pointer2Down || e.Action == MotionEventActions.Down)
+        //        {
+        //            midPoint = new MyPoint((point1.x + point2.x) / 2, (point1.y + point2.y) / 2);
+        //        }
+        //    }
+        //    if (e.Action == MotionEventActions.Up)
+        //    {
+        //        point1 = null;
+        //        point2 = null;
+        //        midPoint = null;
+        //    }
 
 
-                        //test_zoomfactor += Math.Max((Math.Abs((float)e.GetX() - midPoint.x) / 1000),Math.Abs( ((float)point2.x - midPoint.x) / 1000));
 
-                        //if(Math.Abs((float)e.GetX() - lastPlace.x) > Math.Abs((float)point2.x - lastPlace2.x))
-                        //{
-                        //    test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100;
-                        //}
-                        //else
-                        //{
-                        //    test_zoomfactor += ((float)point2.x - lastPlace2.x) / 100;
-                        //}
+        //    if (lastPlace == null)
+        //    {
+        //        lastPlace = new MyPoint(e.GetX(), e.GetY());
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        if (e.Action == MotionEventActions.Move)
+        //        {
+        //            if (e.PointerCount > 1 && midPoint != null)
+        //            {
+        //                point2 = new MyPoint(e.GetAxisValue(Axis.X, e.FindPointerIndex(e.GetPointerId(1))), e.GetAxisValue(Axis.Y, e.FindPointerIndex(e.GetPointerId(1))));
+        //                if (lastPlace2 == null)
+        //                {
+        //                    lastPlace2 = new MyPoint(point2.x, point2.y);
+        //                }
 
-                        if((test_zoomfactor + ((float)e.GetX() - lastPlace.x) / 100) > 1)
-                        {
-                            test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100;// + ((float)point2.x - lastPlace2.x) / 100;
-                            ChangeInTextPlace((float)e.GetX() - lastPlace.x);
-                        }
+
+        //                //test_zoomfactor += Math.Max((Math.Abs((float)e.GetX() - midPoint.x) / 1000),Math.Abs( ((float)point2.x - midPoint.x) / 1000));
+
+        //                //if(Math.Abs((float)e.GetX() - lastPlace.x) > Math.Abs((float)point2.x - lastPlace2.x))
+        //                //{
+        //                //    test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100;
+        //                //}
+        //                //else
+        //                //{
+        //                //    test_zoomfactor += ((float)point2.x - lastPlace2.x) / 100;
+        //                //}
+
+        //                if((test_zoomfactor + ((float)e.GetX() - lastPlace.x) / 100) > 1)
+        //                {
+        //                    test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100;// + ((float)point2.x - lastPlace2.x) / 100;
+        //                    ChangeInTextPlace((float)e.GetX() - lastPlace.x);
+        //                }
                         
                         
 
@@ -507,35 +518,47 @@ namespace App1
                         
 
 
-                        lastPlace2.x = point2.x;
-                        lastPlace2.y = point2.y;
+        //                lastPlace2.x = point2.x;
+        //                lastPlace2.y = point2.y;
 
-                    }
-                    else
-                    {
-                        //if (Zoom)
-                        //{
-                        //    test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100;
-                        //}
-                        if (!(camera.CameraOffSetX + (float)e.GetX() - lastPlace.x >= 0))
-                        {
-                            camera.CameraOffSetX += (float)e.GetX() - lastPlace.x;
-                        }
-                        camera.CameraOffSetY += (float)e.GetY() - lastPlace.y;
+        //            }
+        //            else
+        //            {
+        //                //if (Zoom)
+        //                //{
+        //                //    test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100;
+        //                //}
+        //                if (!(camera.CameraOffSetX + (float)e.GetX() - lastPlace.x >= 0))
+        //                {
+        //                    camera.CameraOffSetX += (float)e.GetX() - lastPlace.x;
+        //                }
+        //                camera.CameraOffSetY += (float)e.GetY() - lastPlace.y;
                         
-                    }
-                }
-            }
+        //            }
+        //        }
+        //    }
 
-            CalculateNewPointes();
+        //    CalculateNewPointes();
 
-            lastPlace.x = e.GetX();
-            lastPlace.y = e.GetY();
-            return true;
+        //    lastPlace.x = e.GetX();
+        //    lastPlace.y = e.GetY();
+        //    return true;
 
 
-        }
+        //}
 
         
     }
+
+
+
+
+
+
+
+
+
+
+
+
 }
