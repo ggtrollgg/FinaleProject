@@ -103,7 +103,9 @@ namespace App1
                     camera.Y_zoom_changed = false;
                     camera.X_changed = false;
                     camera.Y_changed = false;
+
                     CalculateNewPointes();
+                    ChangeInTextPlace((float)e.GetX() - lastPlace.x);
                 }
 
                 DrawXexis();

@@ -22,8 +22,11 @@ namespace App1
 
         public MyCamera camera = new MyCamera(0, 0);
         public float test_zoomfactor = 1;
+
         public float zoomfactor_X = 1;
         public float zoomfactor_Y = 1;
+
+
 
         /// <param name="context"></param>
 
@@ -232,8 +235,8 @@ namespace App1
                 //ScaleX = detector.CurrentSpanX / detector.PreviousSpanX;
                 //ScaleY = detector.CurrentSpanY / detector.PreviousSpanY;
 
-                ScaleX = (detector.CurrentSpanX - detector.PreviousSpanX)/200;
-                ScaleY = (detector.CurrentSpanY - detector.PreviousSpanY)/200;
+                ScaleX = (detector.CurrentSpanX - detector.PreviousSpanX)/100;
+                ScaleY = (detector.CurrentSpanY - detector.PreviousSpanY)/100;
 
                 view.ZoomBy(ScaleX, ScaleY);
 
