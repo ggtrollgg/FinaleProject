@@ -40,7 +40,7 @@ namespace App1
         Paint p1 = new Paint();
         MyPoint point1;
         MyPoint point2;
-        MyPoint midPoint;
+        
 
         Paint TextPaint_X;
         Paint TextPaint_Y;
@@ -105,7 +105,7 @@ namespace App1
                     camera.Y_changed = false;
 
                     CalculateNewPointes();
-                    ChangeInTextPlace((float)e.GetX() - lastPlace.x);
+                    ChangeInTextPlace(daltaOffsetX);
                 }
 
                 DrawXexis();
@@ -218,7 +218,7 @@ namespace App1
                     //TheString = TheString.Remove(0, 10);
                     canvas.DrawText(TheString, Changedpoints[i].x, canvas.Height, TextPaint_X);
 
-                   // width = TextPaint_X.MeasureText(TheString);
+                    //width = TextPaint_X.MeasureText(TheString);
                     //canvas.DrawCircle(Changedpoints[i].x - width / 2, TextBlocks[i].LeftDown.y, 5, red);
                     //canvas.DrawCircle(Changedpoints[i].x  + width / 2, TextBlocks[i].RightDown.y, 5, green);
 
@@ -271,7 +271,9 @@ namespace App1
         {
             int Anchor_place = 0;
             int place = 0;
-            if (v > 0)
+            Console.WriteLine(v);
+
+            if (v != 0) 
             {
                 for (int i = 1; i < TextBlocks.Count; i++)
                 {
@@ -281,9 +283,21 @@ namespace App1
                         float RightX = Changedpoints[0].x + width / 2;
                         float LeftX = Changedpoints[i].x - width / 2;
 
+                        if (RightX >= LeftX)//hide text 
+                        {
+                            TextBlocks[i].Hidden = true;
+                            Console.Write("i hid the text in place: ");
+                            for (int g = i; g < TextBlocks.Count; g += 2 * i)
+                            {
+                                TextBlocks[g].Hidden = true;
+                                Console.Write(g + " ");
+                            }
+                            Console.WriteLine("  ");
+                            return;
+                        }
 
                         float distance = LeftX - RightX;
-                        if (distance > width)
+                        if (distance > width)//reavel hidden text 
                         {
                             place = (i + 1) / 2; //rounding up 
                             for (int g = place; g < TextBlocks.Count; g += i)
@@ -292,37 +306,38 @@ namespace App1
                             }
                             return;
                         }
-
                     }
                 }
             }
-            else
-            {
-                for (int i = 1; i < TextBlocks.Count; i++)
-                {
-                    if (!TextBlocks[i].Hidden)
-                    {
-                        float width = TextPaint_X.MeasureText(TextBlocks[0].Text);
-                        float RightX = Changedpoints[0].x + width / 2;
-                        float LeftX = Changedpoints[i].x - width / 2;
+            //else //hide overlaping text 
+            //{
+            //    for (int i = 1; i < TextBlocks.Count; i++)
+            //    {
+            //        if (!TextBlocks[i].Hidden)
+            //        {
+            //            float width = TextPaint_X.MeasureText(TextBlocks[0].Text);
+            //            float RightX = Changedpoints[0].x + width / 2;
+            //            //float LeftX = Math.Abs(Changedpoints[i].x - width / 2);
+            //            float LeftX = Changedpoints[i].x - width / 2;
+
+            //            if (RightX >= LeftX)
+            //            {
+            //                TextBlocks[i].Hidden = true;
+            //                Console.Write("i hid the text in place: ");
+            //                for (int g = i; g < TextBlocks.Count; g += 2 * i)
+            //                {
+            //                    TextBlocks[g].Hidden = true;
+            //                    Console.Write(g + " ");
+            //                }
+            //                Console.WriteLine("  ");
+            //                return;
+            //            }
 
 
 
-                        if (RightX >= LeftX)
-                        {
-                            TextBlocks[i].Hidden = true;
-                            for (int g = i; g < TextBlocks.Count; g += 2 * i)
-                            {
-                                TextBlocks[g].Hidden = true;
-                            }
-                            return;
-                        }
-
-
-
-                    }
-                }
-            }
+            //        }
+            //    }
+            //}
         }
 
         private int CalculatePointZoomingOn()
@@ -372,36 +387,47 @@ namespace App1
         private void DrawTouching()
         {
             p1.Color = Color.Black;
-            if (point1 != null && point2 != null && midPoint != null)
+            //if (point1 != null && point2 != null && midPoint != null)
+            //{
+            //    canvas.DrawCircle(point1.x, point1.y, 50, p1);
+            //    canvas.DrawCircle(point2.x, point2.y, 50, p1);
+            //    canvas.DrawCircle(midPoint.x, midPoint.y, 10, p1);
+
+            //    int i = CalculatePointZoomingOn();
+
+            //    if (0 <= i && i < points.Count)
+            //    {
+            //        canvas.DrawCircle(Changedpoints[i].x, Changedpoints[i].y, 10, p1);
+
+            //        DrawTextBubbleForPoint(i);
+
+            //    }
+
+
+
+            //    //Console.WriteLine("mispoint x is: " + midPoint.x);
+            //    //Console.WriteLine("changed x is: " + Changedpoints[i].x);
+            //    //Console.WriteLine("changed-1 x is: " + Changedpoints[i-1].x);
+            //    //Console.WriteLine("changed-2 x is: " + Changedpoints[i-2].x);
+            //    //Console.WriteLine("changed-3 x is: " + Changedpoints[i-3].x);
+            //    //Console.WriteLine("changed-4 x is: " + Changedpoints[i-4].x);
+
+
+            //    p1.Color = Color.Blue;
+            //    //canvas.DrawCircle(Changedpoints[i-1].x, Changedpoints[i].y, 10, p1);
+            //    p1.Color = Color.Green;
+            //    //canvas.DrawCircle(Changedpoints[i+1].x, Changedpoints[i].y, 10, p1);
+            //}
+            if (midPoint != null)
             {
-                canvas.DrawCircle(point1.x, point1.y, 50, p1);
-                canvas.DrawCircle(point2.x, point2.y, 50, p1);
                 canvas.DrawCircle(midPoint.x, midPoint.y, 10, p1);
-
                 int i = CalculatePointZoomingOn();
-
                 if (0 <= i && i < points.Count)
                 {
                     canvas.DrawCircle(Changedpoints[i].x, Changedpoints[i].y, 10, p1);
 
                     DrawTextBubbleForPoint(i);
-
                 }
-
-
-
-                //Console.WriteLine("mispoint x is: " + midPoint.x);
-                //Console.WriteLine("changed x is: " + Changedpoints[i].x);
-                //Console.WriteLine("changed-1 x is: " + Changedpoints[i-1].x);
-                //Console.WriteLine("changed-2 x is: " + Changedpoints[i-2].x);
-                //Console.WriteLine("changed-3 x is: " + Changedpoints[i-3].x);
-                //Console.WriteLine("changed-4 x is: " + Changedpoints[i-4].x);
-
-
-                p1.Color = Color.Blue;
-                //canvas.DrawCircle(Changedpoints[i-1].x, Changedpoints[i].y, 10, p1);
-                p1.Color = Color.Green;
-                //canvas.DrawCircle(Changedpoints[i+1].x, Changedpoints[i].y, 10, p1);
             }
         }
 

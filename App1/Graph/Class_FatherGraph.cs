@@ -21,11 +21,14 @@ namespace App1
         public List<DataPoint> dataPoints;
 
         public MyCamera camera = new MyCamera(0, 0);
-        public float test_zoomfactor = 1;
+        public MyPoint midPoint;
 
+        public float test_zoomfactor = 1;
         public float zoomfactor_X = 1;
         public float zoomfactor_Y = 1;
 
+        public float daltaOffsetX = 0;
+        public float daltaOffsetY = 0;
 
 
         /// <param name="context"></param>
@@ -46,16 +49,19 @@ namespace App1
             this.dataPoints = points;
         }
         
+
         public void ZoomBy(float zoomfactor_x , float zoomfactor_y)
         {
-            test_zoomfactor += zoomfactor_x;
+            if(!(test_zoomfactor + zoomfactor_x < 1))
+            {
+                zoomfactor_X += zoomfactor_x;
+                zoomfactor_Y += zoomfactor_y;
+                test_zoomfactor += zoomfactor_x;
+                daltaOffsetX = zoomfactor_x*100;
+
+                camera.X_zoom_changed = true;
+            }
             
-
-            zoomfactor_X += zoomfactor_x;
-            zoomfactor_Y += zoomfactor_y;
-
-            camera.X_zoom_changed = true;
-
             //Console.WriteLine(" ");
             //Console.WriteLine("changed the scale factor");
             //Console.WriteLine("zoomfactor_x is: " + zoomfactor_X);
@@ -67,9 +73,11 @@ namespace App1
             if (!(camera.CameraOffSetX + offset_x >= 0))
             {
                 camera.CameraOffSetX += offset_x;
+                
                 camera.X_changed = true;
             }
-
+            
+            daltaOffsetY = offset_y;
             camera.CameraOffSetY += offset_y;
             camera.Y_changed = true;
 
@@ -79,6 +87,17 @@ namespace App1
             //Console.WriteLine("offset_Y is: " + camera.CameraOffSetY);
             //Console.WriteLine(" ");
         }
+
+        public void SetNewMidPoint(float x, float y)
+        {
+            midPoint = new MyPoint(x, y);
+        }
+        public void SetNewMidPoint(MyPoint piv)
+        {
+            midPoint = piv;
+        }
+
+
         //public void ReSizeCanvas(double zoomFactor_x, double zoomFactor_y) 
         //{
         //    Matrix matrix = new Matrix();
@@ -139,6 +158,7 @@ namespace App1
 
         private float lastTouchX;
         private float lastTouchY;
+        private bool isNotMoving = false;
 
         public ScaleAndTranslateGestureListener(Class_FatherGraph view, MyPoint PivotPoint1)
         {
@@ -159,6 +179,8 @@ namespace App1
                     // Store the initial touch coordinates
                     lastTouchX = e.GetX();
                     lastTouchY = e.GetY();
+                    PivotPoint = null;
+                    view.SetNewMidPoint(null);
                     break;
                 case MotionEventActions.PointerUp:
                     if (e.PointerCount > 1)
@@ -184,7 +206,7 @@ namespace App1
                         lastTouchX = e.GetX();
                         lastTouchY = e.GetY();
                     }
-                    PivotPoint = null;
+                    //PivotPoint = null;
                     break;
                 case MotionEventActions.Move:
                     if (e.PointerCount == 1)
@@ -204,6 +226,7 @@ namespace App1
                         lastTouchY = e.GetY();
                     }
                     break;
+                
 
             }
 
@@ -230,6 +253,7 @@ namespace App1
                 if (PivotPoint == null)
                 {
                     PivotPoint = new MyPoint(detector.FocusX, detector.FocusY);
+                    view.SetNewMidPoint(PivotPoint.x, PivotPoint.y);
                 }
 
                 //ScaleX = detector.CurrentSpanX / detector.PreviousSpanX;
