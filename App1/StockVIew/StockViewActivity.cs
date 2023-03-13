@@ -39,6 +39,7 @@ namespace App1
         public static List<string> list = new List<string>();
         public static List<StockData> Datalist = new List<StockData>();
         public static List<StockData> Temp_Datalist = new List<StockData>();
+        List<DocumentSnapshot> Docs_In_DataBase = new List<DocumentSnapshot>();
 
         bool IsDataCountFull = false;
         ListView lvStock;
@@ -177,6 +178,52 @@ namespace App1
             return db;
         }
 
+        private void DeleteItem_fromDataBase(int index)
+        {
+            DocumentReference doc = db.Collection("Saved Stocks").Document(Docs_In_DataBase[index].Id);
+            doc.Delete();
+            Docs_In_DataBase.RemoveAt(index);
+        }
+        private void UpdateTrackItemAsync(string symbol, int index)
+        {
+            if (index >= Docs_In_DataBase.Count || index < 0) 
+            {
+                Console.WriteLine("tried to update Track item that was out of index. index was: " + index + " docs_in_datavase.count = " + Docs_In_DataBase.Count);
+                return;
+            }
+            string TrackingPrices = (string)Docs_In_DataBase[index].Get("TrackingPrices");
+            string soundfile = (string)Docs_In_DataBase[index].Get("SoundFile");
+            string LastDate = "";
+            float heigh = 0;
+            float low = 0;
+
+            foreach(StockData data in Datalist)
+            {
+                if(data.symbol== symbol)
+                {
+                    heigh= data.heigh;
+                    low = data.low;
+                    LastDate = data.date;
+                    break;
+                }
+            }
+
+            DeleteItem_fromDataBase(index);
+
+
+            HashMap map = new HashMap();
+            map.Put("symbol", symbol);
+            map.Put("LastDate", LastDate);
+            map.Put("SoundFile", soundfile);
+            map.Put("TrackingPrices", TrackingPrices);
+            map.Put("heigh", heigh);
+            map.Put("low", low);
+
+            
+
+            CollectionReference collection = db.Collection("Saved Stocks");
+            collection.Add(map);
+        }
         private void LoadItems()
         {
             if(Datalist.Count > 0)
@@ -291,6 +338,8 @@ namespace App1
             
         }
 
+
+        //loading checker
         private void TimeOut()
         {
             System.Threading.Thread.Sleep(3000);

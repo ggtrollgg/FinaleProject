@@ -9,11 +9,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Threading;
 using Firebase.Firestore;
 using Firebase;
 using Java.Util;
-
+using System.Net.Http;
+using Org.Json;
 
 namespace App1
 {
@@ -28,6 +30,8 @@ namespace App1
         MyHandler myhandler; //interacting with the gui/main thread
         public FirebaseFirestore db; //database
 
+        PendingIntent pendingIntent; //peding intent for the alarm manager
+        public static List<StockData> Datalist = new List<StockData>();
 
         public override IBinder OnBind(Intent intent)
         {
@@ -82,7 +86,7 @@ namespace App1
         public override void OnDestroy()
         {
             base.OnDestroy();
-            counter = 0; //stop condition
+            running = false;//stop condition
             Toast.MakeText(this, "Service stopped ", ToastLength.Short).Show();
 
         }
@@ -106,10 +110,10 @@ namespace App1
         }
         private void LoadItems()
         {
-            //if (Datalist.Count > 0)
-            //{
-            //    Datalist.Clear();
-            //}
+            if (Datalist.Count > 0)
+            {
+                Datalist.Clear();
+            }
             //if (list.Count > 0)
             //{
             //    list.Clear();
@@ -128,50 +132,98 @@ namespace App1
             q.Get().AddOnSuccessListener(this);
         }
 
-        public void OnSuccess(Java.Lang.Object result)
+        public async void OnSuccess(Java.Lang.Object result)
         {
             //IsDataCountFull = false;
             Console.WriteLine("OnSuccess");
             var snapshot = (QuerySnapshot)result;
             StockData data;
+           List<string> Symbols = new List<string>();
             int i = 0;
             // iterate through each document in the collection
             foreach (var doc in snapshot.Documents)
             {
 
                 string tr = (string)doc.Get("TrackingPrices");
+                if (tr[tr.Length-1] == ',')
+                {
+                    tr.Remove(tr.Length-1);
+                }
                 List<float> trackingprices = new List<float>();
                 if (tr != null && tr != "")
                 {
                     string[] trs = tr.Split(',');
-
+                    Console.WriteLine("The tracking prices of: " + doc.Get("Symbol") + " are:");
                     foreach (string price in trs)
                     {
                         if (price != null && price != "")
                         {
                             trackingprices.Add(float.Parse(price));
-                            Console.WriteLine("The tracking prices of: " + doc.Get("Symbol") + " are: " + price);
+                            Console.Write(" " + price);
                         }
                     }
+                    Console.WriteLine("  ");
                 }
                 if (trackingprices.Count > 0)
                 {
                     data = new StockData((float)doc.Get("heigh"), (float)doc.Get("low"), (string)doc.Get("symbol"), (string)doc.Get("LastDate"), (string)doc.Get("SoundFile"), trackingprices);
-                   // Datalist.Add(data);
-                   // _ = GetInfoFromWeb(data.symbol, i);
+                    Datalist.Add(data);
+                    Symbols.Add(data.symbol);
+                   
                 }
                 i++;
             }
-            
+
+            await GetCurrentPriceFromWeb(Symbols);
+
             //ThreadStart MyThreadStart = new ThreadStart(Checkifstillloading);
             //System.Threading.Thread t = new System.Threading.Thread(MyThreadStart);
 
-           // t.Start();
+            // t.Start();
             //Toast.MakeText(this, "sent all data requests", ToastLength.Short).Show();
             //IsDataCountFull = true;
 
         }
 
+        private async Task GetCurrentPriceFromWeb(List<string> symbols)
+        {
+            using (var httpClient2 = new HttpClient())
+            {
+                string symbolss = "";
+                foreach (string symbol in symbols) 
+                { 
+                    symbolss = symbolss + ',' +  symbol;
+                }
+               
 
+                string link = "https://financialmodelingprep.com/api/v3/quote/";
+                link = link.Insert(link.Length, symbolss);
+                //link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
+                link = link.Insert(link.Length, "?apikey=8bdedb14d7674def460cb3a84f1fd429");
+                //8bdedb14d7674def460cb3a84f1fd429
+
+                using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
+                {
+
+                    var response2 = await httpClient2.SendAsync(request);
+                    response2.EnsureSuccessStatusCode();
+
+                    string responseBody = await response2.Content.ReadAsStringAsync();
+                    JSONArray HistInfo = new JSONArray(responseBody);
+
+                    //Console.WriteLine(HistInfo.Length());
+
+                    //Datalist[place].low = ((float)(HistInfo.GetJSONObject(0).GetDouble("low")));
+                    //Datalist[place].heigh = ((float)(HistInfo.GetJSONObject(0).GetDouble("high")));
+                    //Datalist[place].date = ((string)(HistInfo.GetJSONObject(0).Get("date")));
+
+
+                }
+            }
+
+            //Toast.MakeText(this, "data list count is: " + Datalist.Count, ToastLength.Short).Show();
+            Dispose(true);
+            return;
+        }
     }
 }
