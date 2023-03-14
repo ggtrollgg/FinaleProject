@@ -9,13 +9,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using System.Threading.Tasks;
 using System.Threading;
+
 using Firebase.Firestore;
 using Firebase;
 using Java.Util;
 using System.Net.Http;
 using Org.Json;
+using Java.Lang;
 
 namespace App1
 {
@@ -28,10 +31,12 @@ namespace App1
         int TimeBetweenChecks = 1; // seconds
         int numberOfCallsIcanMake = 250; // 250 is the number of calls i can make with one account in one day
         MyHandler myhandler; //interacting with the gui/main thread
-        public FirebaseFirestore db; //database
 
+        public FirebaseFirestore db; //database
         PendingIntent pendingIntent; //peding intent for the alarm manager
         public static List<StockData> Datalist = new List<StockData>();
+        List<Integer> TrackPriceSurDes = new List<Integer>();
+
 
         public override IBinder OnBind(Intent intent)
         {
@@ -54,7 +59,7 @@ namespace App1
 
             counter = intent.GetIntExtra("counter", 10);
             Toast.MakeText(this, "Service started" + counter, ToastLength.Short).Show();
-            Thread t = new Thread(Run);
+            System.Threading.Thread t = new System.Threading.Thread(Run);
             t.Start();
 
             return base.OnStartCommand(intent, flags, startId);
@@ -65,7 +70,7 @@ namespace App1
             running = true;
             while (running)
             {
-                Thread.Sleep(3000);
+                System.Threading.Thread.Sleep(3000);
                 Message mes = new Message();
                 mes.Arg1 = counter;
                 myhandler.SendMessage(mes);
@@ -211,6 +216,19 @@ namespace App1
                     string responseBody = await response2.Content.ReadAsStringAsync();
                     JSONArray HistInfo = new JSONArray(responseBody);
 
+                    float currentPrice = 0;
+                    float lastPrice = (Datalist[0].heigh + Datalist[0].low)/2;
+                    float trackprice_Alarm = -1;
+
+                    for(int g = 0; g < symbols.Count; g++)
+                    {
+                        currentPrice = (float)(HistInfo.GetJSONObject(g).GetDouble("price"));
+                        trackprice_Alarm = CheckIfSurpesst(lastPrice,currentPrice, Datalist[g].TrackingPrices);
+                        if(trackprice_Alarm != -1) 
+                        {
+                            
+                        }
+                    }
                     //Console.WriteLine(HistInfo.Length());
 
                     //Datalist[place].low = ((float)(HistInfo.GetJSONObject(0).GetDouble("low")));
@@ -224,6 +242,33 @@ namespace App1
             //Toast.MakeText(this, "data list count is: " + Datalist.Count, ToastLength.Short).Show();
             Dispose(true);
             return;
+        }
+
+        private float CheckIfSurpesst(float lastPrice, float currentPrice, List<float> trackingPrices)
+        {
+            float priceSur = -1;
+            if(lastPrice < currentPrice ) //if the price is rising than check if srpest any tracking prices that are hier than the last loaded value of the stock
+            {
+                foreach(float price in trackingPrices)
+                {
+                    if(currentPrice > price && price > priceSur)
+                    {
+                        priceSur = price;
+                    }
+                }
+            }
+            else
+            {
+                foreach (float price in trackingPrices)
+                {
+                    if (currentPrice < price && price < priceSur)
+                    {
+                        priceSur = price;
+                    }
+                }
+            }
+
+            return priceSur;
         }
     }
 }

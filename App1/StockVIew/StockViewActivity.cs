@@ -191,13 +191,18 @@ namespace App1
                 Console.WriteLine("tried to update Track item that was out of index. index was: " + index + " docs_in_datavase.count = " + Docs_In_DataBase.Count);
                 return;
             }
+
+
             string TrackingPrices = (string)Docs_In_DataBase[index].Get("TrackingPrices");
             string soundfile = (string)Docs_In_DataBase[index].Get("SoundFile");
             string LastDate = "";
             float heigh = 0;
             float low = 0;
 
-            foreach(StockData data in Datalist)
+            DeleteItem_fromDataBase(index);
+
+            Console.WriteLine("the symbol updated is: " + symbol);
+            foreach (StockData data in Datalist)
             {
                 if(data.symbol== symbol)
                 {
@@ -208,7 +213,7 @@ namespace App1
                 }
             }
 
-            DeleteItem_fromDataBase(index);
+            
 
 
             HashMap map = new HashMap();
@@ -276,6 +281,7 @@ namespace App1
                     {
                         data = new StockData((float)doc.Get("heigh"), (float)doc.Get("low"), (string)doc.Get("symbol"), (string)doc.Get("LastDate"), (string)doc.Get("SoundFile"), trackingprices);
                         Datalist.Add(data);
+                        Docs_In_DataBase.Add(doc);
                         _ = GetInfoFromWeb(data.symbol, i);
                     }
                     else
@@ -288,6 +294,7 @@ namespace App1
                         //{
                         data = new StockData((float)doc.Get("heigh"), (float)doc.Get("low"), (string)doc.Get("LastDate"), (string)doc.Get("symbol"));
                         Datalist.Add(data);
+                        Docs_In_DataBase.Add(doc);
                         _ = GetInfoFromWeb(data.symbol, i);
                         //}
                     }
@@ -324,6 +331,7 @@ namespace App1
                     {
                         data = new StockData((float)doc.Get("heigh"), (float)doc.Get("low"), (string)doc.Get("symbol"), (string)doc.Get("LastDate"), (string)doc.Get("SoundFile"), trackingprices);
                         Datalist.Add(data);
+                        Docs_In_DataBase.Add(doc);
                         _ = GetInfoFromWeb(data.symbol, i);
                     }
                     i++;
@@ -422,9 +430,15 @@ namespace App1
             Console.WriteLine("adding to temp data list in place: " + place);
             Temp_Datalist.Add(Datalist[place]);
 
-
-            if(IsDataCountFull && Temp_Datalist.Count == Datalist.Count)
+            
+            if (IsDataCountFull && Temp_Datalist.Count == Datalist.Count)
             {
+                int count = Docs_In_DataBase.Count;
+                for (int g = count-1; g >= 0; g--)
+                {
+                    UpdateTrackItemAsync((string)Docs_In_DataBase[g].Get("symbol"), g);
+                }
+                
                 Toast.MakeText(this, "presenting the list", ToastLength.Short).Show();
                 ShowListView();
             }
