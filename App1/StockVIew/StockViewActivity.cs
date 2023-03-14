@@ -28,6 +28,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Java.Util.Functions;
 using Java.Lang;
+using Firestore.Admin.V1;
 
 namespace App1
 {
@@ -261,6 +262,7 @@ namespace App1
                 // iterate through each document in the collection
                 foreach (var doc in snapshot.Documents)
                 {
+                    
 
                     string tr = (string)doc.Get("TrackingPrices");
                     List<float> trackingprices = new List<float>();
