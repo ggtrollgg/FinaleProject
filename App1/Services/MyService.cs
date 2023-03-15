@@ -19,6 +19,7 @@ using Java.Util;
 using System.Net.Http;
 using Org.Json;
 using Java.Lang;
+using static Google.Firestore.V1.StructuredAggregationQuery.Aggregation;
 
 namespace App1
 {
@@ -37,6 +38,9 @@ namespace App1
         public static List<StockData> Datalist = new List<StockData>();
         List<Integer> TrackPriceSurDes = new List<Integer>();
 
+        int NotificationCount = 0;
+        string NOTIFICATION_CHANNEL_ID = "StockPriceAlarm";
+        int NOTIFICATION_ID = 1;
 
         public override IBinder OnBind(Intent intent)
         {
@@ -70,11 +74,11 @@ namespace App1
             running = true;
             while (running)
             {
-                System.Threading.Thread.Sleep(3000);
-                Message mes = new Message();
-                mes.Arg1 = counter;
-                myhandler.SendMessage(mes);
-                counter--;
+                //System.Threading.Thread.Sleep(3000);
+                //Message mes = new Message();
+                //mes.Arg1 = counter;
+                //myhandler.SendMessage(mes);
+                //counter--;
             }
 
 
@@ -92,6 +96,8 @@ namespace App1
         {
             base.OnDestroy();
             running = false;//stop condition
+            var notificationManager = (NotificationManager)GetSystemService(NotificationService);
+            notificationManager.CancelAll();
             Toast.MakeText(this, "Service stopped ", ToastLength.Short).Show();
 
         }
@@ -226,16 +232,41 @@ namespace App1
                         trackprice_Alarm = CheckIfSurpesst(lastPrice,currentPrice, Datalist[g].TrackingPrices);
                         if(trackprice_Alarm != -1) 
                         {
+
+                            NOTIFICATION_ID = g;
+                            Intent i = new Intent(this, typeof(ChartActivity));
+                            i.PutExtra("key", "new message");
+                            i.PutExtra("symbol", symbols[g]);
+                            PendingIntent pendingIntent = PendingIntent.GetActivity(this, 0, i, 0);
+
+                            Notification.Builder notificationBuilder = new Notification.Builder(this)
+                            .SetSmallIcon(Resource.Drawable.Icon_Favorite_colored)
+                            .SetContentTitle("Price Alarm for stock: " + symbols[g])
+                            .SetContentText("text text");
+                            var notificationManager = (NotificationManager)GetSystemService(NotificationService);
+
+
+                            foreach(var notification in notificationManager.GetActiveNotifications()) 
+                            {
+                                if(notification.Id == NOTIFICATION_ID)
+                                {
+                                    notificationManager.Cancel(NOTIFICATION_ID); //if there is already a notification with this id than cancel it 
+                                }
+                            }
                             
+                            
+
+                            notificationBuilder.SetContentIntent(pendingIntent);
+                            //Build.VERSION_CODES.O - is a reference to API level 26 (Android Oreo which is Android 8)if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+                            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+                            {
+                                NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "NOTIFICATION_CHANNEL_NAME", NotificationImportance.High);
+                                notificationBuilder.SetChannelId(NOTIFICATION_CHANNEL_ID);
+                                notificationManager.CreateNotificationChannel(notificationChannel);
+                            }
+                            notificationManager.Notify(NOTIFICATION_ID, notificationBuilder.Build());
                         }
                     }
-                    //Console.WriteLine(HistInfo.Length());
-
-                    //Datalist[place].low = ((float)(HistInfo.GetJSONObject(0).GetDouble("low")));
-                    //Datalist[place].heigh = ((float)(HistInfo.GetJSONObject(0).GetDouble("high")));
-                    //Datalist[place].date = ((string)(HistInfo.GetJSONObject(0).Get("date")));
-
-
                 }
             }
 

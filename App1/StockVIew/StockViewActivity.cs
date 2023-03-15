@@ -272,7 +272,7 @@ namespace App1
 
                         foreach (string price in trs)
                         {
-                            if (price != null && price != "")
+                            if (price != null && price != "" && IsDigitsOnly(price))
                             {
                                 trackingprices.Add(float.Parse(price));
                                 Console.WriteLine("The tracking prices of: " + doc.Get("Symbol") + " are: " + price);
@@ -322,7 +322,7 @@ namespace App1
 
                         foreach (string price in trs)
                         {
-                            if (price != null && price != "")
+                            if (price != null && price != "" && IsDigitsOnly(price))
                             {
                                 trackingprices.Add(float.Parse(price));
                                 Console.WriteLine("The tracking prices of: " + doc.Get("Symbol") + " are: " + price);
@@ -348,6 +348,16 @@ namespace App1
             
         }
 
+        public bool IsDigitsOnly(string str)
+        {
+            foreach (char c in str)
+            {
+                if (c != ',' && (c < '0' || c > '9'))
+                    return false;
+            }
+
+            return true;
+        }
 
         //loading checker
         private void TimeOut()
