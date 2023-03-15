@@ -16,7 +16,7 @@ using Android.Content;
 
 namespace App1
 {
-    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
+    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true, Icon = "@drawable/stocks_icon")]
     public class MainActivity : Activity
     {
         Button btnstart,btnToListView,btnExit,btnTest;
