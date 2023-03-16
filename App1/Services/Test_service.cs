@@ -24,7 +24,7 @@ using static Google.Firestore.V1.StructuredAggregationQuery.Aggregation;
 namespace App1
 {
     [Service]
-    public class MyService : Service, Android.Gms.Tasks.IOnSuccessListener
+    internal class Test_service : Service, Android.Gms.Tasks.IOnSuccessListener
     {
         int counter;
         bool running = false;
@@ -41,7 +41,6 @@ namespace App1
         int NotificationCount = 0;
         string NOTIFICATION_CHANNEL_ID = "StockPriceAlarm";
         int NOTIFICATION_ID = 1;
-
         bool CallInProcess = false;
         public override IBinder OnBind(Intent intent)
         {
@@ -53,8 +52,10 @@ namespace App1
         {
             base.OnCreate();
             myhandler = new MyHandler(this);
-            TimeBetweenChecks= 60*60*24; //seconds in the day
-            TimeBetweenChecks = TimeBetweenChecks/numberOfCallsIcanMake; // (seconds in the day / number of calls i can make in a day) = time gap between each call
+            //TimeBetweenChecks = 60 * 60 * 24; //seconds in the day
+            //TimeBetweenChecks = TimeBetweenChecks / numberOfCallsIcanMake; // (seconds in the day / number of calls i can make in a day) = time gap between each call
+
+            TimeBetweenChecks = 30;
             db = GetDataBase();
 
         }
@@ -63,7 +64,7 @@ namespace App1
         {
 
             counter = intent.GetIntExtra("counter", 10);
-            Toast.MakeText(this, "Service started" + counter, ToastLength.Short).Show();
+            Toast.MakeText(this, "Service started", ToastLength.Short).Show();
             System.Threading.Thread t = new System.Threading.Thread(Run);
             t.Start();
 
@@ -81,13 +82,8 @@ namespace App1
                     {
                         db.App.Dispose();
                     }
-                    
-                    LoadItems();
-                    //Message mes = new Message();
-                    //mes.Arg1 = counter;
-                    //myhandler.SendMessage(mes);
 
-                    
+                    LoadItems();
                 }
                 Console.WriteLine("time between checks is: " + TimeBetweenChecks + " seconds");
                 System.Threading.Thread.Sleep(TimeBetweenChecks * 1000);
@@ -110,6 +106,14 @@ namespace App1
             running = false;//stop condition
             var notificationManager = (NotificationManager)GetSystemService(NotificationService);
             notificationManager.CancelAll();
+
+            if( db!= null )
+            {
+                if(db.App != null)
+                    db.App.Delete();
+                db.Dispose();
+                db = null;
+            }
             Toast.MakeText(this, "Service stopped ", ToastLength.Short).Show();
 
         }
@@ -162,16 +166,16 @@ namespace App1
             Console.WriteLine("OnSuccess");
             var snapshot = (QuerySnapshot)result;
             StockData data;
-           List<string> Symbols = new List<string>();
+            List<string> Symbols = new List<string>();
             int i = 0;
             // iterate through each document in the collection
             foreach (var doc in snapshot.Documents)
             {
 
                 string tr = (string)doc.Get("TrackingPrices");
-                if (tr[tr.Length-1] == ',')
+                if (tr[tr.Length - 1] == ',')
                 {
-                    tr.Remove(tr.Length-1);
+                    tr.Remove(tr.Length - 1);
                 }
                 List<float> trackingprices = new List<float>();
                 if (tr != null && tr != "")
@@ -193,19 +197,12 @@ namespace App1
                     data = new StockData((float)doc.Get("heigh"), (float)doc.Get("low"), (string)doc.Get("symbol"), (string)doc.Get("LastDate"), (string)doc.Get("SoundFile"), trackingprices);
                     Datalist.Add(data);
                     Symbols.Add(data.symbol);
-                   
+
                 }
                 i++;
             }
 
             await GetCurrentPriceFromWeb(Symbols);
-
-            //ThreadStart MyThreadStart = new ThreadStart(Checkifstillloading);
-            //System.Threading.Thread t = new System.Threading.Thread(MyThreadStart);
-
-            // t.Start();
-            //Toast.MakeText(this, "sent all data requests", ToastLength.Short).Show();
-            //IsDataCountFull = true;
 
         }
 
@@ -214,11 +211,11 @@ namespace App1
             using (var httpClient2 = new HttpClient())
             {
                 string symbolss = "";
-                foreach (string symbol in symbols) 
-                { 
-                    symbolss = symbolss + ',' +  symbol;
+                foreach (string symbol in symbols)
+                {
+                    symbolss = symbolss + ',' + symbol;
                 }
-               
+
 
                 string link = "https://financialmodelingprep.com/api/v3/quote/";
                 link = link.Insert(link.Length, symbolss);
@@ -237,67 +234,77 @@ namespace App1
                     JSONArray HistInfo = new JSONArray(responseBody);
 
                     float currentPrice = 0;
-                    float lastPrice = (Datalist[0].heigh + Datalist[0].low)/2;
+                    float lastPrice = (Datalist[0].heigh + Datalist[0].low) / 2;
                     float trackprice_Alarm = -1;
 
-                    for(int g = 0; g < symbols.Count; g++)
-                    {
-                        currentPrice = (float)(HistInfo.GetJSONObject(g).GetDouble("price"));
-                        trackprice_Alarm = CheckIfSurpesst(lastPrice,currentPrice, Datalist[g].TrackingPrices);
-                        if(trackprice_Alarm != -1) 
-                        {
-
-                            NOTIFICATION_ID = g;
-                            Intent i = new Intent(this, typeof(ChartActivity));
-                            i.PutExtra("key", "new message");
-                            i.PutExtra("symbol", symbols[g]);
-                            PendingIntent pendingIntent = PendingIntent.GetActivity(this, 0, i, 0);
-
-                            Notification.Builder notificationBuilder = new Notification.Builder(this)
-                            .SetSmallIcon(Resource.Drawable.Icon_Favorite_colored)
-                            .SetContentTitle("Price Alarm for stock: " + symbols[g])
-                            .SetContentText("text text");
-                            var notificationManager = (NotificationManager)GetSystemService(NotificationService);
+                    SendDemoNotification();
 
 
-                            foreach(var notification in notificationManager.GetActiveNotifications()) 
-                            {
-                                if(notification.Id == NOTIFICATION_ID)
-                                {
-                                    notificationManager.Cancel(NOTIFICATION_ID); //if there is already a notification with this id than cancel it 
-                                }
-                            }
-                            
-                            
-
-                            notificationBuilder.SetContentIntent(pendingIntent);
-                            //Build.VERSION_CODES.O - is a reference to API level 26 (Android Oreo which is Android 8)if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
-                            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
-                            {
-                                NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "NOTIFICATION_CHANNEL_NAME", NotificationImportance.High);
-                                notificationBuilder.SetChannelId(NOTIFICATION_CHANNEL_ID);
-                                notificationManager.CreateNotificationChannel(notificationChannel);
-                            }
-                            notificationManager.Notify(NOTIFICATION_ID, notificationBuilder.Build());
-                        }
-                    }
                 }
             }
-
-            //Toast.MakeText(this, "data list count is: " + Datalist.Count, ToastLength.Short).Show();
             CallInProcess = false;
+            Toast.MakeText(this, "finished checking tracking prices", ToastLength.Short).Show();
             Dispose(true);
             return;
+        }
+
+        private void SendDemoNotification()
+        {
+            float trackprice_Alarm = 666;
+            int g = 0;
+            int NOTIFICATION_ID = 0;
+            List<string> symbols = new List<string>();
+            symbols.Add("AAPL");
+            string NOTIFICATION_CHANNEL_ID = "StockPriceAlarm";
+
+            //Copy of the code in service 
+            if (trackprice_Alarm != -1)
+            {
+
+                NOTIFICATION_ID = g;
+                //Intent i = new Intent(this, typeof(ChartActivity));
+                Intent i = new Intent(this, typeof(MainActivity));
+                i.PutExtra("key", "new message");
+                i.PutExtra("symbol", symbols[g]);
+                PendingIntent pendingIntent = PendingIntent.GetActivity(this, 0, i, 0);
+
+                Notification.Builder notificationBuilder = new Notification.Builder(this)
+                .SetSmallIcon(Resource.Drawable.Icon_Favorite_colored)
+                .SetContentTitle("Price Alarm for stock: " + symbols[g])
+                .SetContentText("text text");
+                var notificationManager = (NotificationManager)GetSystemService(NotificationService);
+
+
+                foreach (var notification in notificationManager.GetActiveNotifications())
+                {
+                    if (notification.Id == NOTIFICATION_ID)
+                    {
+                        notificationManager.Cancel(NOTIFICATION_ID); //if there is already a notification with this id than cancel it 
+                    }
+                }
+
+
+
+                notificationBuilder.SetContentIntent(pendingIntent);
+                //Build.VERSION_CODES.O - is a reference to API level 26 (Android Oreo which is Android 8)if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+                {
+                    NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "NOTIFICATION_CHANNEL_NAME", NotificationImportance.High);
+                    notificationBuilder.SetChannelId(NOTIFICATION_CHANNEL_ID);
+                    notificationManager.CreateNotificationChannel(notificationChannel);
+                }
+                notificationManager.Notify(NOTIFICATION_ID, notificationBuilder.Build());
+            }
         }
 
         private float CheckIfSurpesst(float lastPrice, float currentPrice, List<float> trackingPrices)
         {
             float priceSur = -1;
-            if(lastPrice < currentPrice ) //if the price is rising than check if srpest any tracking prices that are hier than the last loaded value of the stock
+            if (lastPrice < currentPrice) //if the price is rising than check if srpest any tracking prices that are hier than the last loaded value of the stock
             {
-                foreach(float price in trackingPrices)
+                foreach (float price in trackingPrices)
                 {
-                    if(currentPrice > price && price > priceSur)
+                    if (currentPrice > price && price > priceSur)
                     {
                         priceSur = price;
                     }

@@ -82,11 +82,13 @@
     <Compile Include="Services\MyHandler.cs" />
     <Compile Include="Services\MyService.cs" />
     <Compile Include="Services\MyTimer.cs" />
+    <Compile Include="Services\Test_service.cs" />
     <Compile Include="StockVIew\StockAdapter.cs" />
     <Compile Include="Graph\StockChart.cs" />
     <Compile Include="General Classes\StockData.cs" />
     <Compile Include="StockVIew\StockViewActivity.cs" />
     <Compile Include="Testing_Database_Activity.cs" />
+    <Compile Include="Test_ServiceAndNotifivation_Activity.cs" />
     <Compile Include="Test_ZoomCanvas.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -231,6 +233,11 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\stocks_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\Test_serviceANDnotification_layout.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

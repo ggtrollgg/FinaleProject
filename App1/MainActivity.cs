@@ -54,7 +54,7 @@ namespace App1
 
         private void BtnTest_Click(object sender, EventArgs e)
         {
-            Intent intent = new Intent(this, typeof(Testing_Database_Activity));
+            Intent intent = new Intent(this, typeof(Test_ServiceAndNotifivation_Activity));
             intent.PutExtra("symbol", "OB");
             StartActivity(intent);
         }
