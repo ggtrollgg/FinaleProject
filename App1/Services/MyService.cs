@@ -63,7 +63,7 @@ namespace App1
         {
 
             counter = intent.GetIntExtra("counter", 10);
-            Toast.MakeText(this, "Service started" + counter, ToastLength.Short).Show();
+            Toast.MakeText(this, "Service started" ,ToastLength.Short).Show();
             System.Threading.Thread t = new System.Threading.Thread(Run);
             t.Start();
 
@@ -83,11 +83,6 @@ namespace App1
                     }
                     
                     LoadItems();
-                    //Message mes = new Message();
-                    //mes.Arg1 = counter;
-                    //myhandler.SendMessage(mes);
-
-                    
                 }
                 Console.WriteLine("time between checks is: " + TimeBetweenChecks + " seconds");
                 System.Threading.Thread.Sleep(TimeBetweenChecks * 1000);
@@ -149,10 +144,7 @@ namespace App1
 
 
             // generate a query (request) from the database
-            Query q =
-               db
-               .Collection("Saved Stocks")
-               .WhereNotEqualTo("TrackingPrices", "");
+            Query q = db.Collection("Saved Stocks").WhereNotEqualTo("TrackingPrices", "");
             q.Get().AddOnSuccessListener(this);
         }
 

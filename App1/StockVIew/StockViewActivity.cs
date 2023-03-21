@@ -173,10 +173,21 @@ namespace App1
             .SetStorageBucket("stock-data-base-finalproject.appspot.com")
             .Build();
 
-
-            var app = FirebaseApp.InitializeApp(this, options);
-            db = FirebaseFirestore.GetInstance(app);
-            return db;
+            
+            try
+            {
+                var app = FirebaseApp.InitializeApp(this, options);
+                db = FirebaseFirestore.GetInstance(app);
+                return db;
+            }
+            catch
+            {
+                var app = FirebaseApp.GetApps(this);
+                db = FirebaseFirestore.GetInstance(app[0]);
+                return db;
+            }
+            
+            
         }
 
         private void DeleteItem_fromDataBase(int index)
@@ -509,6 +520,7 @@ namespace App1
                 {
                     db.App.Delete();
                     db.Terminate();
+                    Console.WriteLine("db terminated");
                 }
             }
             base.OnPause();
