@@ -134,7 +134,7 @@ namespace App1
         private void BtnReturnHome_Click(object sender, EventArgs e)
         {
             //ShowListView();
-             db.App.Delete();
+             db.App.Dispose();
              //db.Terminate();
              
              Finish();
@@ -519,9 +519,11 @@ namespace App1
             {
                 if (db.App != null)
                 {
-                    db.App.Delete();
+                    //db.App.Delete();
                     //db.Terminate();
-                    
+                    db.App.Dispose();
+                    //db = null;
+
                     Console.WriteLine("db terminated");
                 }
             }

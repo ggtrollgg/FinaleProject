@@ -110,7 +110,7 @@ namespace App1
             if( db!= null )
             {
                 if(db.App != null)
-                    db.App.Delete();
+                    db.App.Dispose();
                 db.Dispose();
                 db = null;
             }
@@ -130,10 +130,23 @@ namespace App1
             .SetStorageBucket("stock-data-base-finalproject.appspot.com")
             .Build();
 
+            try
+            {
+                var app = FirebaseApp.InitializeApp(this, options);
+                db = FirebaseFirestore.GetInstance(app);
+                return db;
+            }
+            catch
+            {
+                var app = FirebaseApp.GetApps(this);
+                db = FirebaseFirestore.GetInstance(app[0]);
+                return db;
+            }
 
-            var app = FirebaseApp.InitializeApp(this, options);
-            db = FirebaseFirestore.GetInstance(app);
-            return db;
+
+            //var app = FirebaseApp.InitializeApp(this, options);
+            //db = FirebaseFirestore.GetInstance(app);
+            //return db;
         }
         private void LoadItems()
         {

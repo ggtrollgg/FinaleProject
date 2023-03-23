@@ -299,10 +299,33 @@ namespace App1
             .SetStorageBucket("stock-data-base-finalproject.appspot.com")
             .Build();
 
+            try
+            {
+                var app = FirebaseApp.InitializeApp(this, options);
+                db = FirebaseFirestore.GetInstance(app);
+                return db;
+            }
+            catch
+            {
+                try
+                {
+                    var app = FirebaseApp.GetApps(this);
+                    db = FirebaseFirestore.GetInstance(app[0]);
+                    return db;
+                }
+                catch 
+                {
+                    Console.WriteLine("used db app[2]");
+                    var app = FirebaseApp.GetApps(this);
+                    db = FirebaseFirestore.GetInstance(app[1]);
+                    return db;
+                }
+                
+            }
 
-            var app = FirebaseApp.InitializeApp(this, options);
-            db = FirebaseFirestore.GetInstance(app);
-            return db;
+            //var app = FirebaseApp.InitializeApp(this, options);
+            //db = FirebaseFirestore.GetInstance(app);
+            //return db;
         }
 
         //private void LoadItems()
@@ -556,9 +579,10 @@ namespace App1
 
         private void IbHome_Click(object sender, EventArgs e)
         {
-            db.App.Delete();
-            db.Dispose();
-            db = null;
+            //db.App.Delete();
+            db.App.Dispose();
+            //db.Dispose();
+            //db = null;
 
             Finish();
         }
@@ -569,8 +593,10 @@ namespace App1
             {
                 if (db.App != null)
                 {
-                    db.App.Delete();
-                    db.Terminate();
+                    //db.App.Delete();
+                    //db.Terminate();
+                    db.App.Dispose();
+                    //db = null;
                 }
             }
             

@@ -48,10 +48,10 @@ namespace App1
             {
                 if (db.App != null)
                 {
-                    db.App.Delete();
+                    db.App.Dispose();
                     //db.Terminate();
 
-                    Console.WriteLine("db terminated");
+                    Console.WriteLine("app Dispose");
                 }
             }
         }
@@ -59,18 +59,22 @@ namespace App1
         private void BtnDataBaseStart_Click(object sender, EventArgs e)
         {
             db = GetDataBase();
+            Console.WriteLine("started database db");
         }
 
         private void BtnTerminate_Click(object sender, EventArgs e)
         {
+            Console.WriteLine("desposing of db");
             if (db != null)
             {
+                Console.WriteLine("db isnt null");
                 if (db.App != null)
                 {
-                    db.App.Delete();
-                    db.Terminate();
+                    Console.WriteLine("db.app isnt null");
+                    db.App.Dispose();
+                    db = null;
 
-                    Console.WriteLine("db terminated");
+                    Console.WriteLine("db Dispose");
                 }
             }
         }
