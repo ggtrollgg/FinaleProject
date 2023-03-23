@@ -135,7 +135,8 @@ namespace App1
         {
             //ShowListView();
              db.App.Delete();
-             db.Terminate();
+             //db.Terminate();
+             
              Finish();
         }
 
@@ -519,7 +520,8 @@ namespace App1
                 if (db.App != null)
                 {
                     db.App.Delete();
-                    db.Terminate();
+                    //db.Terminate();
+                    
                     Console.WriteLine("db terminated");
                 }
             }

@@ -22,4 +22,25 @@
         android:text="Send Notification"
         android:id="@+id/btnSend"/>
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="start database"
+        android:layout_marginTop="40dp"
+        android:id="@+id/btnDataBaseStart"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="delete database app"
+        android:id="@+id/btnDelete"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="terminate database"
+        android:id="@+id/btnTerminate"/>
+
+   
+
 </LinearLayout>

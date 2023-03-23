@@ -4,18 +4,23 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Firebase;
+using Firebase.Firestore;
+using Java.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace App1
 {
     [Activity(Label = "Test_ServiceAndNotifivation_Activity")]
-    public class Test_ServiceAndNotifivation_Activity : Activity
+    public class Test_ServiceAndNotifivation_Activity : Activity, Android.Gms.Tasks.IOnSuccessListener
     {
-        Button btnSend, btnStart, btnStop;
+        Button btnSend, btnStart, btnStop,btnDelete,btnTerminate, btnDataBaseStart;
         Intent intent2;
+        public FirebaseFirestore db;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -24,11 +29,50 @@ namespace App1
             btnSend = FindViewById<Button>(Resource.Id.btnSend);
             btnStart = FindViewById<Button>(Resource.Id.btnStart);
             btnStop = FindViewById<Button>(Resource.Id.btnStop);
-
+            btnDelete = FindViewById<Button>(Resource.Id.btnDelete);
+            btnDataBaseStart = FindViewById<Button>(Resource.Id.btnDataBaseStart);
+            btnTerminate = FindViewById<Button>(Resource.Id.btnTerminate);
             
             btnSend.Click += BtnSend_Click;
             btnStart.Click += BtnStart_Click;
             btnStop.Click += BtnStop_Click;
+
+            btnDelete.Click += BtnDelete_Click;
+            btnTerminate.Click += BtnTerminate_Click;
+            btnDataBaseStart.Click += BtnDataBaseStart_Click;
+        }
+
+        private void BtnDelete_Click(object sender, EventArgs e)
+        {
+            if (db != null)
+            {
+                if (db.App != null)
+                {
+                    db.App.Delete();
+                    //db.Terminate();
+
+                    Console.WriteLine("db terminated");
+                }
+            }
+        }
+
+        private void BtnDataBaseStart_Click(object sender, EventArgs e)
+        {
+            db = GetDataBase();
+        }
+
+        private void BtnTerminate_Click(object sender, EventArgs e)
+        {
+            if (db != null)
+            {
+                if (db.App != null)
+                {
+                    db.App.Delete();
+                    db.Terminate();
+
+                    Console.WriteLine("db terminated");
+                }
+            }
         }
 
         private void BtnStop_Click(object sender, EventArgs e)
@@ -40,6 +84,65 @@ namespace App1
             //Copy of the code in service 
 
         }
+
+
+
+        public FirebaseFirestore GetDataBase()
+        {
+            FirebaseFirestore db;
+            // info from "google-services.json"
+            var options = new FirebaseOptions.Builder()
+            .SetProjectId("stock-data-base-finalproject")
+            .SetApplicationId("stock-data-base-finalproject")
+            .SetApiKey("AIzaSyCjiFrMsBwOFvqUZRdohfIiqMsJC5QG_kc")
+            .SetStorageBucket("stock-data-base-finalproject.appspot.com")
+            .Build();
+
+
+            try
+            {
+                var app = FirebaseApp.InitializeApp(this, options);
+                db = FirebaseFirestore.GetInstance(app);
+                return db;
+            }
+            catch
+            {
+                var app = FirebaseApp.GetApps(this);
+                db = FirebaseFirestore.GetInstance(app[0]);
+                return db;
+            }
+
+
+        }
+
+
+
+        private void LoadItems()
+        {
+            // generate a query (request) from the database
+            Query q = db.Collection("Saved Stocks");
+            q.Get().AddOnSuccessListener(this);
+        }
+
+        public void OnSuccess(Java.Lang.Object result)
+        {
+
+            Console.WriteLine("OnSuccess");
+
+            // gets List of HashMaps whick represent the DB students
+            var snapshot = (QuerySnapshot)result;
+            StockData data;
+        }
+
+
+
+
+
+
+
+
+
+
 
         private void BtnStart_Click(object sender, EventArgs e)
         {

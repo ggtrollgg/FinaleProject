@@ -88,14 +88,6 @@ namespace App1
                 System.Threading.Thread.Sleep(TimeBetweenChecks * 1000);
             }
 
-
-
-
-
-
-
-
-
             StopSelf();
         }
 
