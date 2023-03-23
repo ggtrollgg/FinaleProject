@@ -154,8 +154,8 @@ namespace App1
             {
                 StopService(intent2);
             }
-            intent2 = new Intent(this, typeof(Test_service));
-            //intent2 = new Intent(this, typeof(MyService));
+            //intent2 = new Intent(this, typeof(Test_service));
+            intent2 = new Intent(this, typeof(MyService));
             StartService(intent2);
             //Copy of the code in service 
 

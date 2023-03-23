@@ -88,15 +88,6 @@ namespace App1
                 Console.WriteLine("time between checks is: " + TimeBetweenChecks + " seconds");
                 System.Threading.Thread.Sleep(TimeBetweenChecks * 1000);
             }
-
-
-
-
-
-
-
-
-
             StopSelf();
         }
 

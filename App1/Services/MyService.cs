@@ -97,6 +97,14 @@ namespace App1
             running = false;//stop condition
             var notificationManager = (NotificationManager)GetSystemService(NotificationService);
             notificationManager.CancelAll();
+
+            if (db != null)
+            {
+                if (db.App != null)
+                    db.App.Dispose();
+                db.Dispose();
+                db = null;
+            }
             Toast.MakeText(this, "Service stopped ", ToastLength.Short).Show();
 
         }
@@ -114,9 +122,18 @@ namespace App1
             .Build();
 
 
-            var app = FirebaseApp.InitializeApp(this, options);
-            db = FirebaseFirestore.GetInstance(app);
-            return db;
+            try
+            {
+                var app = FirebaseApp.InitializeApp(this, options);
+                db = FirebaseFirestore.GetInstance(app);
+                return db;
+            }
+            catch
+            {
+                var app = FirebaseApp.GetApps(this);
+                db = FirebaseFirestore.GetInstance(app[0]);
+                return db;
+            }
         }
         private void LoadItems()
         {
