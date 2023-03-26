@@ -24,6 +24,7 @@ namespace App1
 
         List<MyPoint> points = new List<MyPoint>();
         List<MyPoint> Changedpoints = new List<MyPoint>();
+
         List<TextBlock> TextBlocks = new List<TextBlock>();
         List<TextBlock> TextBlocks_Y = new List<TextBlock>();
 
@@ -105,7 +106,8 @@ namespace App1
                     camera.Y_changed = false;
 
                     CalculateNewPointes();
-                    ChangeInTextPlace(daltaOffsetX);
+                    ChangeInTextPlaceX(daltaOffsetX);
+                    ChangeInTextPlaceY(daltaOffsetY);
                 }
 
                 DrawXexis();
@@ -267,7 +269,7 @@ namespace App1
 
             }
         }
-        private void ChangeInTextPlace(float v)
+        private void ChangeInTextPlaceX(float v)
         {
             int Anchor_place = 0;
             int place = 0;
@@ -309,35 +311,44 @@ namespace App1
                     }
                 }
             }
-            //else //hide overlaping text 
-            //{
-            //    for (int i = 1; i < TextBlocks.Count; i++)
-            //    {
-            //        if (!TextBlocks[i].Hidden)
-            //        {
-            //            float width = TextPaint_X.MeasureText(TextBlocks[0].Text);
-            //            float RightX = Changedpoints[0].x + width / 2;
-            //            //float LeftX = Math.Abs(Changedpoints[i].x - width / 2);
-            //            float LeftX = Changedpoints[i].x - width / 2;
-
-            //            if (RightX >= LeftX)
-            //            {
-            //                TextBlocks[i].Hidden = true;
-            //                Console.Write("i hid the text in place: ");
-            //                for (int g = i; g < TextBlocks.Count; g += 2 * i)
-            //                {
-            //                    TextBlocks[g].Hidden = true;
-            //                    Console.Write(g + " ");
-            //                }
-            //                Console.WriteLine("  ");
-            //                return;
-            //            }
+        }
+        private void ChangeInTextPlaceY(float v)
+        {
+            int Anchor_place = 0;
+            int place = 0;
+            Console.WriteLine(v);
 
 
+            //pre-theory: 
+            //
+            //1) find lowest on screen point
+            //2) find heighst on screnn point 
+            //3)take their values
+            //4)the values between the two points on the y acssis shold be the range of prices showen in the y=exies
 
-            //        }
-            //    }
-            //}
+            //thoery 1:
+            //the "anchor"/absolot value is the right most point on screen
+            // than showes the neerest price thats is 1 height of text from him (on the y exies)
+            // if there is no point at exectly 1 height of text from the point (upword or downword):  --- maybe uneccery 
+            //      than calculate the dividance between lowest and heighest point on screen
+            //      to calculate the value of 1 height text in reffrence to the value of canvas height in the current zoom(value of canvas height =  dividance between lowest and heighest point on screen)
+
+            //thoery 2:
+            //the "anchor"/absolot value is the right most point on screen
+            // than showes the neerest price thats is 1 height of text from him (on the y exies)
+            //than calculate the dividance between lowest and heighest point on screen
+            //to calculate the value of 1 height text in reffrence to the value of canvas height in the current zoom(value of canvas height =  dividance between lowest and heighest point on screen)
+
+            //practice 
+            if (v != 0) // change in y exies
+            {
+                int Leftest_pointI  = Calculate_Original_Point_I(0);
+                int Rightest_pointI = Calculate_Original_Point_I(canvas.Width);
+                for(int i = Leftest_pointI; i <= Rightest_pointI; i++)
+                {
+
+                }
+            }
         }
 
         private int CalculatePointZoomingOn()
@@ -380,9 +391,18 @@ namespace App1
             int defualtI2 = (int)Math.Round(defualtI);
             //int i2 = (int)Math.Round(i);
             //int i2 = (int)Math.Round(itest);
+
             int i2 = (int)Math.Round(itest2);
             //return defualtI2;
             return i2;
+        }
+
+        private int Calculate_Original_Point_I(float x)
+        {
+            double defualtPointx = (x - camera.CameraOffSetX) / test_zoomfactor;
+            double itest2 = ((defualtPointx * (points.Count)) * 20) / (canvas.Width * 18);
+            int i = (int)Math.Round(itest2);
+            return i;
         }
         private void DrawTouching()
         {
@@ -421,7 +441,8 @@ namespace App1
             if (midPoint != null)
             {
                 canvas.DrawCircle(midPoint.x, midPoint.y, 10, p1);
-                int i = CalculatePointZoomingOn();
+                //int i = CalculatePointZoomingOn();
+                int i= Calculate_Original_Point_I(midPoint.x);
                 if (0 <= i && i < points.Count)
                 {
                     canvas.DrawCircle(Changedpoints[i].x, Changedpoints[i].y, 10, p1);

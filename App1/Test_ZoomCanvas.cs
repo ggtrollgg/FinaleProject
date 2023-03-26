@@ -17,7 +17,7 @@ using static Android.InputMethodServices.Keyboard;
 
 namespace App1
 {
-    internal class Test_ZoomCanvas : View
+    public class Test_ZoomCanvas : View
     {
         private Context context;
         Canvas canvas;

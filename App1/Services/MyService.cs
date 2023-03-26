@@ -43,6 +43,8 @@ namespace App1
         int NOTIFICATION_ID = 1;
 
         bool CallInProcess = false;
+        Intent intent2;
+
         public override IBinder OnBind(Intent intent)
         {
             return null;
@@ -55,15 +57,22 @@ namespace App1
             myhandler = new MyHandler(this);
             TimeBetweenChecks= 60*60*24; //seconds in the day
             TimeBetweenChecks = TimeBetweenChecks/numberOfCallsIcanMake; // (seconds in the day / number of calls i can make in a day) = time gap between each call
+
+            Console.WriteLine("------------------------------------------------------------------------------------------------------------------");
+            Console.WriteLine("service created");
+            Console.WriteLine("seconds between checks: " + TimeBetweenChecks);
+            Console.WriteLine("------------------------------------------------------------------------------------------------------------------");
             db = GetDataBase();
 
         }
         [return: GeneratedEnum]
         public override StartCommandResult OnStartCommand(Intent intent, [GeneratedEnum] StartCommandFlags flags, int startId)
         {
-
-            counter = intent.GetIntExtra("counter", 10);
             Toast.MakeText(this, "Service started" ,ToastLength.Short).Show();
+            Console.WriteLine("------------------------------------------------------------------------------------------------------------------");
+            Console.WriteLine("service started");
+            Console.WriteLine("------------------------------------------------------------------------------------------------------------------");
+
             System.Threading.Thread t = new System.Threading.Thread(Run);
             t.Start();
 
@@ -142,14 +151,6 @@ namespace App1
             {
                 Datalist.Clear();
             }
-            //if (list.Count > 0)
-            //{
-            //    list.Clear();
-            //}
-            //if (Temp_Datalist.Count > 0)
-            //{
-            //    Temp_Datalist.Clear();
-            //}
 
 
             // generate a query (request) from the database
@@ -200,14 +201,6 @@ namespace App1
             }
 
             await GetCurrentPriceFromWeb(Symbols);
-
-            //ThreadStart MyThreadStart = new ThreadStart(Checkifstillloading);
-            //System.Threading.Thread t = new System.Threading.Thread(MyThreadStart);
-
-            // t.Start();
-            //Toast.MakeText(this, "sent all data requests", ToastLength.Short).Show();
-            //IsDataCountFull = true;
-
         }
 
         private async Task GetCurrentPriceFromWeb(List<string> symbols)

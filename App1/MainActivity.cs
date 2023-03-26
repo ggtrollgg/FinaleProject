@@ -20,6 +20,7 @@ namespace App1
     public class MainActivity : Activity
     {
         Button btnstart,btnToListView,btnExit,btnTest;
+        Intent intent2;
         //
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -38,25 +39,34 @@ namespace App1
             btnToListView.Click += BtnToListView_Click;
             btnTest.Click += BtnTest_Click;
 
-            String symbol = "AAPL";
-            string link = "https://financialmodelingprep.com/api/v3/historical-chart/1min/";
-            link = link.Insert(link.Length, symbol);
-            link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
-            
-            if (link != "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860")
+            //String symbol = "AAPL";
+            //string link = "https://financialmodelingprep.com/api/v3/historical-chart/1min/";
+            //link = link.Insert(link.Length, symbol);
+            //link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
+
+            //if (link != "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860")
+            //{
+            //    Toast.MakeText(this, "false", ToastLength.Long).Show();
+            //    Console.WriteLine(link);
+            //    Console.WriteLine("https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860");
+            //}
+            Console.WriteLine();
+            if (intent2 != null)
             {
-                Toast.MakeText(this, "false", ToastLength.Long).Show();
-                Console.WriteLine(link);
-                Console.WriteLine("https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860");
+                StopService(intent2);
             }
+            intent2 = new Intent(this, typeof(MyService));
+            StartService(intent2);
+
 
         }
 
         private void BtnTest_Click(object sender, EventArgs e)
         {
-            Intent intent = new Intent(this, typeof(Test_ServiceAndNotifivation_Activity));
-            intent.PutExtra("symbol", "OB");
+            Intent intent = new Intent(this, typeof(Testing_Database_Activity));
+            //intent.PutExtra("symbol", "OB");
             StartActivity(intent);
+            
         }
 
         //buttons
@@ -78,13 +88,6 @@ namespace App1
             StartActivity(intent);
 
         }
-
-
-        
-
-       
-
-
 
     }
 }
