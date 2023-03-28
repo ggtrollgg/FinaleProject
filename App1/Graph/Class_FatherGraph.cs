@@ -52,21 +52,35 @@ namespace App1
 
         public void ZoomBy(float zoomfactor_x , float zoomfactor_y)
         {
-            if(!(test_zoomfactor + zoomfactor_x < 1))
+            if(dataPoints.Count != 0 && canvas != null)
             {
-                zoomfactor_X += zoomfactor_x;
-                zoomfactor_Y += zoomfactor_y;
-                test_zoomfactor += zoomfactor_x;
-                daltaOffsetX = zoomfactor_x*100;
+                int distance = canvas.Width/dataPoints.Count;
+                //Console.WriteLine("(test_zoomfactor + zoomfactor_x)! < 0.8), is: " + ((test_zoomfactor + zoomfactor_x)! < 0.8));
+                //Console.WriteLine("(test_zoomfactor + zoomfactor_x) !> (dataPoints.Count/2.0), is: " + (bool)((test_zoomfactor + zoomfactor_x)! > (dataPoints.Count / 2.0)));
+                //Console.WriteLine("!(test_zoomfactor + zoomfactor_x) < 0.8), is: " + !((test_zoomfactor + zoomfactor_x) < 0.8));
+                //Console.WriteLine("!(test_zoomfactor + zoomfactor_x) > (dataPoints.Count/2.0), is: " + !((test_zoomfactor + zoomfactor_x) > (dataPoints.Count / 2.0)));
+                //Console.WriteLine(" ");
+                if (!((test_zoomfactor + zoomfactor_x) < 0.8) && !((test_zoomfactor + zoomfactor_x) > (dataPoints.Count / 2.0))) // the graph can be spreard across 0.8 of the screen, or it can strech so the distance between each point is half canvas width
+                {
+                    daltaOffsetX = zoomfactor_x * 100 / this.zoomfactor_X;
+                    this.zoomfactor_X += zoomfactor_x;
+                    this.zoomfactor_Y += zoomfactor_y;
 
-                camera.X_zoom_changed = true;
+
+                    //daltaOffsetX = zoomfactor_x * 100;
+                    test_zoomfactor += zoomfactor_x;
+
+
+                    camera.X_zoom_changed = true;
+                }
+
+                //Console.WriteLine(" ");
+                //Console.WriteLine("changed the scale factor");
+                //Console.WriteLine("zoomfactor_x is: " + zoomfactor_X);
+                //Console.WriteLine("zoomfactor_Y is: " + zoomfactor_Y);
+                //Console.WriteLine(" ");
             }
-            
-            //Console.WriteLine(" ");
-            //Console.WriteLine("changed the scale factor");
-            //Console.WriteLine("zoomfactor_x is: " + zoomfactor_X);
-            //Console.WriteLine("zoomfactor_Y is: " + zoomfactor_Y);
-            //Console.WriteLine(" ");
+
         }
         public void OffsetBy(float offset_x , float offset_y)
         {
@@ -172,9 +186,16 @@ namespace App1
 
         public bool OnTouch(View v, MotionEvent e)
         {
+            if (view.midPoint == null && e.PointerCount == 2)
+            {
+                //Console.WriteLine("touching with 2 fingers");
 
+                view.SetNewMidPoint((e.GetX()+ e.GetAxisValue(Axis.X, e.FindPointerIndex(e.GetPointerId(1))))/2,(e.GetY()+ e.GetAxisValue(Axis.Y, e.FindPointerIndex(e.GetPointerId(1))))/2);
+                
+            }
             switch (e.Action)
             {
+               
                 case MotionEventActions.Down:
                     // Store the initial touch coordinates
                     lastTouchX = e.GetX();
@@ -259,8 +280,11 @@ namespace App1
                 //ScaleX = detector.CurrentSpanX / detector.PreviousSpanX;
                 //ScaleY = detector.CurrentSpanY / detector.PreviousSpanY;
 
-                ScaleX = (detector.CurrentSpanX - detector.PreviousSpanX)/100;
-                ScaleY = (detector.CurrentSpanY - detector.PreviousSpanY)/100;
+                //ScaleX = (detector.CurrentSpanX - detector.PreviousSpanX) / 100;
+                //ScaleY = (detector.CurrentSpanY - detector.PreviousSpanY) / 100;
+
+                ScaleX = (detector.CurrentSpanX - detector.PreviousSpanX)/100*view.zoomfactor_X;
+                ScaleY = (detector.CurrentSpanY - detector.PreviousSpanY)/100*view.zoomfactor_Y;
 
                 view.ZoomBy(ScaleX, ScaleY);
 
