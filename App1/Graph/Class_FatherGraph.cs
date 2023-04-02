@@ -62,7 +62,7 @@ namespace App1
                 //Console.WriteLine(" ");
                 if (!((test_zoomfactor + zoomfactor_x) < 0.8) && !((test_zoomfactor + zoomfactor_x) > (dataPoints.Count / 2.0))) // the graph can be spreard across 0.8 of the screen, or it can strech so the distance between each point is half canvas width
                 {
-                    daltaOffsetX = zoomfactor_x * 100 / this.zoomfactor_X;
+                    daltaOffsetX = zoomfactor_x * 10 / this.zoomfactor_X;
                     this.zoomfactor_X += zoomfactor_x;
                     this.zoomfactor_Y += zoomfactor_y;
 
