@@ -18,6 +18,7 @@ namespace App1
         public string Text;
         public Paint p;
 
+        public MyPoint Center { get; set; }
         public MyPoint LeftDown;
         public MyPoint RightDown;
         float width = 0;
@@ -40,6 +41,7 @@ namespace App1
             this.p = p;
             width = p.MeasureText(text);
             //Console.WriteLine("the width of the text is: " + width);
+            Center = new MyPoint(x, y);
 
             LeftDown = new MyPoint(x - width/2, y);
             

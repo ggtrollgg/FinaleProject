@@ -124,7 +124,7 @@ namespace App1
             while (running)
             {
                 //Console.WriteLine("Invalidated from thread");
-                Invalidate();
+                //Invalidate();
                 Thread.Sleep((int)frame_rate * 1000);
             }
             return;
@@ -153,7 +153,7 @@ namespace App1
 
                     CalculateNewPointes();
                     ChangeInTextPlaceX(daltaOffsetX);
-                    //ChangeInTextPlaceY(daltaOffsetY);
+                   //ChangeInTextPlaceY(daltaOffsetY);
 
 
                 }
@@ -165,7 +165,7 @@ namespace App1
 
                 DrawTouching();
 
-                //Invalidate();
+                Invalidate();
             }
         }
 
@@ -210,17 +210,6 @@ namespace App1
                 //canvas.DrawCircle(Changedpoints[i].x, Changedpoints[i].y, 2, p);
                 if (i != values.Count - 1)
                 {
-                    //if(i >= 1)
-                    //{
-                    //    if (values[i] > values[i-1])
-                    //    {
-                    //        canvas.DrawLine(Changedpoints[i].x, Changedpoints[i].y, Changedpoints[i + 1].x, Changedpoints[i + 1].y, green);
-                    //    }
-                    //    else
-                    //    {
-                    //        canvas.DrawLine(Changedpoints[i].x, Changedpoints[i].y, Changedpoints[i + 1].x, Changedpoints[i + 1].y, red);
-                    //    }
-                    //}
                     if (i < values.Count-1)
                     {
                         if (values[i] < values[i +1])
@@ -273,7 +262,8 @@ namespace App1
             Changedpoints.Clear();
             for (int i = 0; i < values.Count; i++)
             {
-                Changedpoints.Add( new MyPoint((points[i].x) * test_zoomfactor + camera.CameraOffSetX, points[i].y + camera.CameraOffSetY));
+                //Changedpoints.Add( new MyPoint((points[i].x) * test_zoomfactor + camera.CameraOffSetX, points[i].y + camera.CameraOffSetY));
+                Changedpoints.Add(new MyPoint((points[i].x) * zoomfactor_X + camera.CameraOffSetX, points[i].y * zoomfactor_Y + camera.CameraOffSetY));
                 //Console.WriteLine("test zoom factor is: " + test_zoomfactor);
             }
             
@@ -281,7 +271,7 @@ namespace App1
 
         
 
-
+        //text functions
         private void DrawXexis()
         {
             String TheString;
@@ -326,7 +316,6 @@ namespace App1
         {
             String TheString;
             float width = 0;
-            //canvas.DrawRect(canvas.Width * (float)(9.0/10) + 5, 0, canvas.Width, canvas.Height, background);
 
             if (TextBlocks_Y == null || TextBlocks_Y.Count == 0)
             {
@@ -344,23 +333,23 @@ namespace App1
                 }
             }
 
-            for (int i = 0; i < TextBlocks_Y.Count; i++)
-            {
+            //for (int i = 0; i < TextBlocks_Y.Count; i++)
+            //{
 
-                if (TextBlocks_Y.Count != 0 && !TextBlocks_Y[i].Hidden)
-                {
-                    TheString = TextBlocks_Y[i].Text;
-                    width = TextPaint_Y.MeasureText(TheString);
-                    //canvas.DrawText(TheString, canvas.Width * (float)(18.0 / 20) + width, Changedpoints[i].y, TextPaint_Y);
+            //    if (TextBlocks_Y.Count != 0 && !TextBlocks_Y[i].Hidden)
+            //    {
+            //        TheString = TextBlocks_Y[i].Text;
+            //        width = TextPaint_Y.MeasureText(TheString);
+            //        //canvas.DrawText(TheString, canvas.Width * (float)(18.0 / 20) + width, Changedpoints[i].y, TextPaint_Y);
 
                   
 
-                    //canvas.DrawCircle(Changedpoints[i].x - width / 2, TextBlocks[i].LeftDown.y, 5, red);
-                    //canvas.DrawCircle(Changedpoints[i].x + width / 2, TextBlocks[i].RightDown.y, 5, green);
+            //        //canvas.DrawCircle(Changedpoints[i].x - width / 2, TextBlocks[i].LeftDown.y, 5, red);
+            //        //canvas.DrawCircle(Changedpoints[i].x + width / 2, TextBlocks[i].RightDown.y, 5, green);
 
-                }
+            //    }
 
-            }
+            //}
         }
         private void ChangeInTextPlaceX(float v)
         {
@@ -408,11 +397,9 @@ namespace App1
         }
         private void ChangeInTextPlaceY(float v)
         {
-            //canvas.DrawRect(canvas.Width * (float)(9.0 / 10) + 5, 0, canvas.Width, canvas.Height, background);
             canvas.DrawRect(text_start_y, 0, canvas.Width, canvas.Height, background);
             int Anchor_place = 0;
             int place = 0;
-           // Console.WriteLine(v);
 
 
             //pre-theory: 
@@ -438,8 +425,7 @@ namespace App1
             //practice 
             if (v != 0 && values.Count!=0) // change in y exies
             {
-                //int Leftest_pointI  = Calculate_Original_Point_I(0);//the left most visibal point on the screen
-                //int Rightest_pointI = Calculate_Original_Point_I(canvas.Width * (float)(9.0 / 10) + 5);//the right most visibale point on the screen
+
                 
 
 
@@ -460,35 +446,38 @@ namespace App1
                 float lowest = values[Leftest_pointI];//---
                 float value_of_rightest = values[Rightest_pointI];
                 float value_of_canvasHeight = 0;
+                float l_hieght = 0;
+                float h_hieght = 0;
 
                 for (int i = Leftest_pointI; i <= Rightest_pointI; i++)//getting the heighest and lowest price on screen
                 {
                     if (values != null & values.Count>i && values[i]< lowest)
                     {
                         lowest = values[i];
+                        l_hieght = Changedpoints[i].y;
                     }
                     else if (values != null & values.Count > i && values[i]> heighest)
                     {
                         heighest = values[i];
+                        h_hieght = Changedpoints[i].y;
                     }
                 }
 
-                value_of_canvasHeight = heighest - lowest; //value of the canvas height
-
-                Paint.FontMetrics fm = TextPaint_Y.GetFontMetrics();
-                float height = fm.Bottom - fm.Top + fm.Leading; //height in pixels of text
-                //float height = fm.Descent - fm.Ascent;
+                //value_of_canvasHeight = heighest - lowest; //value of the canvas height
+                //float value_per_pixel = value_of_canvasHeight / canvas.Height;
 
 
-                float value_per_pixel = value_of_canvasHeight / canvas.Height;
+                float value_per_pixel = (heighest - lowest) / (Math.Abs(h_hieght - l_hieght));
+                value_of_canvasHeight = value_per_pixel*canvas.Height; //value of the canvas height
+                
+
                 float distance_from_roof_of_canvas = Changedpoints[Rightest_pointI].y;
                 float distance_from_floor_of_canvas = canvas.Height - distance_from_roof_of_canvas;
                 float price = 0;
 
-                //string TheString = TextBlocks_Y[Rightest_pointI].Text;
                 string TheString = ""+value_of_rightest;
                 float width = TextPaint_Y.MeasureText(TheString);
-                //canvas.DrawText(TheString, canvas.Width * (float)(18.0 / 20) + width, Changedpoints[Rightest_pointI].y, TextPaint_Y);
+               
 
                 Rect bounds = new Rect();
                 TextPaint_Y.GetTextBounds(TheString, 0, TheString.Length, bounds);
@@ -496,6 +485,9 @@ namespace App1
                 canvas.DrawCircle(Changedpoints[Rightest_pointI].x, Changedpoints[Rightest_pointI].y, 5, green);
 
 
+                Paint.FontMetrics fm = TextPaint_Y.GetFontMetrics();
+                //float height = fm.Descent - fm.Ascent;
+                float height = fm.Bottom - fm.Top + fm.Leading; //height in pixels of text
                 string the_string = "";
 
                 //generete text-price below the furthest-right point
@@ -506,20 +498,22 @@ namespace App1
                     price = price / 100;
 
                     the_string = "" + price;
-
-                    //canvas.DrawText(the_string, canvas.Width * (float)(9.0 / 10) + (width / 2), TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 4) + (i*height) , TextPaint_Y);
                     if(i == 0)
                     {
-                        if (values[Rightest_pointI] > values[Rightest_pointI-1])
-                            canvas.DrawRect(text_start_y , TextBlocks_Y[Rightest_pointI].LeftDown.y - (height / 2),canvas.Width, TextBlocks_Y[Rightest_pointI].LeftDown.y+ (height / 2), green);
+                        if (values[Rightest_pointI] > values[Rightest_pointI - 1])
+                        {
+                            //canvas.DrawRect(text_start_y, TextBlocks_Y[Rightest_pointI].LeftDown.y - (height / 2), canvas.Width, TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 2), green);
+                            canvas.DrawRect(text_start_y, Changedpoints[Rightest_pointI].y - (height / 2), canvas.Width, Changedpoints[Rightest_pointI].y + (height / 2), green);
+                        }
+                            
                         else
                         {
-                            canvas.DrawRect(text_start_y, TextBlocks_Y[Rightest_pointI].LeftDown.y - (height / 2), canvas.Width, TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 2), red);
+                           // canvas.DrawRect(text_start_y, TextBlocks_Y[Rightest_pointI].LeftDown.y - (height / 2), canvas.Width, TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 2), red);
+                            canvas.DrawRect(text_start_y, Changedpoints[Rightest_pointI].y - (height / 2), canvas.Width, Changedpoints[Rightest_pointI].y + (height / 2), red);
                         }
                     }
-                    //canvas.DrawText(the_string,text_start_y + (width / 2), TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 4) + (i * height), TextPaint_Y);
-                    canvas.DrawText(the_string, text_start_y, TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 4) + (i * height), TextPaint_Y);
-                    //canvas.DrawCircle(canvas.Width * (float)(9.0 / 10) + (width / 2), TextBlocks_Y[Rightest_pointI].LeftDown.y+ i * height, 5, green);
+                    //canvas.DrawText(the_string, text_start_y, TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 4) + (i * height), TextPaint_Y);
+                    canvas.DrawText(the_string, text_start_y, Changedpoints[Rightest_pointI].y + (height / 4)  + (i * height), TextPaint_Y);
                 }
 
                 //genereting text-price above the furthest-right point
@@ -529,17 +523,12 @@ namespace App1
                     {
                         i = 1;
                     }
-
                     price = value_of_rightest + i * (height * value_per_pixel);
                     price = (int)(price * 100);
                     price = price / 100;
-
                     the_string = "" + price;
-
-                    //canvas.DrawText(the_string, canvas.Width * (float)(9.0/10) + ( width/2), TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 4) - (i * height), TextPaint_Y);
-                    //canvas.DrawText(the_string, text_start_y + (width / 2), TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 4) - (i * height), TextPaint_Y);
-                    canvas.DrawText(the_string, text_start_y, TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 4) - (i * height), TextPaint_Y);
-                    //canvas.DrawCircle(canvas.Width * (float)(9.0/10) + ( width/2), TextBlocks_Y[Rightest_pointI].LeftDown.y - (i * height), 5, green);
+                    //canvas.DrawText(the_string, text_start_y, TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 4) - (i * height), TextPaint_Y);
+                    canvas.DrawText(the_string, text_start_y, Changedpoints[Rightest_pointI].y + (height / 4) - (i * height), TextPaint_Y);
                 }
 
                 
@@ -549,6 +538,22 @@ namespace App1
             }
         }
 
+        
+        public void Create_text_Y()
+        {
+
+        }
+        private void DrawYexis_V2()
+        {
+
+        }
+        private void ChangeInTextPlaceY_V2()
+        {
+
+        }
+
+
+        //calculations to find points on graph
         private int CalculatePointZoomingOn()
         {
             double defualtPointx = (midPoint.x - camera.CameraOffSetX) / test_zoomfactor;
@@ -614,6 +619,8 @@ namespace App1
         }
 
 
+
+        //draw point touching and text bubble that upear above it with info
         private void DrawTouching()
         {
             p1.Color = Color.Black;
