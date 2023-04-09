@@ -158,6 +158,8 @@ namespace App1
             q.Get().AddOnSuccessListener(this);
         }
 
+
+
         public async void OnSuccess(Java.Lang.Object result)
         {
             //IsDataCountFull = false;

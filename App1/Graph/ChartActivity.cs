@@ -570,11 +570,11 @@ namespace App1
 
         private void IbType_Click(object sender, EventArgs e)
         {
-            d = new Dialog(this);
-            d.SetContentView(Resource.Layout.Custom_PopUp_MiniGraph);
-            d.SetTitle("type of graphs");
-            d.SetCancelable(true);
-            d.Show();
+            //d = new Dialog(this);
+            //d.SetContentView(Resource.Layout.Custom_PopUp_MiniGraph);
+            //d.SetTitle("type of graphs");
+            //d.SetCancelable(true);
+            //d.Show();
         }
 
         private void IbHome_Click(object sender, EventArgs e)

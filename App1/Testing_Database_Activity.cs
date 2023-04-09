@@ -42,9 +42,9 @@ namespace App1
             //TZC = new Test_ZoomCanvas(this);
             //SetContentView(TZC);
 
-            ZCV = new ZoomableCanvasView(this);
-            SetContentView(ZCV);
-            /*
+            //ZCV = new ZoomableCanvasView(this);
+            //SetContentView(ZCV);
+            
             SetContentView(Resource.Layout.Testing_DataBase_Layout);
             // Create your application here
             btnPrintDataBase = FindViewById<Button>(Resource.Id.btnPrintDataBase);
@@ -59,7 +59,7 @@ namespace App1
 
 
             SetUpDataBase();
-            */
+            
 
         }
 

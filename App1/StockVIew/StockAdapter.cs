@@ -84,7 +84,7 @@ namespace App1
                 tvLow.Text = "Low: " + Temp.low;
                 tvHeigh.Text = "Heigh: " + Temp.heigh;
                 tvTrackingPrices.Text = "";
-                foreach (int num in Temp.TrackingPrices)
+                foreach (float num in Temp.TrackingPrices)
                 {
                     tvTrackingPrices.Text += num.ToString() + ",";
                 }

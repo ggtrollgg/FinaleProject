@@ -109,27 +109,7 @@ namespace App1
             }
         }
 
-        private void LoadTrackingItems()
-        {
-            if (Datalist.Count > 0)
-            {
-                Datalist.Clear();
-            }
-            if (list.Count > 0)
-            {
-                list.Clear();
-            }
-            if (Temp_Datalist.Count > 0)
-            {
-                Temp_Datalist.Clear();
-            }
-            // generate a query (request) from the database
-            Query q = 
-                db
-                .Collection("Saved Stocks")
-                .WhereNotEqualTo("TrackingPrices", "");
-            q.Get().AddOnSuccessListener(this);
-        }
+        
 
         private void BtnReturnHome_Click(object sender, EventArgs e)
         {
@@ -260,9 +240,30 @@ namespace App1
             Query q = db.Collection("Saved Stocks");
             q.Get().AddOnSuccessListener(this);
         }
-
+        private void LoadTrackingItems()
+        {
+            if (Datalist.Count > 0)
+            {
+                Datalist.Clear();
+            }
+            if (list.Count > 0)
+            {
+                list.Clear();
+            }
+            if (Temp_Datalist.Count > 0)
+            {
+                Temp_Datalist.Clear();
+            }
+            // generate a query (request) from the database
+            Query q =
+                db
+                .Collection("Saved Stocks")
+                .WhereNotEqualTo("TrackingPrices", "");
+            q.Get().AddOnSuccessListener(this);
+        }
         public void OnSuccess(Java.Lang.Object result)
         {
+
             IsDataCountFull = false;
             Console.WriteLine("OnSuccess");
             if (queryType == "normal")
@@ -274,8 +275,6 @@ namespace App1
                 // iterate through each document in the collection
                 foreach (var doc in snapshot.Documents)
                 {
-                    
-
                     string tr = (string)doc.Get("TrackingPrices");
                     List<float> trackingprices = new List<float>();
                     if (tr != null && tr != "")
@@ -300,17 +299,10 @@ namespace App1
                     }
                     else
                     {
-                        //float heigh = (float)doc.Get("heigh");
-                        //float low = (float)doc.Get("low");
-                        //string symbol = (string)doc.Get("symbol");
-                        //string LastDate = (string)doc.Get("LastDate");
-                        //if (!ShowOnlyTracking)
-                        //{
                         data = new StockData((float)doc.Get("heigh"), (float)doc.Get("low"), (string)doc.Get("LastDate"), (string)doc.Get("symbol"));
                         Datalist.Add(data);
                         Docs_In_DataBase.Add(doc);
                         _ = GetInfoFromWeb(data.symbol, i);
-                        //}
                     }
 
                     i++;
@@ -328,16 +320,20 @@ namespace App1
 
                     string tr = (string)doc.Get("TrackingPrices");
                     List<float> trackingprices = new List<float>();
+                    if (tr[tr.Length - 1] == ',')
+                    {
+                        tr.Remove(tr.Length - 1);
+                    }
                     if (tr != null && tr != "")
                     {
                         string[] trs = tr.Split(',');
-
+                        Console.WriteLine("The tracking prices of: " + doc.Get("Symbol") + " are: ");
                         foreach (string price in trs)
                         {
                             if (price != null && price != "" && IsDigitsOnly(price))
                             {
                                 trackingprices.Add(float.Parse(price));
-                                Console.WriteLine("The tracking prices of: " + doc.Get("Symbol") + " are: " + price);
+                                Console.Write(" "+ price);
                             }
                         }
                     }
@@ -350,11 +346,20 @@ namespace App1
                     }
                     i++;
                 }
+
+
+
+
+
+
             }
+
+
+
             ThreadStart MyThreadStart = new ThreadStart(Checkifstillloading);
             System.Threading.Thread t = new System.Threading.Thread(MyThreadStart);
-            
             t.Start();
+
             Toast.MakeText(this, "sent all data requests", ToastLength.Short).Show();
             IsDataCountFull = true;
             
@@ -364,7 +369,7 @@ namespace App1
         {
             foreach (char c in str)
             {
-                if (c != ',' && (c < '0' || c > '9'))
+                if (c != ',' && c!= '.' && (c < '0' || c > '9'))
                     return false;
             }
 
@@ -398,6 +403,7 @@ namespace App1
                     {
                         Console.WriteLine("the code should not be stuck in loading for 2 min L :(");
                         //Toast.MakeText(this, "loading... for 2 min", ToastLength.Short).Show();
+                        return;
                     }
                     else
                     {
@@ -473,6 +479,65 @@ namespace App1
                 ////ShowListView();
             //}
                 
+
+            Dispose(true);
+            return;
+        }
+        private async Task Bulk_GetInfoFromWeb(List<string> symbols)
+        {
+            using (var httpClient2 = new HttpClient())
+            {
+                string symbolss = "";
+                foreach (string symbol in symbols)
+                {
+                    symbolss = symbolss + ',' + symbol;
+                }
+
+
+                string link = "https://financialmodelingprep.com/api/v3/quote/";
+                link = link.Insert(link.Length, symbolss);
+                //link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
+                link = link.Insert(link.Length, "?apikey=8bdedb14d7674def460cb3a84f1fd429");
+                //8bdedb14d7674def460cb3a84f1fd429
+
+                Console.WriteLine("creating a get request to financialmodeling ");
+                using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
+                {
+                    Console.WriteLine("sending request to financialmodeling ");
+                    var response2 = await httpClient2.SendAsync(request);
+                    response2.EnsureSuccessStatusCode();
+
+                    string responseBody = await response2.Content.ReadAsStringAsync();
+                    JSONArray HistInfo = new JSONArray(responseBody);
+
+                    float currentPrice = 0;
+                    float lastPrice = (Datalist[0].heigh + Datalist[0].low) / 2;
+
+                    for (int i = 0; i < symbols.Count; i++)
+                    {
+                        currentPrice = (float)(HistInfo.GetJSONObject(i).GetDouble("price"));
+
+                        
+                    }
+
+
+
+
+                }
+
+
+
+
+            }
+
+            int count = Docs_In_DataBase.Count;
+            for (int g = count - 1; g >= 0; g--)
+            {
+                UpdateTrackItemAsync((string)Docs_In_DataBase[g].Get("symbol"), g);
+            }
+
+            Toast.MakeText(this, "presenting the list", ToastLength.Short).Show();
+            ShowListView();
 
             Dispose(true);
             return;
