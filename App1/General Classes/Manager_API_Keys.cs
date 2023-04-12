@@ -30,10 +30,10 @@ namespace App1
                 editor.PutString("Key1", "8bdedb14d7674def460cb3a84f1fd429");
                 editor.PutString("Key2", "561897c32bf107b87c107244081b759f");
 
-                //putting values that are right for 12/4/2023 15:34
+                //putting values that are right for 12/4/2023 17:32
                 editor.PutInt("Key0CallsRemain", 0);
                 editor.PutInt("Key1CallsRemain", 194);
-                editor.PutInt("Key2CallsRemain", 245);
+                editor.PutInt("Key2CallsRemain", 213);
 
                 editor.Commit();
             }

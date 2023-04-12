@@ -219,13 +219,27 @@ namespace App1
                 string link = "https://financialmodelingprep.com/api/v3/quote/";
                 link = link.Insert(link.Length, symbolss);
                 //link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
-                link = link.Insert(link.Length, "?apikey=8bdedb14d7674def460cb3a84f1fd429");
+                //link = link.Insert(link.Length, "?apikey=8bdedb14d7674def460cb3a84f1fd429");
                 //8bdedb14d7674def460cb3a84f1fd429
+
+                API_Key k = MainActivity.Manager_API_Keys.GetBestKey();
+                if (k != null && k.Key != "" && k.GetCallsRemaining() > 0)
+                {
+                    link = link.Insert(link.Length, "?apikey=" + k.Key);
+                }
+                else
+                {
+                    Console.WriteLine("there was a problem with the keys at stockview activity ");
+                    return;
+                }
+               
 
                 Console.WriteLine("creating a get request to financialmodeling ");
                 using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
                 {
                     Console.WriteLine("sending request to financialmodeling ");
+                    MainActivity.Manager_API_Keys.UseKey(k.Key);
+
                     var response2 = await httpClient2.SendAsync(request);
                     response2.EnsureSuccessStatusCode();
 

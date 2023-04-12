@@ -181,10 +181,20 @@ namespace App1
 
                 string link = "https://financialmodelingprep.com/api/v3/historical-chart/1min/";
                 link = link.Insert(link.Length, symbol);
-                link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
+                //link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
 
 
-
+                API_Key k = MainActivity.Manager_API_Keys.GetBestKey();
+                if (k != null && k.Key != "" && k.GetCallsRemaining() > 0)
+                {
+                    link = link.Insert(link.Length, "?apikey=" + k.Key);
+                }
+                else
+                {
+                    Console.WriteLine("there was a problem with the keys at stockview activity ");
+                    return;
+                }
+                
 
 
                 // using (var request = new HttpRequestMessage(new HttpMethod("GET"), "https://financialmodelingprep.com/api/v3/quote-short/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860"))
@@ -192,7 +202,7 @@ namespace App1
                 using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
                 {
                     //request.Headers.TryAddWithoutValidation("Upgrade-Insecure-Requests", "1");
-
+                    MainActivity.Manager_API_Keys.UseKey(k.Key);
                     var response = await httpClient.SendAsync(request);
                     response.EnsureSuccessStatusCode();
 

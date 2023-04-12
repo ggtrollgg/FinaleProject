@@ -14,6 +14,8 @@ using Org.Json;
 using System.Collections.Generic;
 using Android.Content;
 using App1.General_Classes;
+using Android.Gms.Common.Api.Internal;
+using static Android.Provider.CallLog;
 
 namespace App1
 {
@@ -22,6 +24,7 @@ namespace App1
     {
 
         public static ISharedPreferences sp;
+        public static Manager_API_Keys Manager_API_Keys;
         Button btnstart,btnToListView,btnExit,btnTest;
         Intent intent2;
         //
@@ -44,8 +47,11 @@ namespace App1
             btnExit.Click += BtnExit_Click;
             btnToListView.Click += BtnToListView_Click;
             btnTest.Click += BtnTest_Click;
-            sp = GetSharedPreferences("KeysForFinaleProject", FileCreationMode.Private);
 
+
+
+            sp = GetSharedPreferences("KeysForFinaleProject", FileCreationMode.Private);
+            Manager_API_Keys = new Manager_API_Keys();
 
 
             //API_Keys.Add(new API_Key("0a0b32a8d57dc7a4d38458de98803860"));
@@ -68,10 +74,28 @@ namespace App1
 
         private void BtnTest_Click(object sender, EventArgs e)
         {
-            Intent intent = new Intent(this, typeof(Testing_Database_Activity));
+            //Intent intent = new Intent(this, typeof(Testing_Database_Activity));
             //intent.PutExtra("symbol", "OB");
-            StartActivity(intent);
-            
+            //StartActivity(intent);
+            //var editor = sp.Edit();
+            //editor.PutInt("Key2CallsRemain", 206);
+            //editor.Commit();
+
+            for (int i = 0; i < sp.GetInt("KeysAmount", -1); i++)
+            {
+                Console.WriteLine("   ");
+
+                Console.WriteLine("ShardPrefrenc: Key" + i + " is: " +  sp.GetString("Key" + i, ""));
+                Console.WriteLine("ShardPrefrenc: CallsRemain: " + sp.GetInt("Key" + i + "CallsRemain", 0));
+                Console.WriteLine("Manager_API_Key: Key" + i + " is: " + Manager_API_Keys.API_Keys[i].Key);
+                Console.WriteLine("ShardPrefrenc: CallsRemain: " + Manager_API_Keys.API_Keys[i].GetCallsRemaining());
+
+
+                Console.WriteLine("   ");
+            }
+
+
+
         }
 
         //buttons
