@@ -223,8 +223,8 @@ namespace App1
         {
             foreach (DataPoint i in dataPoints)
             {
-                float avr = (i.low + i.heigh);
-                values.Add(avr);
+                //float avr = (i.low + i.heigh)/(float)2.0;
+                values.Add(i.close);
             }
         }
         public void findLowHeigh()

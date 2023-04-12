@@ -218,14 +218,16 @@ namespace App1
                     {
                         float high = (float)HistInfo.GetJSONObject(i).GetDouble("high");
                         float low = (float)HistInfo.GetJSONObject(i).GetDouble("low");
+                        float close = (float)HistInfo.GetJSONObject(i).GetDouble("close");
                         string date = (string)HistInfo.GetJSONObject(i).Get("date");
 
                         float avr = (float)(high + low) / 2;
+                        Console.WriteLine("avr: " + avr);
+                        Console.WriteLine("close: " + close);
 
-                        //Console.WriteLine(avr);
-                        list.Add(avr);
+                        list.Add(close);
                         list_Dates.Add(date);
-                        list_DataPoints.Add(new DataPoint(high, low, date));
+                        list_DataPoints.Add(new DataPoint(high, low,close, date));
 
                         //Console.WriteLine((string)(HistInfo.GetJSONObject(i).Get("date")));
                     }

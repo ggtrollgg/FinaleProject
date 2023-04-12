@@ -15,6 +15,7 @@ namespace App1
     {
         public float heigh;
         public float low;
+        public float close;
         public string date;
         //
        
@@ -29,6 +30,13 @@ namespace App1
             this.date = date;
 
         }
-       
+        public DataPoint(float heigh, float low, float close, String date)
+        {
+            this.heigh = heigh;
+            this.low = low;
+            this.close = close;
+            this.date = date;
+
+        }
     }
 }
