@@ -221,9 +221,9 @@ namespace App1
                         float close = (float)HistInfo.GetJSONObject(i).GetDouble("close");
                         string date = (string)HistInfo.GetJSONObject(i).Get("date");
 
-                        float avr = (float)(high + low) / 2;
-                        Console.WriteLine("avr: " + avr);
-                        Console.WriteLine("close: " + close);
+                       // float avr = (float)(high + low) / 2;
+                      //  Console.WriteLine("avr: " + avr);
+                       // Console.WriteLine("close: " + close);
 
                         list.Add(close);
                         list_Dates.Add(date);
