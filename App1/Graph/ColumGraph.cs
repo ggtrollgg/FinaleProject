@@ -27,9 +27,6 @@ namespace App1
         float lowest = -1, highest = 0;
         bool doOnce = true;
 
-        MyCamera camera = new MyCamera(0, 0);
-
-
         MyPoint lastPlace;
         MyPoint lastPlace2;
         float test_zoomfactor = 1;
@@ -59,9 +56,26 @@ namespace App1
             if (dataPoints != null)
             {
                 DoOnce();
+
+                if (camera != null && (camera.X_changed || camera.Y_changed || camera.X_zoom_changed || camera.Y_zoom_changed))
+                {
+                    camera.X_zoom_changed = false;
+                    camera.Y_zoom_changed = false;
+                    camera.X_changed = false;
+                    camera.Y_changed = false;
+                    //Console.WriteLine("calculating new values for squers");
+                    CalculateNewPointes();
+                    
+                    //ChangeInTextPlaceY(daltaOffsetY);
+
+
+                }
+
                 DrawGraph();
-                
-                //DrawTouching();
+                DrawTouching();
+
+
+
                 //DrawXexis();
 
                 Invalidate();
@@ -70,86 +84,84 @@ namespace App1
 
         private void DrawGraph()
         {
-            CreateChartSquars();
+            
             DrawSquers();
         }
 
         private void DrawTouching()
         {
             p1.Color = Color.Black;
-            if (point1 != null && point2 != null && midPoint != null)
+            if (midPoint != null)
             {
-                canvas.DrawCircle(point1.x, point1.y, 100, p1);
-                canvas.DrawCircle(point2.x, point2.y, 100, p1);
                 canvas.DrawCircle(midPoint.x, midPoint.y, 10, p1);
                 p1.Color = Color.Blue;
                 p1.Color = Color.Green;
             }
         }
 
-        public override bool OnTouchEvent(MotionEvent e)
-        {
-            if (e.PointerCount > 1)
-            {
-                p1.Color = Color.Black;
+        //public override bool OnTouchEvent(MotionEvent e)
+        //{
+        //    if (e.PointerCount > 1)
+        //    {
+        //        p1.Color = Color.Black;
 
-                point1 = new MyPoint((float)e.GetX(), (float)e.GetY());
-                point2 = new MyPoint(e.GetAxisValue(Axis.X, e.FindPointerIndex(e.GetPointerId(1))), e.GetAxisValue(Axis.Y, e.FindPointerIndex(e.GetPointerId(1))));
+        //        point1 = new MyPoint((float)e.GetX(), (float)e.GetY());
+        //        point2 = new MyPoint(e.GetAxisValue(Axis.X, e.FindPointerIndex(e.GetPointerId(1))), e.GetAxisValue(Axis.Y, e.FindPointerIndex(e.GetPointerId(1))));
 
-                if (e.Action == MotionEventActions.Pointer2Down || e.Action == MotionEventActions.Down)
-                {
-                    midPoint = new MyPoint((point1.x + point2.x) / 2, (point1.y + point2.y) / 2);
-                }
-            }
-            if (e.Action == MotionEventActions.Up)
-            {
-                point1 = null;
-                point2 = null;
-                midPoint = null;
-            }
+        //        if (e.Action == MotionEventActions.Pointer2Down || e.Action == MotionEventActions.Down)
+        //        {
+        //            midPoint = new MyPoint((point1.x + point2.x) / 2, (point1.y + point2.y) / 2);
+        //        }
+        //    }
+        //    if (e.Action == MotionEventActions.Up)
+        //    {
+        //        point1 = null;
+        //        point2 = null;
+        //        midPoint = null;
+        //    }
 
-            if (lastPlace == null)
-            {
-                lastPlace = new MyPoint(e.GetX(), e.GetY());
-                return true;
-            }
-            else
-            {
-                if (e.Action == MotionEventActions.Move)
-                {
-                    if (e.PointerCount > 1 && midPoint != null)
-                    {
-                        point2 = new MyPoint(e.GetAxisValue(Axis.X, e.FindPointerIndex(e.GetPointerId(1))), e.GetAxisValue(Axis.Y, e.FindPointerIndex(e.GetPointerId(1))));
-                        if (lastPlace2 == null)
-                        {
-                            lastPlace2 = new MyPoint(point2.x, point2.y);
-                        }
-                        test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100 + ((float)point2.x - lastPlace2.x) / 100;
+        //    if (lastPlace == null)
+        //    {
+        //        lastPlace = new MyPoint(e.GetX(), e.GetY());
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        if (e.Action == MotionEventActions.Move)
+        //        {
+        //            if (e.PointerCount > 1 && midPoint != null)
+        //            {
+        //                point2 = new MyPoint(e.GetAxisValue(Axis.X, e.FindPointerIndex(e.GetPointerId(1))), e.GetAxisValue(Axis.Y, e.FindPointerIndex(e.GetPointerId(1))));
+        //                if (lastPlace2 == null)
+        //                {
+        //                    lastPlace2 = new MyPoint(point2.x, point2.y);
+        //                }
+        //                test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100 + ((float)point2.x - lastPlace2.x) / 100;
 
-                        lastPlace2.x = point2.x;
-                        lastPlace2.y = point2.y;
-                    }
-                    else
-                    {
-                        //if (!(camera.CameraOffSetX + (float)e.GetX() - lastPlace.x >= 0))
-                        //{
-                        //    camera.CameraOffSetX += (float)e.GetX() - lastPlace.x;
-                        //}
-                        camera.CameraOffSetX += (float)e.GetX() - lastPlace.x;
-                        camera.CameraOffSetY += (float)e.GetY() - lastPlace.y;
-                        Console.WriteLine("The camera ofsetx is: " + camera.CameraOffSetX);
-                    }
-                }
-            }
+        //                lastPlace2.x = point2.x;
+        //                lastPlace2.y = point2.y;
+        //            }
+        //            else
+        //            {
+        //                //if (!(camera.CameraOffSetX + (float)e.GetX() - lastPlace.x >= 0))
+        //                //{
+        //                //    camera.CameraOffSetX += (float)e.GetX() - lastPlace.x;
+        //                //}
+        //                camera.CameraOffSetX += (float)e.GetX() - lastPlace.x;
+        //                camera.CameraOffSetY += (float)e.GetY() - lastPlace.y;
+        //                Console.WriteLine("The camera ofsetx is: " + camera.CameraOffSetX);
+        //            }
+        //        }
+        //    }
 
-            CalculateNewPointes();
+        //    CalculateNewPointes();
 
-            lastPlace.x = e.GetX();
-            lastPlace.y = e.GetY();
-            return true;
+        //    lastPlace.x = e.GetX();
+        //    lastPlace.y = e.GetY();
+        //    return true;
 
 
-        }
+        //}
 
 
         private void DoOnce()
@@ -158,6 +170,7 @@ namespace App1
             {
                 findLowHeigh();
                 doOnce= false;
+                CreateChartSquars();
             }
         }
 
@@ -188,6 +201,7 @@ namespace App1
                     //UpLeft = new MyPoint(i * (squars_Width)+ i*distance, canvas.Height +  (lowest-dataPoints[i].heigh) *(1/(highest-lowest)) * canvas.Height);
                     //UpLeft = new MyPoint(i * (squars_Width) + i * distance, canvas.Height + ((lowest - dataPoints[i].heigh) * (1 / (highest - lowest)) * canvas.Height));
                     //UpLeft = new MyPoint((i * squars_Width + i * canvas.Width ) / (dataPoints.Count - 1 ), canvas.Height + ((lowest - dataPoints[i].heigh) * (1 / (highest - lowest)) * canvas.Height));
+
                     UpLeft = new MyPoint(i*(canvas.Width-squars_Width) / (dataPoints.Count - 1), canvas.Height + ((lowest - dataPoints[i].heigh) * (1 / (highest - lowest)) * canvas.Height));
                     DownRight = new MyPoint(UpLeft.x+squars_Width, canvas.Height);
 
@@ -201,11 +215,15 @@ namespace App1
         {
             MyPoint upLeft;
             MyPoint downRight;
+            if(ChangedSquares.Count > 0)
+            {
+                ChangedSquares.Clear();
+            }
             for (int i = 0; i < dataPoints.Count; i++)
             {
                 //Changedpoints.Add(new MyPoint((points[i].x) * test_zoomfactor + camera.CameraOffSetX, points[i].y + camera.CameraOffSetY));
-                upLeft = new MyPoint(Squares[i].UpLeft.x + camera.CameraOffSetX,Squares[i].UpLeft.y + camera.CameraOffSetY);
-                downRight = new MyPoint(upLeft.x + squars_Width*test_zoomfactor, canvas.Height+camera.CameraOffSetY);
+                upLeft = new MyPoint(Squares[i].UpLeft.x * zoomfactor_X + camera.CameraOffSetX, Squares[i].UpLeft.y + camera.CameraOffSetY);
+                downRight = new MyPoint(upLeft.x + squars_Width, canvas.Height+camera.CameraOffSetY);
                 ChangedSquares.Add(new MySquare(upLeft,downRight));
             }
         }

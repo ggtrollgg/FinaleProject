@@ -23,6 +23,8 @@ namespace App1
         public MyCamera camera = new MyCamera(0, 0);
         public MyPoint midPoint;
 
+       
+
         public float test_zoomfactor = 1;
         public float zoomfactor_X = 1;
         public float zoomfactor_Y = 1;
@@ -93,6 +95,7 @@ namespace App1
             {
                 camera.CameraOffSetX += offset_x;
                 camera.X_changed = true;
+                //Console.WriteLine("changed offset of x by: " + offset_x);
             }
 
             //if (!(camera.CameraOffSetY + offset_y <= -canvas.Height+200)  && !(camera.CameraOffSetY + offset_y >= canvas.Height-200))
@@ -149,6 +152,7 @@ namespace App1
 
         public bool OnTouch(View v, MotionEvent e)
         {
+            //Console.WriteLine("touching screen");
             if (view.midPoint == null && e.PointerCount == 2)
             {
                 //Console.WriteLine("touching with 2 fingers");
