@@ -20,10 +20,16 @@ namespace App1
         public Canvas canvas;
         public List<DataPoint> dataPoints;
 
+
+        public Paint background;
+        public Paint textPaint_Price;
+        public Paint textPaint_Date;
+
         public MyCamera camera = new MyCamera(0, 0);
         public MyPoint midPoint;
 
-       
+        public float price_text_start_x = 0;
+        public float date_text_start_y = 0;
 
         public float test_zoomfactor = 1;
         public float zoomfactor_X = 1;
@@ -45,6 +51,10 @@ namespace App1
             this.context = context;
             this.canvas = canvas;
             this.dataPoints = dataPoints;
+
+            //default values
+            price_text_start_x = canvas.Width*8/ (float)10.0; 
+            date_text_start_y = canvas.Height * 18 / (float)20.0;
         }
         public void SetDataPoints(List<DataPoint> points)
         {

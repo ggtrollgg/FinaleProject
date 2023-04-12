@@ -63,6 +63,8 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="General Classes\API_Key.cs" />
+    <Compile Include="General Classes\Manager_API_Keys.cs" />
     <Compile Include="General Classes\MySquare.cs" />
     <Compile Include="General Classes\TextBlock.cs" />
     <Compile Include="Graph\ChartActivity.cs" />

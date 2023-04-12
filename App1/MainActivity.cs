@@ -13,15 +13,21 @@ using System.Threading;
 using Org.Json;
 using System.Collections.Generic;
 using Android.Content;
+using App1.General_Classes;
 
 namespace App1
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true, Icon = "@drawable/stocks_icon")]
     public class MainActivity : Activity
     {
+
+        public static ISharedPreferences sp;
         Button btnstart,btnToListView,btnExit,btnTest;
         Intent intent2;
         //
+
+        
+        
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -38,18 +44,17 @@ namespace App1
             btnExit.Click += BtnExit_Click;
             btnToListView.Click += BtnToListView_Click;
             btnTest.Click += BtnTest_Click;
+            sp = GetSharedPreferences("KeysForFinaleProject", FileCreationMode.Private);
 
-            //String symbol = "AAPL";
-            //string link = "https://financialmodelingprep.com/api/v3/historical-chart/1min/";
-            //link = link.Insert(link.Length, symbol);
-            //link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
 
-            //if (link != "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860")
-            //{
-            //    Toast.MakeText(this, "false", ToastLength.Long).Show();
-            //    Console.WriteLine(link);
-            //    Console.WriteLine("https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860");
-            //}
+
+            //API_Keys.Add(new API_Key("0a0b32a8d57dc7a4d38458de98803860"));
+
+            //0a0b32a8d57dc7a4d38458de98803860  //ggtroll 35
+            //8bdedb14d7674def460cb3a84f1fd429 //ggtroll 36
+            //561897c32bf107b87c107244081b759f //ggtroll 37
+
+
             Console.WriteLine();
             if (intent2 != null)
             {

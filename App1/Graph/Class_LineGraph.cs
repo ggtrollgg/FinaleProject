@@ -31,25 +31,19 @@ namespace App1
         List<TextBlock> TextBlocks = new List<TextBlock>();
         List<TextBlock> TextBlocks_Y = new List<TextBlock>();
 
-        
-
-        MyPoint lastPlace;
-        MyPoint lastPlace2;
-        //float test_zoomfactor = 1;
 
         bool running = true;
         float frame_rate = (float)(1.0 / 2);
+
         float text_start_y;
         float text_margin_y = 0;//30px
 
         bool doingOnce = true;
+
         public bool Zoom = false;
         public bool Move = false;
 
         Paint p1 = new Paint();
-        MyPoint point1;
-        MyPoint point2;
-        
 
         Paint TextPaint_X;
         Paint TextPaint_Y;
@@ -58,7 +52,7 @@ namespace App1
         Paint p;
         Paint red;
         Paint green;
-        Paint background;
+        
         Paint black;
         Paint r;
         Paint g;
@@ -72,7 +66,7 @@ namespace App1
             p.StrokeWidth= 6;
 
             background = new Paint();
-            background.Color= Color.ParseColor("#333555");
+            background.Color = Color.ParseColor("#333555");
 
             black = new Paint();
             black.Color = Color.Black;
@@ -539,18 +533,6 @@ namespace App1
         }
 
         
-        public void Create_text_Y()
-        {
-
-        }
-        private void DrawYexis_V2()
-        {
-
-        }
-        private void ChangeInTextPlaceY_V2()
-        {
-
-        }
 
 
         //calculations to find points on graph
