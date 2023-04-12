@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace App1.General_Classes
+namespace App1
 {
     public class API_Key
     {
@@ -29,7 +29,7 @@ namespace App1.General_Classes
         {
             this.CallsRemaining --;
         }
-        public int GetCallsRemaining(int callsRemaining)
+        public int GetCallsRemaining()
         {
             return this.CallsRemaining;
         }

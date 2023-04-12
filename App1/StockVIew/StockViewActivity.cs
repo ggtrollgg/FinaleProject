@@ -434,8 +434,7 @@ namespace App1
                 //link = link.Insert(link.Length, "?apikey=8bdedb14d7674def460cb3a84f1fd429"); //ggtroll 36
                 link = link.Insert(link.Length, "?apikey=561897c32bf107b87c107244081b759f"); //ggtroll 37
 
-                //561897c32bf107b87c107244081b759f
-                //8bdedb14d7674def460cb3a84f1fd429
+                
 
                 using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
                 {
