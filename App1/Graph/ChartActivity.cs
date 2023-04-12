@@ -86,10 +86,11 @@ namespace App1
 
             ColumGraph chart1= new ColumGraph(this);
             chart2 = new Class_LineGraph(this);
+            Class_CandleGraph chart3 = new Class_CandleGraph(this);
 
             Charts.Add(chart2);
             Charts.Add(chart1);
-            
+            Charts.Add(chart3);
 
             Console.WriteLine("1");
             _ = testAsync();
