@@ -202,13 +202,11 @@ namespace App1
             {
                 findLowHeigh();
 
-
-
                 textPaint_Date.TextSize = canvas.Width / 18;
                 price_text_start_x = canvas.Width - textPaint_Price.MeasureText("12.123") - textprice_margin;
 
                 Paint.FontMetrics fm = textPaint_Date.GetFontMetrics();
-                float height = fm.Bottom - fm.Top + fm.Leading; //height in pixels of text
+                float height = fm.Bottom - fm.Top + fm.Leading; 
                 date_text_start_y = canvas.Height - (height + 5);
 
                 CreateChartSquars();
@@ -310,15 +308,9 @@ namespace App1
             {
                 for (int i = 0; i < dataPoints.Count; i++)
                 {
-
-                    if (dataPoints.Count != 0)
-                    {
-                        TheString = dataPoints[i].date;
-                        TheString = TheString.Remove(0, 10);
-                        TextBlocks_Date.Add(new TextBlock(TheString, textPaint_Date, ChangedSquares[i].Center.x, canvas.Height));
-
-                    }
-
+                    TheString = dataPoints[i].date;
+                    TheString = TheString.Remove(0, 10);
+                    TextBlocks_Date.Add(new TextBlock(TheString, textPaint_Date, ChangedSquares[i].Center.x, canvas.Height));
                 }
             }
 
@@ -358,10 +350,10 @@ namespace App1
                     if (!TextBlocks_Date[i].Hidden)
                     {
                         float width = textPaint_Date.MeasureText(TextBlocks_Date[0].Text);
-                        float RightX = ChangedSquares[0].DownRight.x;
-                        float LeftX = ChangedSquares[0].UpLeft.x;
+                        float RightX = ChangedSquares[0].Center.x + width/(float)2.0;
+                        float LeftX = ChangedSquares[i].Center.x - width/(float)2.0;
 
-                        if (RightX >= LeftX)//hide text 
+                        if (RightX >= LeftX-width/10.0)//hide text 
                         {
                             TextBlocks_Date[i].Hidden = true;
                             // Console.Write("i hid the text in place: ");
