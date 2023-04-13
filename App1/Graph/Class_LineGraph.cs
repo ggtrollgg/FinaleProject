@@ -586,7 +586,7 @@ namespace App1
         {
             double defualtPointx = (x - camera.CameraOffSetX) / test_zoomfactor;
            // double itest2 = ((defualtPointx * (points.Count)) * 20) / (canvas.Width * 18);
-            double itest2 = ((defualtPointx * (points.Count)) ) / (text_start_y);
+            double itest2 = ((defualtPointx * (points.Count-1)) ) / (text_start_y);
             int i = (int)Math.Round(itest2);
             return i;
         }
@@ -595,7 +595,7 @@ namespace App1
         {
             double defualtPointx = (x - camera.CameraOffSetX) / test_zoomfactor;
             //double itest2 = ((defualtPointx * (points.Count)) * 20) / (canvas.Width * 18);
-            double itest2 = ((defualtPointx * (points.Count))) / (text_start_y);
+            double itest2 = ((defualtPointx * (points.Count-1))) / (text_start_y);
             int i = (int)(itest2);
             return i;
         }

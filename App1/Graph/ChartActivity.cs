@@ -431,7 +431,7 @@ namespace App1
         {
             HashMap map = new HashMap();
             map.Put("symbol", symbol);
-            map.Put("SoundFile", "default");
+            map.Put("SoundFile", "");
             map.Put("TrackingPrices", etTrackingPrices.Text);
             map.Put("Price", list_DataPoints[0].close);
             map.Put("Open", list_DataPoints[0].open);

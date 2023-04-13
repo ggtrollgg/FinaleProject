@@ -84,16 +84,16 @@ namespace App1
 
                 if (Temp.open > Temp.price)
                 {
-                    tvPrice.SetTextColor((Android.Content.Res.ColorStateList)"#FF0000"); //red
-                    tvOpen.SetTextColor((Android.Content.Res.ColorStateList)"#008000"); //green
+                    tvPrice.SetTextColor(Android.Graphics.Color.ParseColor("#FF0000")); //red
+                    tvOpen.SetTextColor(Android.Graphics.Color.ParseColor("#008000")); //green
                 }
                 else
                 {
-                    tvPrice.SetTextColor((Android.Content.Res.ColorStateList)"#FF0000"); //red
-                    tvOpen.SetTextColor((Android.Content.Res.ColorStateList)"#008000"); //green
+                    tvPrice.SetTextColor(Android.Graphics.Color.ParseColor("#008000"));
+                    tvOpen.SetTextColor(Android.Graphics.Color.ParseColor("#FF0000"));
                 }
 
-                if (Temp.TrackingPrices!= null)
+                if (Temp.TrackingPrices != null)
                 {
                     foreach (float num in Temp.TrackingPrices)
                     {
@@ -125,15 +125,17 @@ namespace App1
 
 
             StockData Temp = objects[position];
+
+            
             if (Temp.open > Temp.price)
             {
-                tvPrice.SetTextColor((Android.Content.Res.ColorStateList)"#FF0000"); //red
-                tvOpen.SetTextColor((Android.Content.Res.ColorStateList)"#008000"); //green
+                tvPrice.SetTextColor(Android.Graphics.Color.ParseColor("#FF0000")); //red
+                tvOpen.SetTextColor(Android.Graphics.Color.ParseColor("#008000")); //green
             }
             else
             {
-                tvPrice.SetTextColor((Android.Content.Res.ColorStateList)"#FF0000"); //red
-                tvOpen.SetTextColor((Android.Content.Res.ColorStateList)"#008000"); //green
+                tvPrice.SetTextColor(Android.Graphics.Color.ParseColor("#008000")); 
+                tvOpen.SetTextColor(Android.Graphics.Color.ParseColor("#FF0000")); 
             }
             if (Temp != null)
             {
