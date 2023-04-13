@@ -29,6 +29,7 @@ using System.Threading;
 using Java.Util.Functions;
 using Java.Lang;
 using Firestore.Admin.V1;
+using static AndroidX.RecyclerView.Widget.RecyclerView;
 
 namespace App1
 {
@@ -41,6 +42,8 @@ namespace App1
         public static List<StockData> Datalist = new List<StockData>();
         public static List<StockData> Temp_Datalist = new List<StockData>();
         List<DocumentSnapshot> Docs_In_DataBase = new List<DocumentSnapshot>();
+
+
         System.Threading.Thread t;
         bool IsDataCountFull = false;
         ListView lvStock;
@@ -48,7 +51,7 @@ namespace App1
         string queryType = "normal";
 
         public FirebaseFirestore db;
-        CancellationTokenSource CTS = new CancellationTokenSource();
+       
 
         bool ShowOnlyTracking= false;
 
@@ -67,15 +70,8 @@ namespace App1
             list = new List<string>();
             Datalist = new List<StockData>();
             lvStock = (ListView)FindViewById(Resource.Id.lvStock);
-            //DeleteFile("SavedStocks.txt");
-            //Add_To_File("AAPL");
-            //Add_To_File("TSLA");
 
-
-            //Console.WriteLine(Read_from_file());
-
-            db = GetDataBase();
-            //AddItem();
+            db = GetDataBase();;
             LoadItems();
 
            //_ = processAllSavedStocks();
@@ -94,7 +90,6 @@ namespace App1
             
 
         }
-
         private void BtnShowTrack_Click(object sender, EventArgs e)
         {
             if(!ShowOnlyTracking)
@@ -109,39 +104,20 @@ namespace App1
             }
         }
 
-        
-
         private void BtnReturnHome_Click(object sender, EventArgs e)
         {
             //ShowListView();
              db.App.Dispose();
+            if(t.ThreadState== System.Threading.ThreadState.Running)
+            {
+                t.Abort();
+            }
              //db.Terminate();
              
              Finish();
         }
 
 
-
-        //data base
-        private void AddItem()
-        {
-            // Create a HashMap to store your data like an object
-            // HashMap is a collection of "keys" and "values"
-            HashMap map = new HashMap();
-            // save data
-            // map.Put([field name], content);
-            map.Put("symbol", "TSLA");
-            map.Put("LastDate", "");
-            map.Put("SoundFile", "");
-            map.Put("TrackingPrices", "");
-            map.Put("heigh", 0);
-            map.Put("low", 0);
-
-            // create an empty document reference for firestore
-            DocumentReference docRef = db.Collection("Saved Stocks").Document();
-            // puts the map info in the document
-            docRef.Set(map);
-        }
 
         public FirebaseFirestore GetDataBase()
         {
@@ -188,20 +164,22 @@ namespace App1
 
             string TrackingPrices = (string)Docs_In_DataBase[index].Get("TrackingPrices");
             string soundfile = (string)Docs_In_DataBase[index].Get("SoundFile");
-            string LastDate = "";
+            //string LastDate = "";
             float heigh = 0;
             float low = 0;
 
             DeleteItem_fromDataBase(index);
 
             Console.WriteLine("the symbol updated is: " + symbol);
+
+            //putting the info that i got from the internet
             foreach (StockData data in Datalist)
             {
                 if(data.symbol== symbol)
                 {
-                    heigh= data.heigh;
-                    low = data.low;
-                    LastDate = data.date;
+                    heigh= data.price;
+                    low = data.open;
+                    //LastDate = data.date;
                     break;
                 }
             }
@@ -211,16 +189,17 @@ namespace App1
 
             HashMap map = new HashMap();
             map.Put("symbol", symbol);
-            map.Put("LastDate", LastDate);
+            //map.Put("LastDate", LastDate);
             map.Put("SoundFile", soundfile);
             map.Put("TrackingPrices", TrackingPrices);
-            map.Put("heigh", heigh);
-            map.Put("low", low);
-
+            map.Put("Open", heigh);
+            map.Put("Price", low);
+            
             
 
             CollectionReference collection = db.Collection("Saved Stocks");
             collection.Add(map);
+            
         }
         private void LoadItems()
         {
@@ -261,7 +240,7 @@ namespace App1
                 .WhereNotEqualTo("TrackingPrices", "");
             q.Get().AddOnSuccessListener(this);
         }
-        public void OnSuccess(Java.Lang.Object result)
+        public async void OnSuccess(Java.Lang.Object result)
         {
 
             IsDataCountFull = false;
@@ -292,21 +271,23 @@ namespace App1
                     }
                     if (trackingprices.Count > 0)
                     {
-                        data = new StockData((float)doc.Get("heigh"), (float)doc.Get("low"), (string)doc.Get("symbol"), (string)doc.Get("LastDate"), (string)doc.Get("SoundFile"), trackingprices);
+                        data = new StockData((float)doc.Get("Price"), (float)doc.Get("Open"), (string)doc.Get("symbol"), (string)doc.Get("SoundFile"), trackingprices);
                         Datalist.Add(data);
                         Docs_In_DataBase.Add(doc);
-                        _ = GetInfoFromWeb(data.symbol, i);
+                       // _ = GetInfoFromWeb(data.symbol, i);
                     }
                     else
                     {
-                        data = new StockData((float)doc.Get("heigh"), (float)doc.Get("low"), (string)doc.Get("LastDate"), (string)doc.Get("symbol"));
+                        data = new StockData((float)doc.Get("Price"), (float)doc.Get("Open"), (string)doc.Get("symbol"), (string)doc.Get("SoundFile"));
                         Datalist.Add(data);
                         Docs_In_DataBase.Add(doc);
-                        _ = GetInfoFromWeb(data.symbol, i);
+                        //_ = GetInfoFromWeb(data.symbol, i);
                     }
 
                     i++;
                 }
+
+
             }
 
             if (queryType == "Tracking")
@@ -339,28 +320,26 @@ namespace App1
                     }
                     if (trackingprices.Count > 0)
                     {
-                        data = new StockData((float)doc.Get("heigh"), (float)doc.Get("low"), (string)doc.Get("symbol"), (string)doc.Get("LastDate"), (string)doc.Get("SoundFile"), trackingprices);
+                        data = new StockData((float)doc.Get("Price"), (float)doc.Get("Open"), (string)doc.Get("symbol"), (string)doc.Get("SoundFile"), trackingprices);
                         Datalist.Add(data);
                         Docs_In_DataBase.Add(doc);
-                        _ = GetInfoFromWeb(data.symbol, i);
+                        //_ = GetInfoFromWeb(data.symbol, i);
                     }
                     i++;
                 }
 
-
-
-
-
-
             }
 
 
+            List<string> symbols= new List<string>();
+            foreach(var stock in Datalist)
+            {
+                symbols.Add(stock.symbol);
+            }
 
-            ThreadStart MyThreadStart = new ThreadStart(Checkifstillloading);
-            t = new System.Threading.Thread(MyThreadStart);
-            t.Start();
+            await Bulk_GetInfoFromWeb(symbols);
 
-            Toast.MakeText(this, "sent all data requests", ToastLength.Short).Show();
+            Toast.MakeText(this, "got all data from requests", ToastLength.Short).Show();
             IsDataCountFull = true;
             
         }
@@ -454,17 +433,13 @@ namespace App1
 
                    var response2 = await httpClient2.SendAsync(request);
                     response2.EnsureSuccessStatusCode();
-
                     string responseBody = await response2.Content.ReadAsStringAsync();
                     JSONArray HistInfo = new JSONArray(responseBody);
-
                     Console.WriteLine(HistInfo.Length());
 
-                    Datalist[place].low=((float)(HistInfo.GetJSONObject(0).GetDouble("low")));
-                    Datalist[place].heigh =((float)(HistInfo.GetJSONObject(0).GetDouble("high")));
-                    Datalist[place].date = ((string)(HistInfo.GetJSONObject(0).Get("date")));
-                    
-                    
+                    Datalist[place].open =((float)(HistInfo.GetJSONObject(0).GetDouble("low")));
+                    Datalist[place].price =((float)(HistInfo.GetJSONObject(0).GetDouble("high")));
+                    //Datalist[place].date = ((string)(HistInfo.GetJSONObject(0).Get("date")));
                 }
             }
 
@@ -481,23 +456,17 @@ namespace App1
                 int count = Docs_In_DataBase.Count;
                 for (int g = count-1; g >= 0; g--)
                 {
-                    UpdateTrackItemAsync((string)Docs_In_DataBase[g].Get("symbol"), g);
-                }
-                
+                   UpdateTrackItemAsync((string)Docs_In_DataBase[g].Get("symbol"), g);
+                }     
                 Toast.MakeText(this, "presenting the list", ToastLength.Short).Show();
                 ShowListView();
             }
-
-            //if (place >= Datalist.Count - 1)
-            //{
-                //Toast.MakeText(this, "last data point", ToastLength.Short).Show();
-                ////ShowListView();
-            //}
-                
-
             Dispose(true);
             return;
         }
+
+
+
         private async Task Bulk_GetInfoFromWeb(List<string> symbols)
         {
             using (var httpClient2 = new HttpClient())
@@ -511,14 +480,21 @@ namespace App1
 
                 string link = "https://financialmodelingprep.com/api/v3/quote/";
                 link = link.Insert(link.Length, symbolss);
-                //link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
-                link = link.Insert(link.Length, "?apikey=8bdedb14d7674def460cb3a84f1fd429");
-                //8bdedb14d7674def460cb3a84f1fd429
-
+                API_Key k = MainActivity.Manager_API_Keys.GetBestKey();
+                if (k != null && k.Key != "" && k.GetCallsRemaining() > 0)
+                {
+                    link = link.Insert(link.Length, "?apikey=" + k.Key);
+                }
+                else
+                {
+                    Console.WriteLine("there was a problem with the keys at stockview activity ");
+                    return;
+                }
                 Console.WriteLine("creating a get request to financialmodeling ");
                 using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
                 {
                     Console.WriteLine("sending request to financialmodeling ");
+                    MainActivity.Manager_API_Keys.UseKey(k.Key);
                     var response2 = await httpClient2.SendAsync(request);
                     response2.EnsureSuccessStatusCode();
 
@@ -526,44 +502,79 @@ namespace App1
                     JSONArray HistInfo = new JSONArray(responseBody);
 
                     float currentPrice = 0;
-                    float lastPrice = (Datalist[0].heigh + Datalist[0].low) / 2;
+                    //float lastPrice = (Datalist[0].heigh + Datalist[0].low) / 2;
+                    float open = 0;
 
                     for (int i = 0; i < symbols.Count; i++)
                     {
-                        currentPrice = (float)(HistInfo.GetJSONObject(i).GetDouble("price"));
-
-                        
+                        currentPrice = (float)HistInfo.GetJSONObject(i).GetDouble("price");
+                        open = (float)HistInfo.GetJSONObject(i).GetDouble("open");
+                        Datalist[i].price= currentPrice;
+                        Datalist[i].open= open;
                     }
-
-
-
-
                 }
 
+                UpdateAllItems_V2();//update all the items in the firestore so the "open" and "price" are the most recent values
 
-
-
-            }
-
-            int count = Docs_In_DataBase.Count;
-            for (int g = count - 1; g >= 0; g--)
-            {
-                UpdateTrackItemAsync((string)Docs_In_DataBase[g].Get("symbol"), g);
             }
 
             Toast.MakeText(this, "presenting the list", ToastLength.Short).Show();
             ShowListView();
-
             Dispose(true);
             return;
+        }
+
+        private void UpdateAllItems_V2()
+        {
+
+            CollectionReference collection = db.Collection("Saved Stocks");
+            string tp = "";
+            HashMap map = new HashMap();
+            foreach (var stock in Datalist)
+            {
+                tp = "";
+
+                map = new HashMap();
+                map.Put("symbol", stock.symbol);
+                map.Put("SoundFile", stock.SoundName);
+                if (stock.TrackingPrices != null)
+                {
+                    foreach (var num in stock.TrackingPrices)
+                    {
+                        tp = tp + num.ToString() + ",";
+                    }
+                    if (tp.Length > 0)
+                        tp = tp.Remove(tp.Length - 1);
+                }
+                map.Put("TrackingPrices", tp);
+                map.Put("Open", stock.open);
+                map.Put("Price", stock.price);
+
+
+
+                
+                collection.Add(map);
+            }
+
+
+
+            int count = Docs_In_DataBase.Count;
+            for (int i = count-1; i > -1 ; i--)
+            {
+                DocumentReference doc = db.Collection("Saved Stocks").Document(Docs_In_DataBase[i].Id);
+                doc.Delete();
+                Docs_In_DataBase.RemoveAt(i);
+            }
+            
         }
 
 
         //show the listview of stocks
         private void ShowListView()
         {
-            adapter = new StockAdapter(this, Temp_Datalist);
-            
+            //adapter = new StockAdapter(this, Temp_Datalist);
+
+            adapter = new StockAdapter(this, Datalist);
             lvStock.Adapter = adapter;
 
             lvStock.ItemClick += LvStock_ItemClick;
@@ -591,20 +602,15 @@ namespace App1
 
         protected override void OnPause()
         {
-            //db.App.Delete();
-            //db.Terminate();
-            //db.Dispose();
-            //db= null;
-            t.Abort();
+            if (t!=null && t.ThreadState == System.Threading.ThreadState.Running)
+            {
+                t.Abort();
+            }
             if (db != null)
             {
                 if (db.App != null)
                 {
-                    //db.App.Delete();
-                    //db.Terminate();
                     db.App.Dispose();
-                    //db = null;
-
                     Console.WriteLine("db terminated");
                 }
             }
@@ -620,8 +626,6 @@ namespace App1
                 //AddItem();
                 //LoadItems();
             }
-            
-
             base.OnResume();
         }
 

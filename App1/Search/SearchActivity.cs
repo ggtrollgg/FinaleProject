@@ -149,7 +149,7 @@ namespace App1
                     }
                     for (int i = 0; i < HistInfo.Length(); i++)
                     {
-                        Chart_Points.Add(new DataPoint((float)HistInfo.GetJSONObject(i).GetDouble("high"), (float)HistInfo.GetJSONObject(i).GetDouble("low"), (string)HistInfo.GetJSONObject(i).Get("date")));
+                        Chart_Points.Add(new DataPoint((float)HistInfo.GetJSONObject(i).GetDouble("high"), (float)HistInfo.GetJSONObject(i).GetDouble("low"), (float)HistInfo.GetJSONObject(i).GetDouble("close"), (float)HistInfo.GetJSONObject(i).GetDouble("open"),(string)HistInfo.GetJSONObject(i).Get("date")));
                     }
 
                 }

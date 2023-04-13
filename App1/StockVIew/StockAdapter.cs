@@ -23,10 +23,6 @@ namespace App1
         Android.Content.Context context;
         List<StockData> objects;
 
-
-        List<float> list_high = new List<float>();
-        List<float> list_low = new List<float>();
-
         public StockAdapter(Context context, System.Collections.Generic.List<StockData> objects)
         {
             this.context = context;
@@ -59,14 +55,14 @@ namespace App1
         {
 
             Android.Views.LayoutInflater layoutInflater = ((StockViewActivity)context).LayoutInflater;
-            TextView tvSymbol, tvAlarmSound, tvTrackingPrices, tvLow, tvHeigh;
+            TextView tvSymbol, tvTrackingPrices, tvOpen, tvPrice;
 
             Android.Views.View view = layoutInflater.Inflate(Resource.Layout.ListView_Track_Layout, parent, false);
             tvSymbol = view.FindViewById<TextView>(Resource.Id.tvSymbol);
-            tvLow = view.FindViewById<TextView>(Resource.Id.tvLow);
-            tvHeigh = view.FindViewById<TextView>(Resource.Id.tvHeigh);
+            tvOpen = view.FindViewById<TextView>(Resource.Id.tvOpen);
+            tvPrice = view.FindViewById<TextView>(Resource.Id.tvPrice);
 
-            tvAlarmSound = view.FindViewById<TextView>(Resource.Id.tvAlarmSound);
+            //tvAlarmSound = view.FindViewById<TextView>(Resource.Id.tvAlarmSound);
             tvTrackingPrices = view.FindViewById<TextView>(Resource.Id.tvTrackingPrices);
             
 
@@ -81,20 +77,37 @@ namespace App1
                 //t.Wait();
 
                 tvSymbol.Text = Temp.symbol;
-                tvLow.Text = "Low: " + Temp.low;
-                tvHeigh.Text = "Heigh: " + Temp.heigh;
+                tvOpen.Text = "Open " + Temp.open;
+                tvPrice.Text = "Current price: " + Temp.price;
                 tvTrackingPrices.Text = "";
-                foreach (float num in Temp.TrackingPrices)
+
+
+                if (Temp.open > Temp.price)
                 {
-                    tvTrackingPrices.Text += num.ToString() + ",";
+                    tvPrice.SetTextColor((Android.Content.Res.ColorStateList)"#FF0000"); //red
+                    tvOpen.SetTextColor((Android.Content.Res.ColorStateList)"#008000"); //green
+                }
+                else
+                {
+                    tvPrice.SetTextColor((Android.Content.Res.ColorStateList)"#FF0000"); //red
+                    tvOpen.SetTextColor((Android.Content.Res.ColorStateList)"#008000"); //green
                 }
 
-                string text = tvTrackingPrices.Text;
-                int index = text.Length -1;
-                text = text.Remove(index);
-                tvTrackingPrices.Text = text;
+                if (Temp.TrackingPrices!= null)
+                {
+                    foreach (float num in Temp.TrackingPrices)
+                    {
+                        tvTrackingPrices.Text += num.ToString() + ",";
+                    }
 
-                tvAlarmSound.Text = "" + Temp.SoundName;
+                    string text = tvTrackingPrices.Text;
+                    int index = text.Length - 1;
+                    text = text.Remove(index);
+                    tvTrackingPrices.Text = text;
+                }
+                
+
+                //tvAlarmSound.Text = "" + Temp.SoundName;
             }
             return view;
         }
@@ -104,20 +117,30 @@ namespace App1
             Android.Views.LayoutInflater layoutInflater = ((StockViewActivity)context).LayoutInflater;
             Android.Views.View view = layoutInflater.Inflate(Resource.Layout.ListView_Saved_Layout, parent, false);
 
-            TextView tvSymbol, tvAlarmSound, tvTrackingPrices, tvLow, tvHeigh;
+            TextView tvSymbol, tvOpen, tvPrice;
             tvSymbol = view.FindViewById<TextView>(Resource.Id.tvSymbol);
-            tvLow = view.FindViewById<TextView>(Resource.Id.tvLow);
-            tvHeigh = view.FindViewById<TextView>(Resource.Id.tvHeigh);
+            //tvOpen = view.FindViewById<TextView>(Resource.Id.tvOpen);
+            tvOpen = view.FindViewById<TextView> (Resource.Id.tvOpen);
+            tvPrice = view.FindViewById<TextView>(Resource.Id.tvPrice);
+
 
             StockData Temp = objects[position];
+            if (Temp.open > Temp.price)
+            {
+                tvPrice.SetTextColor((Android.Content.Res.ColorStateList)"#FF0000"); //red
+                tvOpen.SetTextColor((Android.Content.Res.ColorStateList)"#008000"); //green
+            }
+            else
+            {
+                tvPrice.SetTextColor((Android.Content.Res.ColorStateList)"#FF0000"); //red
+                tvOpen.SetTextColor((Android.Content.Res.ColorStateList)"#008000"); //green
+            }
             if (Temp != null)
             {
-                //Task t = testAsync(Temp);
-                //t.Wait();
 
                 tvSymbol.Text = Temp.symbol;
-                tvLow.Text = "Low: " + Temp.low;
-                tvHeigh.Text = "Heigh: " + Temp.heigh;
+                tvOpen.Text = "Open: " + Temp.open.ToString();
+                tvPrice.Text = "Current price: " + Temp.price.ToString();
 
             }
             return view;
@@ -133,39 +156,6 @@ namespace App1
         }
 
 
-        //private  async Task testAsync(String symbol)
-        //{
-        //    Toast.MakeText(context, "1", ToastLength.Short).Show();
-        //    using (var httpClient2 = new HttpClient())
-        //    {
-        //        Toast.MakeText(context, "2", ToastLength.Short).Show();
-        //        using (var request2 = new HttpRequestMessage(new HttpMethod("GET"), "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860"))
-        //        {
-        //            Toast.MakeText(context, "3", ToastLength.Short).Show();
 
-        //            var response2 = await httpClient2.SendAsync(request2);
-        //            response2.EnsureSuccessStatusCode();
-        //            string responseBody = await response2.Content.ReadAsStringAsync();
-
-        //            Toast.MakeText(context, "4", ToastLength.Short).Show();
-
-        //            JSONArray HistInfo = new JSONArray(responseBody);
-        //            Console.WriteLine(HistInfo.Length());
-
-        //            list_low = new List<float>();
-        //            list_high = new List<float>();
-
-        //            for (int i = 0; i < HistInfo.Length(); i++)
-        //            {
-        //                //Console.WriteLine(avr);
-        //                list_low.Add((float)(HistInfo.GetJSONObject(i).GetDouble("low")));
-        //                list_high.Add((float)(HistInfo.GetJSONObject(i).GetDouble("high")));
-
-        //            }
-        //        }
-        //    }
-        //    Toast.MakeText(context, "5", ToastLength.Short).Show();
-        //    return;
-        //}
     }
 }

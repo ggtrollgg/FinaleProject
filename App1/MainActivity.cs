@@ -66,35 +66,36 @@ namespace App1
             {
                 StopService(intent2);
             }
-            intent2 = new Intent(this, typeof(MyService));
-            StartService(intent2);
+            //intent2 = new Intent(this, typeof(MyService));
+            //StartService(intent2);
 
 
         }
 
         private void BtnTest_Click(object sender, EventArgs e)
         {
-            //Intent intent = new Intent(this, typeof(Testing_Database_Activity));
-            //intent.PutExtra("symbol", "OB");
-            //StartActivity(intent);
+            Intent intent = new Intent(this, typeof(Testing_Database_Activity));
+            intent.PutExtra("symbol", "OB");
+            StartActivity(intent);
+
             //var editor = sp.Edit();
             //editor.PutInt("Key0CallsRemain", 249);
             //editor.PutInt("Key1CallsRemain", 117);
             //editor.PutInt("Key2CallsRemain", 117);
             //editor.Commit();
 
-            for (int i = 0; i < sp.GetInt("KeysAmount", -1); i++)
-            {
-                Console.WriteLine("   ");
+            //for (int i = 0; i < sp.GetInt("KeysAmount", -1); i++)
+            //{
+            //    Console.WriteLine("   ");
 
-                Console.WriteLine("ShardPrefrenc: Key" + i + " is: " +  sp.GetString("Key" + i, ""));
-                Console.WriteLine("ShardPrefrenc: CallsRemain: " + sp.GetInt("Key" + i + "CallsRemain", 0));
-                Console.WriteLine("Manager_API_Key: Key" + i + " is: " + Manager_API_Keys.API_Keys[i].Key);
-                Console.WriteLine("ShardPrefrenc: CallsRemain: " + Manager_API_Keys.API_Keys[i].GetCallsRemaining());
+            //    Console.WriteLine("ShardPrefrenc: Key" + i + " is: " +  sp.GetString("Key" + i, ""));
+            //    Console.WriteLine("ShardPrefrenc: CallsRemain: " + sp.GetInt("Key" + i + "CallsRemain", 0));
+            //    Console.WriteLine("Manager_API_Key: Key" + i + " is: " + Manager_API_Keys.API_Keys[i].Key);
+            //    Console.WriteLine("ShardPrefrenc: CallsRemain: " + Manager_API_Keys.API_Keys[i].GetCallsRemaining());
 
 
-                Console.WriteLine("   ");
-            }
+            //    Console.WriteLine("   ");
+            //}
 
 
 

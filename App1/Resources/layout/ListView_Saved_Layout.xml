@@ -18,15 +18,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Heigh: "
-            android:id="@+id/tvHeigh"
+            android:text="Current price: "
+            android:id="@+id/tvPrice"
             android:textColor="#008000"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Low: "
-            android:id="@+id/tvLow"
+            android:text="Open today : "
+            android:id="@+id/tvOpen"
             android:textColor="#FF0000"/>
     </LinearLayout>
     

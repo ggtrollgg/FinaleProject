@@ -95,7 +95,7 @@ namespace App1
             Charts.Add(chart3);
 
             Console.WriteLine("1");
-            _ = testAsync();
+            _ = getInfoFromWeb();
 
             SetUpDataBase();
 
@@ -167,7 +167,7 @@ namespace App1
             //l1.AddView(chart);
         }
         //taking information about stock from the internet
-        public async Task testAsync()
+        public async Task getInfoFromWeb()
         {
             Console.WriteLine("2");
             using (var httpClient = new HttpClient())
@@ -212,17 +212,19 @@ namespace App1
                     string responseBody = await response.Content.ReadAsStringAsync();
 
 
-
+                    float high,low,close,open;
+                    
 
                     JSONArray HistInfo = new JSONArray(responseBody);
                     Console.WriteLine(HistInfo.Length());
                     int length = HistInfo.Length() - 1;
                     for (int i = length; i >= 0; i--)
                     {
-                        float high = (float)HistInfo.GetJSONObject(i).GetDouble("high");
-                        float low = (float)HistInfo.GetJSONObject(i).GetDouble("low");
-                        float close = (float)HistInfo.GetJSONObject(i).GetDouble("close");
-                        string date = (string)HistInfo.GetJSONObject(i).Get("date");
+                         high = (float)HistInfo.GetJSONObject(i).GetDouble("high");
+                         low = (float)HistInfo.GetJSONObject(i).GetDouble("low");
+                         close = (float)HistInfo.GetJSONObject(i).GetDouble("close");
+                         open = (float)HistInfo.GetJSONObject(i).GetDouble("open");
+                         string date = (string)HistInfo.GetJSONObject(i).Get("date");
 
                        // float avr = (float)(high + low) / 2;
                       //  Console.WriteLine("avr: " + avr);
@@ -230,7 +232,7 @@ namespace App1
 
                         list.Add(close);
                         list_Dates.Add(date);
-                        list_DataPoints.Add(new DataPoint(high, low,close, date));
+                        list_DataPoints.Add(new DataPoint(high, low,close,open, date));
 
                         //Console.WriteLine((string)(HistInfo.GetJSONObject(i).Get("date")));
                     }
@@ -414,11 +416,10 @@ namespace App1
         {
             HashMap map = new HashMap();
             map.Put("symbol", symbol);
-            map.Put("LastDate", "");
             map.Put("SoundFile", "");
             map.Put("TrackingPrices", "");
-            map.Put("heigh", 0);
-            map.Put("low", 0);
+            map.Put("Price", list_DataPoints[0].close);
+            map.Put("Open", list_DataPoints[0].open);
 
             CollectionReference collection = db.Collection("Saved Stocks");
             collection.Add(map);
@@ -430,11 +431,10 @@ namespace App1
         {
             HashMap map = new HashMap();
             map.Put("symbol", symbol);
-            map.Put("LastDate", "");
             map.Put("SoundFile", "default");
             map.Put("TrackingPrices", etTrackingPrices.Text);
-            map.Put("heigh", 0);
-            map.Put("low", 0);
+            map.Put("Price", list_DataPoints[0].close);
+            map.Put("Open", list_DataPoints[0].open);
 
             CollectionReference collection = db.Collection("Saved Stocks");
             collection.Add(map);
@@ -448,11 +448,10 @@ namespace App1
 
             HashMap map = new HashMap();
             map.Put("symbol", symbol);
-            map.Put("LastDate", "");
             map.Put("SoundFile", soundfile);
             map.Put("TrackingPrices", etTrackingPrices.Text);
-            map.Put("heigh", 0);
-            map.Put("low", 0);
+            map.Put("Price", list_DataPoints[0].close);
+            map.Put("Open", list_DataPoints[0].open);
 
             CollectionReference collection = db.Collection("Saved Stocks");
             collection.Add(map);

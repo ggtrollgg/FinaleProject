@@ -194,7 +194,7 @@ namespace App1
                 }
                 if (trackingprices.Count > 0)
                 {
-                    data = new StockData((float)doc.Get("heigh"), (float)doc.Get("low"), (string)doc.Get("symbol"), (string)doc.Get("LastDate"), (string)doc.Get("SoundFile"), trackingprices);
+                    data = new StockData((float)doc.Get("Price"), (float)doc.Get("Open"), (string)doc.Get("symbol"), (string)doc.Get("SoundFile"), trackingprices);
                     Datalist.Add(data);
                     Symbols.Add(data.symbol);
                    
@@ -247,12 +247,14 @@ namespace App1
                     JSONArray HistInfo = new JSONArray(responseBody);
 
                     float currentPrice = 0;
-                    float lastPrice = (Datalist[0].heigh + Datalist[0].low)/2;
+                    float lastPrice = 0;
                     float trackprice_Alarm = -1;
 
                     for(int g = 0; g < symbols.Count; g++)
                     {
                         currentPrice = (float)(HistInfo.GetJSONObject(g).GetDouble("price"));
+                        lastPrice = Datalist[g].price;
+
                         trackprice_Alarm = CheckIfSurpesst(lastPrice,currentPrice, Datalist[g].TrackingPrices);
                         if(trackprice_Alarm != -1) 
                         {

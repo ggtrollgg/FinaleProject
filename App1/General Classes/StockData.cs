@@ -13,11 +13,10 @@ namespace App1
 {
     public class StockData
     {
-        public float heigh;
-        public float low;
 
+        public float price;
+        public float open;
         public String symbol;
-        public string date;
 
         public string SoundName = null;
         public List<float> TrackingPrices = null;
@@ -27,18 +26,26 @@ namespace App1
         {
 
         }
-        public StockData(float heigh, float low, String date, String symbol)
+        public StockData(float price, float open, String symbol)
         {
-            this.heigh = heigh;
-            this.low = low;
-            this.date = date;
+            this.price = price;
+            this.open = open;
             this.symbol = symbol;
         }
-        public StockData(float heigh, float low, string symbol, string date, string soundName, List<float> trackingPrices)
+         public StockData(float price, float open, string symbol, string soundName)
         {
-            this.heigh = heigh;
-            this.low = low;
-            this.date = date;
+            this.price = price;
+            this.open = open;
+
+            this.symbol = symbol;
+            this.SoundName = soundName;
+            
+        }
+        public StockData(float price, float open, string symbol, string soundName, List<float> trackingPrices)
+        {
+            this.price = price;
+            this.open = open;
+
             this.symbol = symbol;
             this.SoundName = soundName;
             this.TrackingPrices = trackingPrices;

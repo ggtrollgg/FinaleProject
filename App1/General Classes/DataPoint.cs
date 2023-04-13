@@ -17,6 +17,9 @@ namespace App1
         public float low;
         public float close;
         public string date;
+        public float open;
+        public float price; // in case it didnt close yet
+
         //
        
         public DataPoint()
@@ -38,5 +41,15 @@ namespace App1
             this.date = date;
 
         }
+        public DataPoint(float heigh, float low, float close,float open, String date)
+        {
+            this.heigh = heigh;
+            this.low = low;
+            this.close = close;
+            this.date = date;
+            this.open = open;
+        }
+
+
     }
 }
