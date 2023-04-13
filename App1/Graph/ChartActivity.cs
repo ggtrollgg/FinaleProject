@@ -31,6 +31,7 @@ namespace App1
     [Activity(Label = "ChartActivity")]
     public class ChartActivity : Activity, Android.Gms.Tasks.IOnSuccessListener
     {
+        
         List<float> list = new List<float>();
         List<string> list_Dates = new List<string>();
         List<DataPoint> list_DataPoints= new List<DataPoint>();
@@ -53,7 +54,8 @@ namespace App1
 
 
         public FirebaseFirestore db;
-        
+        string Symbol = "";
+        string trackingprices = "";
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -81,7 +83,7 @@ namespace App1
             //btnMove.Click += BtnMove_Click;
 
             chart = new StockChart(this);
-
+            Symbol = Intent.GetStringExtra("symbol") ?? "";
             
 
             ColumGraph chart1= new ColumGraph(this);
@@ -133,7 +135,7 @@ namespace App1
                 }
                 catch
                 {
-
+                    Console.WriteLine("tryed to add view to candle graph and something went wrong");
                 }
                 
             }
@@ -386,9 +388,14 @@ namespace App1
         public void OnSuccess(Java.Lang.Object result)
         {
             var snapshot = (QuerySnapshot)result;
+            
             foreach (var doc in snapshot.Documents)
             {
                 Docs_In_DataBase.Add(doc);
+                if((string)doc.Get("symbol") == Symbol)
+                {
+                    trackingprices = (string)doc.Get("TrackingPrices");
+                }
             }
             ChangeIcons();
         }
@@ -489,15 +496,16 @@ namespace App1
         //buttons
         private void IbTrack_Click(object sender, EventArgs e)
         {
-            string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
+            
             d = new Dialog(this);
             d.SetContentView(Resource.Layout.Custom_PopUp_Track);
-            d.SetTitle(symbol);
+            d.SetTitle(Symbol);
             d.SetCancelable(true);
 
             btnCancel = d.FindViewById<Button>(Resource.Id.btnCancel);
             btnTrack = d.FindViewById<Button>(Resource.Id.btnTrack);
             etTrackingPrices = d.FindViewById<EditText>(Resource.Id.etTrackingPrices);
+            etTrackingPrices.Text = etTrackingPrices.Text + trackingprices;
 
             btnCancel.Click += BtnCancel_Click;
             btnTrack.Click += BtnTrack_Click;
@@ -506,12 +514,17 @@ namespace App1
 
         private void BtnTrack_Click(object sender, EventArgs e)
         {
-            string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
+            if(Symbol == "")
+            {
+                Console.WriteLine("didnt get symbol in chart activity");
+                return;
+            }
+
             bool IsInDataBase = false;
             int i = 0,index = -1;
             foreach (var doc in Docs_In_DataBase)
             {
-                if (symbol == (string)doc.Get("symbol"))
+                if (Symbol == (string)doc.Get("symbol"))
                 {
                     IsInDataBase = true;
                     index = i;
@@ -520,13 +533,13 @@ namespace App1
             }
             if (IsInDataBase)//if in data base than update to new values
             {
-                UpdateTrackItemAsync(symbol,index);
+                UpdateTrackItemAsync(Symbol,index);
                 _ = LoadItemsAsync();
                 d.Cancel();
             }
             else//if not in data than add new
             {
-                AddTrackItem_ToDataBAse(symbol);
+                AddTrackItem_ToDataBAse(Symbol);
                 _ = LoadItemsAsync();
                 d.Cancel();
             }
