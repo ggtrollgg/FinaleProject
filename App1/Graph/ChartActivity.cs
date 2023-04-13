@@ -214,8 +214,8 @@ namespace App1
 
                     JSONArray HistInfo = new JSONArray(responseBody);
                     Console.WriteLine(HistInfo.Length());
-
-                    for (int i = 0; i < HistInfo.Length(); i++)
+                    int length = HistInfo.Length() - 1;
+                    for (int i = length; i >= 0; i--)
                     {
                         float high = (float)HistInfo.GetJSONObject(i).GetDouble("high");
                         float low = (float)HistInfo.GetJSONObject(i).GetDouble("low");

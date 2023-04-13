@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using static Android.Service.Notification.NotificationListenerService;
+using System.Threading;
 
 namespace App1
 {
@@ -30,10 +32,11 @@ namespace App1
 
         public bool Zoom = false;
         public bool Move = false;
-
+        public bool running = false;
         Paint p;
         Paint p1 = new Paint();
 
+        Paint orange;
         Paint blue;
         Paint Dred;
         Paint green;
@@ -62,6 +65,10 @@ namespace App1
             textPaint_Price.TextSize = 30;
             //Text  Paint_Y.TextAlign = Paint.Align.Center;
 
+            orange= new Paint();
+            orange.Color = Color.Orange;
+            orange.StrokeWidth = 2;
+
             green = new Paint();
             green.Color = Color.Green;
             green.StrokeWidth = 5;
@@ -77,9 +84,42 @@ namespace App1
             purple = new Paint();
             purple.Color = Color.Purple;
             purple.StrokeWidth = 5;
+
+            //running = true;
+            //ThreadStart MyThreadStart = new ThreadStart(PrintChangedSquares);
+            //Thread t = new Thread(MyThreadStart);
+            //t.Start();
         }
 
-
+        public void PrintChangedSquares()
+        {
+            float Lx = -1;
+            float Ly = -1;
+            float Rx = -1;
+            float Ry = -1;
+            float high = 0;
+            float low = 0;
+            float close = 0;
+            while (running)
+            {
+                Thread.Sleep(10000);
+                for (int i = 0; i < ChangedSquares.Count; i++)
+                {
+                    Lx = ChangedSquares[i].UpLeft.x;
+                    Ly = ChangedSquares[i].UpLeft.y;
+                    Rx = ChangedSquares[i].DownRight.x;
+                    Ry = ChangedSquares[i].DownRight.y;
+                    high = dataPoints[i].heigh;
+                    low = dataPoints[i].low;
+                    close = dataPoints[i].close;
+                    Console.Write("i = " + i + " , LeftUp:(" + Lx + "," + Ly + ")    DownRight:(" + Rx + "," + Ry + ")");
+                    Console.WriteLine(" close: " + close + " , low: " + low + " , high: " + high);
+                }
+                running= false;
+            }
+            
+            
+        }
         protected override void OnDraw(Canvas canvas1)
         {
             canvas = canvas1;
@@ -179,7 +219,7 @@ namespace App1
                 {
 
                     UpLeft = new MyPoint((i * (price_text_start_x)) / ((dataPoints.Count - 1)), date_text_start_y + ((lowest - dataPoints[i].heigh) * (1 / (highest - lowest)) * date_text_start_y));
-                    DownRight = new MyPoint(UpLeft.x + squars_Width, date_text_start_y);
+                    DownRight = new MyPoint(UpLeft.x + squars_Width, date_text_start_y + ((lowest - dataPoints[i].low) * (1 / (highest - lowest)) * date_text_start_y));
 
                     Squares.Add(new MySquare(UpLeft, DownRight));
                 }
@@ -195,7 +235,23 @@ namespace App1
             {
                 UpLeft = ChangedSquares[i].UpLeft;
                 DownRight = ChangedSquares[i].DownRight;
-                canvas.DrawRect(UpLeft.x, UpLeft.y, DownRight.x, DownRight.y, p);
+                if (UpLeft.y == DownRight.y)
+                {
+                    canvas.DrawLine(UpLeft.x, UpLeft.y, DownRight.x, DownRight.y, orange);
+                }
+                if(i == 0)
+                {
+                    canvas.DrawRect(UpLeft.x, UpLeft.y, DownRight.x, DownRight.y, orange);
+                }
+                else if (dataPoints[i].close> dataPoints[i - 1].close)
+                {
+                    canvas.DrawRect(UpLeft.x, UpLeft.y, DownRight.x, DownRight.y, green);
+                }
+                else
+                {
+                   canvas.DrawRect(UpLeft.x, UpLeft.y, DownRight.x, DownRight.y, p);
+                }
+                
             }
         }
 
@@ -214,7 +270,7 @@ namespace App1
                 //downRight = new MyPoint(upLeft.x + squars_Width * zoomfactor_X, canvas.Height+camera.CameraOffSetY);
 
                 upLeft = new MyPoint(Squares[i].UpLeft.x * zoomfactor_X + camera.CameraOffSetX, Squares[i].UpLeft.y+camera.CameraOffSetY);
-                downRight = new MyPoint(upLeft.x + squars_Width * zoomfactor_X, date_text_start_y+camera.CameraOffSetY);
+                downRight = new MyPoint(upLeft.x + squars_Width * zoomfactor_X, Squares[i].DownRight.y +camera.CameraOffSetY);
 
                 ChangedSquares.Add(new MySquare(upLeft, downRight));
             }
@@ -369,6 +425,8 @@ namespace App1
                 int Leftest_pointI = Calculate_Original_Point_I(0);//the left most visibal point on the screen
                 int Rightest_pointI = Calculate_Original_Point_I_without_rounding(price_text_start_x);//the right most visibale point on the screen
 
+
+
                 if (Leftest_pointI >= dataPoints.Count - 1)
                 {
                     Leftest_pointI = dataPoints.Count - 2;
@@ -391,7 +449,7 @@ namespace App1
                     if (dataPoints != null & dataPoints.Count > i && dataPoints[i].close < lowest)
                     {
                         lowest = dataPoints[i].close;
-                        l_hieght = ChangedSquares[i].UpLeft.y;
+                        l_hieght = ChangedSquares[i].DownRight.y;
                     }
                     else if (dataPoints != null & dataPoints.Count > i && dataPoints[i].close > heighest)
                     {
@@ -426,7 +484,7 @@ namespace App1
                 //float height = fm.Descent - fm.Ascent;
                 float height = fm.Bottom - fm.Top + fm.Leading; //height in pixels of text
                 string the_string = "";
-
+                MySquare Anchor = new MySquare();
                 //generete text-price below the furthest-right point
                 for (int i = 0; i < (distance_from_floor_of_canvas / height) + 1; i++)
                 {
@@ -436,21 +494,24 @@ namespace App1
 
                     the_string = "" + price;
                     if (i == 0)
-                    {
+                    { 
                         if (dataPoints[Rightest_pointI].close > dataPoints[Rightest_pointI - 1].close)
                         {
                             //canvas.DrawRect(text_start_y, TextBlocks_Y[Rightest_pointI].LeftDown.y - (height / 2), canvas.Width, TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 2), green);
                             canvas.DrawRect(price_text_start_x, ChangedSquares[Rightest_pointI].UpLeft.y - (height / 2), canvas.Width, ChangedSquares[Rightest_pointI].UpLeft.y + (height / 2), green);
+                            Anchor = new MySquare(price_text_start_x, ChangedSquares[Rightest_pointI].UpLeft.y - (height / 2), canvas.Width, ChangedSquares[Rightest_pointI].UpLeft.y + (height / 2));
                         }
-
                         else
                         {
                             // canvas.DrawRect(text_start_y, TextBlocks_Y[Rightest_pointI].LeftDown.y - (height / 2), canvas.Width, TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 2), red);
-                            canvas.DrawRect(price_text_start_x, ChangedSquares[Rightest_pointI].UpLeft.y - (height / 2), canvas.Width, ChangedSquares[Rightest_pointI].UpLeft.y + (height / 2), Dred);
+                            canvas.DrawRect(price_text_start_x, ChangedSquares[Rightest_pointI].DownRight.y - (height / 2), canvas.Width, ChangedSquares[Rightest_pointI].DownRight.y + (height / 2), Dred);
+                            Anchor = new MySquare(price_text_start_x, ChangedSquares[Rightest_pointI].DownRight.y - (height / 2), canvas.Width, ChangedSquares[Rightest_pointI].DownRight.y + (height / 2));
+
                         }
                     }
                     //canvas.DrawText(the_string, text_start_y, TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 4) + (i * height), TextPaint_Y);
-                    canvas.DrawText(the_string, price_text_start_x, ChangedSquares[Rightest_pointI].UpLeft.y + (height / 4) + (i * height), textPaint_Price);
+                    //canvas.DrawText(the_string, price_text_start_x, ChangedSquares[Rightest_pointI].UpLeft.y + (height / 4) + (i * height), textPaint_Price);
+                    canvas.DrawText(the_string, price_text_start_x,Anchor.DownRight.y - (height / 4) + (i * height), textPaint_Price);
                 }
 
                 //genereting text-price above the furthest-right point
@@ -465,7 +526,9 @@ namespace App1
                     price = price / 1000;
                     the_string = "" + price;
                     //canvas.DrawText(the_string, text_start_y, TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 4) - (i * height), TextPaint_Y);
-                    canvas.DrawText(the_string, price_text_start_x, ChangedSquares[Rightest_pointI].UpLeft.y + (height / 4) - (i * height), textPaint_Price);
+                    //canvas.DrawText(the_string, price_text_start_x, ChangedSquares[Rightest_pointI].UpLeft.y + (height / 4) - (i * height), textPaint_Price);
+                    if (Anchor != null && Anchor.DownRight != null )
+                        canvas.DrawText(the_string, price_text_start_x, Anchor.DownRight.y - (height / 4) - (i * height), textPaint_Price);
                 }
 
 

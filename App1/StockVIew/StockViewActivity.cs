@@ -41,7 +41,7 @@ namespace App1
         public static List<StockData> Datalist = new List<StockData>();
         public static List<StockData> Temp_Datalist = new List<StockData>();
         List<DocumentSnapshot> Docs_In_DataBase = new List<DocumentSnapshot>();
-
+        System.Threading.Thread t;
         bool IsDataCountFull = false;
         ListView lvStock;
         StockAdapter adapter;
@@ -357,7 +357,7 @@ namespace App1
 
 
             ThreadStart MyThreadStart = new ThreadStart(Checkifstillloading);
-            System.Threading.Thread t = new System.Threading.Thread(MyThreadStart);
+            t = new System.Threading.Thread(MyThreadStart);
             t.Start();
 
             Toast.MakeText(this, "sent all data requests", ToastLength.Short).Show();
@@ -403,7 +403,7 @@ namespace App1
                     {
                         Console.WriteLine("the code should not be stuck in loading for 2 min L :(");
                         //Toast.MakeText(this, "loading... for 2 min", ToastLength.Short).Show();
-                        return;
+                        flag = false;
                     }
                     else
                     {
@@ -595,6 +595,7 @@ namespace App1
             //db.Terminate();
             //db.Dispose();
             //db= null;
+            t.Abort();
             if (db != null)
             {
                 if (db.App != null)

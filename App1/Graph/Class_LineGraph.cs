@@ -99,7 +99,7 @@ namespace App1
             g.Color = Color.Green;
             g.StrokeWidth = 5;
 
-            start_Refresh_Thread();
+           // start_Refresh_Thread();
 
 
 

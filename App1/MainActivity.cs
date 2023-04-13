@@ -78,7 +78,9 @@ namespace App1
             //intent.PutExtra("symbol", "OB");
             //StartActivity(intent);
             //var editor = sp.Edit();
-            //editor.PutInt("Key2CallsRemain", 206);
+            //editor.PutInt("Key0CallsRemain", 249);
+            //editor.PutInt("Key1CallsRemain", 117);
+            //editor.PutInt("Key2CallsRemain", 117);
             //editor.Commit();
 
             for (int i = 0; i < sp.GetInt("KeysAmount", -1); i++)

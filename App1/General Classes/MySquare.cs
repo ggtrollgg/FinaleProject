@@ -34,6 +34,17 @@ namespace App1.General_Classes
 
             this.Center = new MyPoint((Lx + Rx) / (float)2.0, (Ly + Ry) / (float)2.0);
         }
+
+        public void SetSquar(MyPoint upLeft, MyPoint downRight)
+        {
+            
+            UpLeft.x = upLeft.x;
+            UpLeft.y = upLeft.y;
+            DownRight.x = downRight.x;
+            DownRight.y = downRight.y;
+
+            
+        }
         
     }
 }
