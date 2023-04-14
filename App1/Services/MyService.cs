@@ -258,6 +258,10 @@ namespace App1
                         trackprice_Alarm = CheckIfSurpesst(lastPrice,currentPrice, Datalist[g].TrackingPrices);
                         if(trackprice_Alarm != -1) 
                         {
+                            Console.WriteLine("A Tracking Price in  symbol: " + symbols[g] + " was surpect/decant");
+                            Console.WriteLine("Current Price is: " + currentPrice);
+                            Console.WriteLine("Last Price was: " + lastPrice);
+                            Console.WriteLine("Tracking Price that has activated is: " + trackprice_Alarm);
 
                             NOTIFICATION_ID = g;
                             Intent i = new Intent(this, typeof(ChartActivity));
@@ -268,7 +272,7 @@ namespace App1
                             Notification.Builder notificationBuilder = new Notification.Builder(this)
                             .SetSmallIcon(Resource.Drawable.Icon_Favorite_colored)
                             .SetContentTitle("Price Alarm for stock: " + symbols[g])
-                            .SetContentText("text text");
+                            .SetContentText("alarm activated: " + trackprice_Alarm + "\n" +" ,current price: " + currentPrice + "\n + last seen price: " + lastPrice);
                             var notificationManager = (NotificationManager)GetSystemService(NotificationService);
 
 
@@ -304,29 +308,29 @@ namespace App1
 
         private float CheckIfSurpesst(float lastPrice, float currentPrice, List<float> trackingPrices)
         {
-            float priceSur = -1;
+            float priceAlarm = -1;
             if(lastPrice < currentPrice ) //if the price is rising than check if srpest any tracking prices that are hier than the last loaded value of the stock
             {
-                foreach(float price in trackingPrices)
+                foreach(float Tprice in trackingPrices)
                 {
-                    if(currentPrice > price && price > priceSur)
+                    if(lastPrice < Tprice && currentPrice > Tprice && Tprice > priceAlarm)
                     {
-                        priceSur = price;
+                        priceAlarm = Tprice;
                     }
                 }
             }
             else
             {
-                foreach (float price in trackingPrices)
+                foreach (float Tprice in trackingPrices)
                 {
-                    if (currentPrice < price && price < priceSur)
+                    if (lastPrice > Tprice && currentPrice < Tprice && Tprice < priceAlarm)
                     {
-                        priceSur = price;
+                        priceAlarm = Tprice;
                     }
                 }
             }
 
-            return priceSur;
+            return priceAlarm;
         }
     }
 }

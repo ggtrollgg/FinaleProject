@@ -436,12 +436,18 @@ namespace App1
                     
                 }
 
-                float heighest = values[Leftest_pointI];//just putting some values so i can compere with other values to find the max and min 
+                float heighest = values[Rightest_pointI];//just putting some values so i can compere with other values to find the max and min 
                 float lowest = values[Leftest_pointI];//---
                 float value_of_rightest = values[Rightest_pointI];
                 float value_of_canvasHeight = 0;
-                float l_hieght = 0;
-                float h_hieght = 0;
+
+                float l_hieght = Changedpoints[Leftest_pointI].y;
+                float h_hieght = Changedpoints[Rightest_pointI].y;
+
+
+                Paint.FontMetrics fm = TextPaint_Y.GetFontMetrics();
+                float height = fm.Bottom - fm.Top + fm.Leading; //height in pixels of text
+
 
                 for (int i = Leftest_pointI; i <= Rightest_pointI; i++)//getting the heighest and lowest price on screen
                 {
@@ -456,6 +462,50 @@ namespace App1
                         h_hieght = Changedpoints[i].y;
                     }
                 }
+
+
+                //if (heighest == lowest)
+                ////in case and there is a situation when there is only one point/price visibal on screen
+                ////the code will try to find a diffrent price which is higher or lower then the rightest point
+                ////so in the avaluation of value per pixel we wont divide by 0
+                //{
+                //    int i = Leftest_pointI;
+                //    while (i > -1 && heighest == lowest) //checking for lowest or highest in the left side of the graph
+                //    {
+                //        if (dataPoints != null && dataPoints.Count > i && dataPoints[i].close < lowest)
+                //        {
+                //            lowest = dataPoints[i].close;
+                //            l_hieght = Changedpoints[i].y;
+                //        }
+                //        else if (dataPoints != null && dataPoints.Count > i && dataPoints[i].close > heighest)
+                //        {
+                //            heighest = dataPoints[i].close;
+                //            h_hieght = Changedpoints[i].y;
+                //        }
+                //        i--;
+                //    }
+                //    if (heighest == lowest)//didnt find a lower/higher price
+                //    {
+                //        Console.WriteLine("could not calaculate price per pixel on screen becuase lowest == hieghest :" + lowest + " = " + heighest);
+                //        canvas.DrawCircle(Changedpoints[Rightest_pointI].x, Changedpoints[Rightest_pointI].y, 5, green);
+
+                //        if (values[Rightest_pointI] > values[Rightest_pointI - 1])
+                //        {
+                //            //canvas.DrawRect(text_start_y, TextBlocks_Y[Rightest_pointI].LeftDown.y - (height / 2), canvas.Width, TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 2), green);
+                //            canvas.DrawRect(text_start_y, Changedpoints[Rightest_pointI].y - (height / 2), canvas.Width, Changedpoints[Rightest_pointI].y + (height / 2), green);
+                //        }
+
+                //        else
+                //        {
+                //            // canvas.DrawRect(text_start_y, TextBlocks_Y[Rightest_pointI].LeftDown.y - (height / 2), canvas.Width, TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 2), red);
+                //            canvas.DrawRect(text_start_y, Changedpoints[Rightest_pointI].y - (height / 2), canvas.Width, Changedpoints[Rightest_pointI].y + (height / 2), red);
+                //        }
+                        
+                //        //canvas.DrawText(the_string, text_start_y, TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 4) + (i * height), TextPaint_Y);
+                //        canvas.DrawText("" + value_of_rightest, text_start_y, Changedpoints[Rightest_pointI].y + (height / 4), TextPaint_Y);
+                //        return;
+                //    }
+                //}
 
                 //value_of_canvasHeight = heighest - lowest; //value of the canvas height
                 //float value_per_pixel = value_of_canvasHeight / canvas.Height;
@@ -479,9 +529,6 @@ namespace App1
                 canvas.DrawCircle(Changedpoints[Rightest_pointI].x, Changedpoints[Rightest_pointI].y, 5, green);
 
 
-                Paint.FontMetrics fm = TextPaint_Y.GetFontMetrics();
-                //float height = fm.Descent - fm.Ascent;
-                float height = fm.Bottom - fm.Top + fm.Leading; //height in pixels of text
                 string the_string = "";
 
                 //generete text-price below the furthest-right point
@@ -773,7 +820,7 @@ namespace App1
 
 
 
-
+    
 
 
 

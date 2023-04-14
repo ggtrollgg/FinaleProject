@@ -55,6 +55,7 @@ namespace App1
             //default values
             price_text_start_x = canvas.Width*8/ (float)10.0; 
             date_text_start_y = canvas.Height * 18 / (float)20.0;
+            this.SetOnTouchListener(new ScaleAndTranslateGestureListener(this, new MyPoint(0, 0)));
         }
         public void SetDataPoints(List<DataPoint> points)
         {
@@ -168,13 +169,16 @@ namespace App1
                 //Console.WriteLine("touching with 2 fingers");
 
                 view.SetNewMidPoint((e.GetX()+ e.GetAxisValue(Axis.X, e.FindPointerIndex(e.GetPointerId(1))))/2,(e.GetY()+ e.GetAxisValue(Axis.Y, e.FindPointerIndex(e.GetPointerId(1))))/2);
-                
+                PivotPoint = new MyPoint((e.GetX() + e.GetAxisValue(Axis.X, e.FindPointerIndex(e.GetPointerId(1)))) / 2, (e.GetY() + e.GetAxisValue(Axis.Y, e.FindPointerIndex(e.GetPointerId(1)))) / 2);
             }
             switch (e.Action)
             {
                
                 case MotionEventActions.Down:
                     // Store the initial touch coordinates
+
+                    //Console.WriteLine("MotionEventActions.Down");
+                    //Console.WriteLine("pivit point: ");
                     lastTouchX = e.GetX();
                     lastTouchY = e.GetY();
                     PivotPoint = null;
