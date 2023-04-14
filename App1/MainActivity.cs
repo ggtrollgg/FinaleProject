@@ -66,8 +66,8 @@ namespace App1
             {
                 StopService(intent2);
             }
-            //intent2 = new Intent(this, typeof(MyService));
-            //StartService(intent2);
+            intent2 = new Intent(this, typeof(MyService));
+            StartService(intent2);
 
 
         }

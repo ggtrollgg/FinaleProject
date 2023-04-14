@@ -219,9 +219,21 @@ namespace App1
             .Build();
 
 
-            var app = FirebaseApp.InitializeApp(this, options);
-            db = FirebaseFirestore.GetInstance(app);
-            return db;
+
+
+
+            try
+            {
+                var app = FirebaseApp.InitializeApp(this, options);
+                db = FirebaseFirestore.GetInstance(app);
+                return db;
+            }
+            catch
+            {
+                var app = FirebaseApp.GetApps(this);
+                db = FirebaseFirestore.GetInstance(app[0]);
+                return db;
+            }
         }
 
         private async Task LoadItemsAsync()
