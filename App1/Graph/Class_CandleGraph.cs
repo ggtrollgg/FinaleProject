@@ -23,8 +23,7 @@ namespace App1
         List<TextBlock> TextBlocks_Price = new List<TextBlock>();
 
 
-        float LastRightest_pointI = -1;
-        List<TextBlock> TextBlocks_SeconderyPrice = new List<TextBlock>();
+
 
         float squars_Width = 2;
         float distance = 2;
@@ -621,7 +620,7 @@ namespace App1
 
 
 
-                LastRightest_pointI = Rightest_pointI;
+                
             }
         }
 

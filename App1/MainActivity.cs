@@ -75,9 +75,9 @@ namespace App1
 
         private void BtnTest_Click(object sender, EventArgs e)
         {
-            Intent intent = new Intent(this, typeof(Testing_Database_Activity));
-            intent.PutExtra("symbol", "OB");
-            StartActivity(intent);
+            //Intent intent = new Intent(this, typeof(Testing_Database_Activity));
+            //intent.PutExtra("symbol", "OB");
+            //StartActivity(intent);
 
             //var editor = sp.Edit();
             //editor.PutInt("Key0CallsRemain", 249);

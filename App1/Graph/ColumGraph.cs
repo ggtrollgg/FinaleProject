@@ -19,36 +19,20 @@ namespace App1
 {
     internal class ColumGraph : Class_FatherGraph
     {
-        //List<MyPoint> points = new List<MyPoint>();
-        //List<MyPoint> Changedpoints = new List<MyPoint>();
 
         List<MySquare> Squares= new List<MySquare>();
         List<MySquare> ChangedSquares = new List<MySquare>();
         List<TextBlock> TextBlocks_Date = new List<TextBlock>();
         List<TextBlock> TextBlocks_Price = new List<TextBlock>();
-
         float squars_Width = 2;
         float distance = 2;
-
         float lowest = -1, highest = 0;
         bool doOnce = true;
         float textprice_margin = 0;
-        //MyPoint lastPlace;
-        //MyPoint lastPlace2;
-        //float test_zoomfactor = 1;
-
-        //MyPoint point1;
-        //MyPoint point2;
-
-        float LastRightest_pointI = -1;
-        List<TextBlock> TextBlocks_SeconderyPrice = new List<TextBlock>();
-
         public bool Zoom = false;
         public bool Move = false;
-
         Paint p;
         Paint p1 = new Paint();
-
         Paint orange;
         Paint blue;
         Paint Dred;

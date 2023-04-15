@@ -20,31 +20,21 @@ namespace App1
     {
         private Context context;
         Canvas canvas;
-
-
         public float[] values;
         public String[] Dates;
         float heighest = 0, lowest = -1;
-        
-
         public MyPoint[] points;
         public MyPoint[] Changedpoints;
         MyCamera camera = new MyCamera(0,0);
-
-
         MyPoint lastPlace;
         MyPoint lastPlace2;
         float test_zoomfactor = 1;
-
-
         public bool Zoom = false;
         public bool Move = false;
-
         Paint p1 = new Paint();
         MyPoint point1;
         MyPoint point2;
         MyPoint midPoint;
-
         Paint p;
 
         public StockChart(Context context) : base(context)

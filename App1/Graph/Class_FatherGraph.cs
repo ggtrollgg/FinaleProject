@@ -146,7 +146,6 @@ namespace App1
         private readonly Class_FatherGraph view;
         private ScaleGestureDetector scaleDetector;
         public static MyPoint PivotPoint;
-
         private float lastTouchX;
         private float lastTouchY;
         private bool isNotMoving = false;

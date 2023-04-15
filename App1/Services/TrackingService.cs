@@ -26,24 +26,18 @@ namespace App1
     [Service]
     public class TrackingService : Service, Android.Gms.Tasks.IOnSuccessListener
     {
-        int counter;
         bool running = false;
-
         int TimeBetweenChecks = 1; // seconds
         int numberOfCallsIcanMake = 250; // 250 is the number of calls i can make with one account in one day
         MyHandler myhandler; //interacting with the gui/main thread
-
         public FirebaseFirestore db; //database
         PendingIntent pendingIntent; //peding intent for the alarm manager
         public static List<StockData> Datalist = new List<StockData>();
         List<Integer> TrackPriceSurDes = new List<Integer>();
-
         int NotificationCount = 0;
         string NOTIFICATION_CHANNEL_ID = "StockPriceAlarm";
         int NOTIFICATION_ID = 1;
-
         bool CallInProcess = false;
-        Intent intent2;
 
         public override IBinder OnBind(Intent intent)
         {
