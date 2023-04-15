@@ -118,7 +118,7 @@ namespace App1
             while (running)
             {
                 //Console.WriteLine("Invalidated from thread");
-                //Invalidate();
+                Invalidate();
                 Thread.Sleep((int)frame_rate * 1000);
             }
             return;

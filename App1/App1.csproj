@@ -85,6 +85,7 @@
     <Compile Include="Services\MyService.cs" />
     <Compile Include="Services\MyTimer.cs" />
     <Compile Include="Services\Test_service.cs" />
+    <Compile Include="Services\TrackingService.cs" />
     <Compile Include="StockVIew\StockAdapter.cs" />
     <Compile Include="Graph\StockChart.cs" />
     <Compile Include="General Classes\StockData.cs" />

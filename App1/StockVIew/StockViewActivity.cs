@@ -103,7 +103,6 @@ namespace App1
                 return;
             }
         }
-
         private void BtnReturnHome_Click(object sender, EventArgs e)
         {
             //ShowListView();
@@ -153,54 +152,9 @@ namespace App1
             doc.Delete();
             Docs_In_DataBase.RemoveAt(index);
         }
-        private void UpdateTrackItemAsync(string symbol, int index)
-        {
-            if (index >= Docs_In_DataBase.Count || index < 0) 
-            {
-                Console.WriteLine("tried to update Track item that was out of index. index was: " + index + " docs_in_datavase.count = " + Docs_In_DataBase.Count);
-                return;
-            }
+       
 
 
-            string TrackingPrices = (string)Docs_In_DataBase[index].Get("TrackingPrices");
-            string soundfile = (string)Docs_In_DataBase[index].Get("SoundFile");
-            //string LastDate = "";
-            float heigh = 0;
-            float low = 0;
-
-            DeleteItem_fromDataBase(index);
-
-            Console.WriteLine("the symbol updated is: " + symbol);
-
-            //putting the info that i got from the internet
-            foreach (StockData data in Datalist)
-            {
-                if(data.symbol== symbol)
-                {
-                    heigh= data.price;
-                    low = data.open;
-                    //LastDate = data.date;
-                    break;
-                }
-            }
-
-            
-
-
-            HashMap map = new HashMap();
-            map.Put("symbol", symbol);
-            //map.Put("LastDate", LastDate);
-            map.Put("SoundFile", soundfile);
-            map.Put("TrackingPrices", TrackingPrices);
-            map.Put("Open", heigh);
-            map.Put("Price", low);
-            
-            
-
-            CollectionReference collection = db.Collection("Saved Stocks");
-            collection.Add(map);
-            
-        }
         private void LoadItems()
         {
             if(Datalist.Count > 0)
@@ -399,74 +353,7 @@ namespace App1
 
 
         //get info on stock from internet
-        private async Task GetInfoFromWeb(string symbol,int place)
-        {
-            using (var httpClient2 = new HttpClient())
-            {
-                symbol = symbol.Replace("\0","");
-                symbol = symbol.Replace("\n", "");
-                symbol = symbol.Replace(",", "");
-
-                string link = "https://financialmodelingprep.com/api/v3/historical-chart/1min/";
-                link = link.Insert(link.Length, symbol);
-                //link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860"); //ggtroll 35
-                //link = link.Insert(link.Length, "?apikey=8bdedb14d7674def460cb3a84f1fd429"); //ggtroll 36
-                //link = link.Insert(link.Length, "?apikey=561897c32bf107b87c107244081b759f"); //ggtroll 37
-
-                API_Key k = MainActivity.Manager_API_Keys.GetBestKey();
-                if(k != null && k.Key != "" && k.GetCallsRemaining() > 0) 
-                {
-                    link = link.Insert(link.Length, "?apikey=" + k.Key);
-                }
-                else
-                {
-                    Console.WriteLine("there was a problem with the keys at stockview activity ");
-                    return;
-                }
-                
-
-                using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
-                {
-                    Console.WriteLine("created new httprequest message");
-                    MainActivity.Manager_API_Keys.UseKey(k.Key);
-
-
-                   var response2 = await httpClient2.SendAsync(request);
-                    response2.EnsureSuccessStatusCode();
-                    string responseBody = await response2.Content.ReadAsStringAsync();
-                    JSONArray HistInfo = new JSONArray(responseBody);
-                    Console.WriteLine(HistInfo.Length());
-
-                    Datalist[place].open =((float)(HistInfo.GetJSONObject(0).GetDouble("low")));
-                    Datalist[place].price =((float)(HistInfo.GetJSONObject(0).GetDouble("high")));
-                    //Datalist[place].date = ((string)(HistInfo.GetJSONObject(0).Get("date")));
-                }
-            }
-
-           //Toast.MakeText(this, "data list count is: " + Datalist.Count, ToastLength.Short).Show();
-            Console.WriteLine("data list count is: " + Datalist.Count);
-            Console.WriteLine("Temp_Datalist count is: " + Temp_Datalist.Count);
-            Console.WriteLine("place is: " + place);
-            Console.WriteLine("adding to temp data list in place: " + place);
-            Temp_Datalist.Add(Datalist[place]);
-
-            
-            if (IsDataCountFull && Temp_Datalist.Count == Datalist.Count)
-            {
-                int count = Docs_In_DataBase.Count;
-                for (int g = count-1; g >= 0; g--)
-                {
-                   UpdateTrackItemAsync((string)Docs_In_DataBase[g].Get("symbol"), g);
-                }     
-                Toast.MakeText(this, "presenting the list", ToastLength.Short).Show();
-                ShowListView();
-            }
-            Dispose(true);
-            return;
-        }
-
-
-
+        
         private async Task Bulk_GetInfoFromWeb(List<string> symbols)
         {
             using (var httpClient2 = new HttpClient())
@@ -530,6 +417,8 @@ namespace App1
             CollectionReference collection = db.Collection("Saved Stocks");
             string tp = "";
             HashMap map = new HashMap();
+
+            //for every stock in the database add a hash map with the correct attrabuts 
             foreach (var stock in Datalist)
             {
                 tp = "";
@@ -557,7 +446,7 @@ namespace App1
             }
 
 
-
+            //dlete from cloud
             int count = Docs_In_DataBase.Count;
             for (int i = count-1; i > -1 ; i--)
             {
@@ -638,110 +527,224 @@ namespace App1
 
 
         //not in use
-        private async Task processAllSavedStocks()
-        {
-            string s = Read_from_file();
+        //private void UpdateTrackItemAsync(string symbol, int index)
+        //{
+        //    if (index >= Docs_In_DataBase.Count || index < 0)
+        //    {
+        //        Console.WriteLine("tried to update Track item that was out of index. index was: " + index + " docs_in_datavase.count = " + Docs_In_DataBase.Count);
+        //        return;
+        //    }
+
+
+        //    string TrackingPrices = (string)Docs_In_DataBase[index].Get("TrackingPrices");
+        //    string soundfile = (string)Docs_In_DataBase[index].Get("SoundFile");
+        //    //string LastDate = "";
+        //    float heigh = 0;
+        //    float low = 0;
+
+        //    DeleteItem_fromDataBase(index);
+
+        //    Console.WriteLine("the symbol updated is: " + symbol);
+
+        //    //putting the info that i got from the internet
+        //    foreach (StockData data in Datalist)
+        //    {
+        //        if (data.symbol == symbol)
+        //        {
+        //            heigh = data.price;
+        //            low = data.open;
+        //            //LastDate = data.date;
+        //            break;
+        //        }
+        //    }
 
 
 
-            s = s.Replace("\0", "");
-            s = s.Replace("\n", "");
 
-            string[] s2 = s.Split(',');
-            Console.WriteLine(s2);
-            Console.WriteLine("------------------------------------------------------------------------------------------");
-            for (int i = 0; i < s2.Length; i++)
-            {
-                if (s2[i] != null && s2[i].Length != 0)
-                {
-                    list.Add(s2[i]);
-                    Console.WriteLine(s2[i]);
-                    Console.WriteLine("------------------------------------------------------------------------------------------");
-                    StockData d = new StockData();
-                    d.symbol = s2[i];
-                    Datalist.Add(d);
-                    _ = GetInfoFromWeb(s2[i].ToString(), i);
-                }
-            }
+        //    HashMap map = new HashMap();
+        //    map.Put("symbol", symbol);
+        //    //map.Put("LastDate", LastDate);
+        //    map.Put("SoundFile", soundfile);
+        //    map.Put("TrackingPrices", TrackingPrices);
+        //    map.Put("Open", heigh);
+        //    map.Put("Price", low);
 
-        }
-        private string Read_from_file()
-        {
-            try
-            {
-                string str;
-                //using (Stream stream = OpenFileOutput("Emailinfo.txt", Android.Content.FileCreationMode.Private))
-                using (Stream stream = OpenFileInput("SavedStocks.txt"))
-                {
-                    try
-                    {
-                        byte[] buffer = new byte[4096];
-                        stream.Read(buffer, 0, buffer.Length);
-                        str = System.Text.Encoding.UTF8.GetString(buffer);
-                        stream.Close();
-                        if (str != null)
-                        {
-                            //  tv.Text = str;
-                            //Toast.MakeText(this, str, ToastLength.Short).Show();
-                            return str;
-                        }
-                    }
-                    catch (Java.IO.IOException a)
-                    {
-                        a.PrintStackTrace();
-                    }
-                }
-            }
-            catch (Java.IO.FileNotFoundException a)
-            {
-                a.PrintStackTrace();
 
-            }
 
-            return null;
-        }
+        //    CollectionReference collection = db.Collection("Saved Stocks");
+        //    collection.Add(map);
 
-        private void Add_To_File(string the_stock)
-        {
-            try
-            {
-                string str = the_stock + ",";//= et.Text;
-                using (Stream stream = OpenFileOutput("SavedStocks.txt", Android.Content.FileCreationMode.Append))
-                {
-                    try
-                    {
-                        if (!Is_Allready_In_File(the_stock))
-                        {
-                            stream.Write(Encoding.ASCII.GetBytes(str), 0, str.Length);
-                            stream.Close();
-                            Toast.MakeText(this, "saved", ToastLength.Short).Show();
-                        }
-                    }
-                    catch (Java.IO.IOException a)
-                    {
-                        a.PrintStackTrace();
-                    }
-                }
-            }
-            catch (Java.IO.FileNotFoundException a)
-            {
-                a.PrintStackTrace();
-            }
-            
-        }
+        //}
+        //private async Task GetInfoFromWeb(string symbol, int place)
+        //{
+        //    using (var httpClient2 = new HttpClient())
+        //    {
+        //        symbol = symbol.Replace("\0", "");
+        //        symbol = symbol.Replace("\n", "");
+        //        symbol = symbol.Replace(",", "");
 
-        private bool Is_Allready_In_File(string the_stock)
-        {
-            string str = Read_from_file();
-            if (str== null || str.Contains(the_stock))
-            {
-                Toast.MakeText(this, "all ready in", ToastLength.Short).Show();
-                return true;
-            }
-            return false;
-        }
+        //        string link = "https://financialmodelingprep.com/api/v3/historical-chart/1min/";
+        //        link = link.Insert(link.Length, symbol);
+        //        //link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860"); //ggtroll 35
+        //        //link = link.Insert(link.Length, "?apikey=8bdedb14d7674def460cb3a84f1fd429"); //ggtroll 36
+        //        //link = link.Insert(link.Length, "?apikey=561897c32bf107b87c107244081b759f"); //ggtroll 37
 
-        
+        //        API_Key k = MainActivity.Manager_API_Keys.GetBestKey();
+        //        if (k != null && k.Key != "" && k.GetCallsRemaining() > 0)
+        //        {
+        //            link = link.Insert(link.Length, "?apikey=" + k.Key);
+        //        }
+        //        else
+        //        {
+        //            Console.WriteLine("there was a problem with the keys at stockview activity ");
+        //            return;
+        //        }
+
+
+        //        using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
+        //        {
+        //            Console.WriteLine("created new httprequest message");
+        //            MainActivity.Manager_API_Keys.UseKey(k.Key);
+
+
+        //            var response2 = await httpClient2.SendAsync(request);
+        //            response2.EnsureSuccessStatusCode();
+        //            string responseBody = await response2.Content.ReadAsStringAsync();
+        //            JSONArray HistInfo = new JSONArray(responseBody);
+        //            Console.WriteLine(HistInfo.Length());
+
+        //            Datalist[place].open = ((float)(HistInfo.GetJSONObject(0).GetDouble("low")));
+        //            Datalist[place].price = ((float)(HistInfo.GetJSONObject(0).GetDouble("high")));
+        //            //Datalist[place].date = ((string)(HistInfo.GetJSONObject(0).Get("date")));
+        //        }
+        //    }
+
+        //    //Toast.MakeText(this, "data list count is: " + Datalist.Count, ToastLength.Short).Show();
+        //    Console.WriteLine("data list count is: " + Datalist.Count);
+        //    Console.WriteLine("Temp_Datalist count is: " + Temp_Datalist.Count);
+        //    Console.WriteLine("place is: " + place);
+        //    Console.WriteLine("adding to temp data list in place: " + place);
+        //    Temp_Datalist.Add(Datalist[place]);
+
+
+        //    if (IsDataCountFull && Temp_Datalist.Count == Datalist.Count)
+        //    {
+        //        int count = Docs_In_DataBase.Count;
+        //        for (int g = count - 1; g >= 0; g--)
+        //        {
+        //            UpdateTrackItemAsync((string)Docs_In_DataBase[g].Get("symbol"), g);
+        //        }
+        //        Toast.MakeText(this, "presenting the list", ToastLength.Short).Show();
+        //        ShowListView();
+        //    }
+        //    Dispose(true);
+        //    return;
+        //}
+
+        //private async Task processAllSavedStocks()
+        //{
+        //    string s = Read_from_file();
+
+
+
+        //    s = s.Replace("\0", "");
+        //    s = s.Replace("\n", "");
+
+        //    string[] s2 = s.Split(',');
+        //    Console.WriteLine(s2);
+        //    Console.WriteLine("------------------------------------------------------------------------------------------");
+        //    for (int i = 0; i < s2.Length; i++)
+        //    {
+        //        if (s2[i] != null && s2[i].Length != 0)
+        //        {
+        //            list.Add(s2[i]);
+        //            Console.WriteLine(s2[i]);
+        //            Console.WriteLine("------------------------------------------------------------------------------------------");
+        //            StockData d = new StockData();
+        //            d.symbol = s2[i];
+        //            Datalist.Add(d);
+        //            _ = GetInfoFromWeb(s2[i].ToString(), i);
+        //        }
+        //    }
+
+        //}
+        //private string Read_from_file()
+        //{
+        //    try
+        //    {
+        //        string str;
+        //        //using (Stream stream = OpenFileOutput("Emailinfo.txt", Android.Content.FileCreationMode.Private))
+        //        using (Stream stream = OpenFileInput("SavedStocks.txt"))
+        //        {
+        //            try
+        //            {
+        //                byte[] buffer = new byte[4096];
+        //                stream.Read(buffer, 0, buffer.Length);
+        //                str = System.Text.Encoding.UTF8.GetString(buffer);
+        //                stream.Close();
+        //                if (str != null)
+        //                {
+        //                    //  tv.Text = str;
+        //                    //Toast.MakeText(this, str, ToastLength.Short).Show();
+        //                    return str;
+        //                }
+        //            }
+        //            catch (Java.IO.IOException a)
+        //            {
+        //                a.PrintStackTrace();
+        //            }
+        //        }
+        //    }
+        //    catch (Java.IO.FileNotFoundException a)
+        //    {
+        //        a.PrintStackTrace();
+
+        //    }
+
+        //    return null;
+        //}
+
+        //private void Add_To_File(string the_stock)
+        //{
+        //    try
+        //    {
+        //        string str = the_stock + ",";//= et.Text;
+        //        using (Stream stream = OpenFileOutput("SavedStocks.txt", Android.Content.FileCreationMode.Append))
+        //        {
+        //            try
+        //            {
+        //                if (!Is_Allready_In_File(the_stock))
+        //                {
+        //                    stream.Write(Encoding.ASCII.GetBytes(str), 0, str.Length);
+        //                    stream.Close();
+        //                    Toast.MakeText(this, "saved", ToastLength.Short).Show();
+        //                }
+        //            }
+        //            catch (Java.IO.IOException a)
+        //            {
+        //                a.PrintStackTrace();
+        //            }
+        //        }
+        //    }
+        //    catch (Java.IO.FileNotFoundException a)
+        //    {
+        //        a.PrintStackTrace();
+        //    }
+
+        //}
+
+        //private bool Is_Allready_In_File(string the_stock)
+        //{
+        //    string str = Read_from_file();
+        //    if (str== null || str.Contains(the_stock))
+        //    {
+        //        Toast.MakeText(this, "all ready in", ToastLength.Short).Show();
+        //        return true;
+        //    }
+        //    return false;
+        //}
+
+
 
 
     }

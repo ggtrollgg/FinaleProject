@@ -64,9 +64,10 @@ namespace App1
             Console.WriteLine();
             if (intent2 != null)
             {
+                
                 StopService(intent2);
             }
-            intent2 = new Intent(this, typeof(MyService));
+            intent2 = new Intent(this, typeof(TrackingService));
             StartService(intent2);
 
 
@@ -100,6 +101,7 @@ namespace App1
 
 
         }
+
 
         //buttons
         private void BtnToListView_Click(object sender, EventArgs e)

@@ -46,7 +46,7 @@
     <Button
         android:layout_width="86dp"
         android:layout_height="155.5dp"
-        android:text="work in progress"
+        android:text="Offline Mode"
         android:id="@+id/btnTest"
         android:layout_marginLeft="3dp"
         android:background="#DD0000"

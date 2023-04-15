@@ -172,7 +172,7 @@ namespace App1
 
 
         //search for closest 10 stocks if text was changed in edittext box
-        //if cancaktuin token is cancenlble => meaning a reqwest was already made => i can stop it and not waste resorces on it
+        //if cancalltoin token is cancenlble => meaning a reqwest was already made => i can stop it and not waste resorces on it
         private void EtSearch_TextChanged(object sender, Android.Text.TextChangedEventArgs e)
         {
             if (lastSearch != null && lastSearch != etSearch.Text)
