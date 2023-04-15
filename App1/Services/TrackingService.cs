@@ -38,6 +38,7 @@ namespace App1
         string NOTIFICATION_CHANNEL_ID = "StockPriceAlarm";
         int NOTIFICATION_ID = 1;
         bool CallInProcess = false;
+        Intent intent2;
 
         public override IBinder OnBind(Intent intent)
         {

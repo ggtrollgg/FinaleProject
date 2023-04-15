@@ -15,26 +15,19 @@ namespace App1
 {
     public class Class_FatherGraph : View
     {
-
         public Context context;
         public Canvas canvas;
         public List<DataPoint> dataPoints;
-
-
         public Paint background;
         public Paint textPaint_Price;
         public Paint textPaint_Date;
-
         public MyCamera camera = new MyCamera(0, 0);
         public MyPoint midPoint;
-
         public float price_text_start_x = 0;
         public float date_text_start_y = 0;
-
         public float test_zoomfactor = 1;
         public float zoomfactor_X = 1;
         public float zoomfactor_Y = 1;
-
         public float daltaOffsetX = 0;
         public float daltaOffsetY = 0;
 
@@ -162,22 +155,16 @@ namespace App1
 
         public bool OnTouch(View v, MotionEvent e)
         {
-            //Console.WriteLine("touching screen");
             if (view.midPoint == null && e.PointerCount == 2)
             {
-                //Console.WriteLine("touching with 2 fingers");
-
                 view.SetNewMidPoint((e.GetX()+ e.GetAxisValue(Axis.X, e.FindPointerIndex(e.GetPointerId(1))))/2,(e.GetY()+ e.GetAxisValue(Axis.Y, e.FindPointerIndex(e.GetPointerId(1))))/2);
-                //PivotPoint = new MyPoint((e.GetX() + e.GetAxisValue(Axis.X, e.FindPointerIndex(e.GetPointerId(1)))) / 2, (e.GetY() + e.GetAxisValue(Axis.Y, e.FindPointerIndex(e.GetPointerId(1)))) / 2);
+
             }
             switch (e.Action)
             {
                
                 case MotionEventActions.Down:
                     // Store the initial touch coordinates
-
-                    //Console.WriteLine("MotionEventActions.Down");
-                    //Console.WriteLine("pivit point: ");
                     lastTouchX = e.GetX();
                     lastTouchY = e.GetY();
                     PivotPoint = null;
@@ -257,30 +244,10 @@ namespace App1
                     view.SetNewMidPoint(PivotPoint.x, PivotPoint.y);
                 }
 
-                //ScaleX = detector.CurrentSpanX / detector.PreviousSpanX;
-                //ScaleY = detector.CurrentSpanY / detector.PreviousSpanY;
-
-                //ScaleX = (detector.CurrentSpanX - detector.PreviousSpanX) / 100;
-                //ScaleY = (detector.CurrentSpanY - detector.PreviousSpanY) / 100;
-
                 ScaleX = (detector.CurrentSpanX - detector.PreviousSpanX)/100*view.zoomfactor_X;
                 ScaleY = (detector.CurrentSpanY - detector.PreviousSpanY)/100*view.zoomfactor_Y;
 
                 view.ZoomBy(ScaleX, ScaleY);
-
-                //Console.WriteLine("ScaleX: + " + ScaleX);
-                //Console.Write("ScaleY: " + ScaleY);
-                //Console.WriteLine("*************************" + "\n\n\n");
-                // Zoom in or out on the graph based on the scale factor
-                //view.Zoom(detector.ScaleFactor, detector.FocusX, detector.FocusY);
-
-                //ScaleY = (float)Math.Max(ScaleY, 0.91);
-
-                //view.Zoom(detector.ScaleFactor, PivotPoint.x, PivotPoint.y);
-
-                //view.Zoom(ScaleX, ScaleY, PivotPoint.x, PivotPoint.y);
-
-
 
                 return true;
             }
