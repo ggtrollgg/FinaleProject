@@ -108,7 +108,7 @@ namespace App1
         {
             //ShowListView();
              db.App.Dispose();
-            if(t.ThreadState== System.Threading.ThreadState.Running)
+            if(t!= null && t.ThreadState== System.Threading.ThreadState.Running)
             {
                 t.Abort();
             }

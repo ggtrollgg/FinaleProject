@@ -149,12 +149,13 @@ namespace App1
 
 
                 }
-
+                DrawTails();
                 DrawGraph();
                 DrawXexis();
 
                 ChangeInTextPlaceY((float)0.01);
 
+                
                 DrawTouching();
                 Invalidate();
             }
@@ -187,7 +188,7 @@ namespace App1
                 CreateChartSquars();
 
 
-                DrawYexis();
+                CreateYexis();
                 DrawXexis();
                 ChangeInTextPlaceX((float)0.01);
                 ChangeInTextPlaceY((float)0.01);
@@ -291,7 +292,26 @@ namespace App1
             }
         }
 
-
+        private void DrawTails()
+        {
+            if(ChangedSquares.Count > 0)
+            {
+                //float ValuePerPixel = (Squares[0].UpLeft.y - Squares[0].DownRight.y)/Math.Abs(dataPoints[0].open-dataPoints[0].close);
+                //float ValuePerPixel =  (highest - lowest)/canvas.Height;
+                float PixelPervalue =   canvas.Height/ (highest - lowest);
+                float tail_value = 0;
+                float tail_length = 0;
+                for(int i = 0; i < ChangedSquares.Count; i++)
+                {
+                    tail_value= dataPoints[i].heigh - dataPoints[i].low;
+                    tail_length = PixelPervalue*tail_value;
+                    if (dataPoints[i].close > dataPoints[i].open)
+                        canvas.DrawLine(ChangedSquares[i].Center.x, ChangedSquares[i].Center.y - tail_length / 2, ChangedSquares[i].Center.x, ChangedSquares[i].Center.y + tail_length / 2, green);
+                    else
+                        canvas.DrawLine(ChangedSquares[i].Center.x, ChangedSquares[i].Center.y - tail_length / 2, ChangedSquares[i].Center.x, ChangedSquares[i].Center.y + tail_length / 2, Dred);
+                }
+            }
+        }
 
 
         private void DrawXexis()
@@ -332,7 +352,7 @@ namespace App1
             }
 
         }
-        private void DrawYexis()
+        private void CreateYexis()
         {
             String TheString;
             float width = 0;
@@ -657,23 +677,12 @@ namespace App1
             float point_x = ChangedSquares[i].Center.x;
             float point_y = ChangedSquares[i].Center.y;
 
-            Paint p_text1 = new Paint();
-            p_text1.Color = Color.White;
-            p_text1.TextSize = 50;
-
-
-
-
-
-            float Bordar_x = point_x / 2;
-            float Bordar_y = point_y / 2;
-
-
-
-
             Paint paint = new Paint();
             paint.Color = Color.ParseColor("#999999");
 
+            Paint p_text1 = new Paint();
+            p_text1.Color = Color.White;
+            p_text1.TextSize = 50;
 
 
             Paint p_low = new Paint();
@@ -684,8 +693,22 @@ namespace App1
             p_heigh.Color = Color.Green;
             p_heigh.TextSize = 40;
 
+
+            //float Bordar_x = point_x / 2;
+            //float Bordar_y = point_y / 2;
+
+            float Bordar_x = 50;
+            float Bordar_y = 50;
+
+
+
+
+
+
+
+
             float box_width = Math.Max(canvas.Width / 3, p_text1.MeasureText(dataPoints[i].date) + 100);
-            float box_height = p_text1.TextSize + p_low.TextSize + p_heigh.TextSize + 10;
+            float box_height = p_text1.TextSize + 2*p_low.TextSize + 2*p_heigh.TextSize  + 10;
             //canvas.DrawRect((float)(point_x / 2.5), 100, (float)(point_x * 2.5), 400, black);
             //canvas.DrawRect(point_x / 2, 120, point_x * 2, 320, paint);
 
@@ -697,9 +720,20 @@ namespace App1
 
 
             canvas.DrawText(dataPoints[i].date, Bordar_x + 1, Bordar_y + p_text1.TextSize, p_text1);
-
             canvas.DrawText("heigh: " + dataPoints[i].heigh, Bordar_x + 1, Bordar_y + p_heigh.TextSize + p_text1.TextSize, p_heigh);
             canvas.DrawText("low: " + dataPoints[i].low, Bordar_x + 1, Bordar_y + p_low.TextSize + p_heigh.TextSize + p_text1.TextSize, p_low);
+            if (dataPoints[i].close > dataPoints[i].open)
+            {
+                canvas.DrawText("close: " + dataPoints[i].close, Bordar_x + 1, Bordar_y +2* p_heigh.TextSize + p_low.TextSize + p_text1.TextSize, p_heigh);
+                canvas.DrawText("open: " + dataPoints[i].open, Bordar_x + 1, Bordar_y + 2 * p_low.TextSize + 2 * p_heigh.TextSize + p_text1.TextSize, p_low);
+            }
+            else
+            {
+                canvas.DrawText("open: " + dataPoints[i].open, Bordar_x + 1, Bordar_y +2* p_heigh.TextSize + p_low.TextSize +  p_text1.TextSize, p_heigh);
+                canvas.DrawText("close: " + dataPoints[i].close, Bordar_x + 1, Bordar_y + 2 *  p_low.TextSize + 2 * p_heigh.TextSize + p_text1.TextSize, p_low);
+            }
+
+            
 
         }
 

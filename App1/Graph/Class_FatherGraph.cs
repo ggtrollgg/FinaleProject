@@ -169,7 +169,7 @@ namespace App1
                 //Console.WriteLine("touching with 2 fingers");
 
                 view.SetNewMidPoint((e.GetX()+ e.GetAxisValue(Axis.X, e.FindPointerIndex(e.GetPointerId(1))))/2,(e.GetY()+ e.GetAxisValue(Axis.Y, e.FindPointerIndex(e.GetPointerId(1))))/2);
-                PivotPoint = new MyPoint((e.GetX() + e.GetAxisValue(Axis.X, e.FindPointerIndex(e.GetPointerId(1)))) / 2, (e.GetY() + e.GetAxisValue(Axis.Y, e.FindPointerIndex(e.GetPointerId(1)))) / 2);
+                //PivotPoint = new MyPoint((e.GetX() + e.GetAxisValue(Axis.X, e.FindPointerIndex(e.GetPointerId(1)))) / 2, (e.GetY() + e.GetAxisValue(Axis.Y, e.FindPointerIndex(e.GetPointerId(1)))) / 2);
             }
             switch (e.Action)
             {

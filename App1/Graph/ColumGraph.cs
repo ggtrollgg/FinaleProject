@@ -49,6 +49,7 @@ namespace App1
         Paint p;
         Paint p1 = new Paint();
 
+        Paint orange;
         Paint blue;
         Paint Dred;
         Paint green;
@@ -77,6 +78,10 @@ namespace App1
             textPaint_Price.TextScaleX = (float)2.0;
             textPaint_Price.TextSize = 30;
             //Text  Paint_Y.TextAlign = Paint.Align.Center;
+
+            orange = new Paint();
+            orange.Color = Color.Orange;
+            orange.StrokeWidth = 2;
 
             green = new Paint();
             green.Color = Color.Green;
@@ -279,12 +284,28 @@ namespace App1
             {
                 UpLeft = ChangedSquares[i].UpLeft;
                 DownRight = ChangedSquares[i].DownRight;
-                if (dataPoints[i].close > dataPoints[i].open)
+                if(UpLeft.y == DownRight.y)
                 {
-                    canvas.DrawRect(UpLeft.x, UpLeft.y, DownRight.x, DownRight.y, green);
+                    canvas.DrawLine(UpLeft.x, UpLeft.y, DownRight.x, DownRight.y, orange);
+                }
+                if(i ==0)
+                {
+                    if (dataPoints[i].close > dataPoints[i].open)
+                    {
+                        canvas.DrawRect(UpLeft.x, UpLeft.y, DownRight.x, DownRight.y, green);
+                    }
+                    else
+                        canvas.DrawRect(UpLeft.x, UpLeft.y, DownRight.x, DownRight.y, p);
                 }
                 else
-                    canvas.DrawRect(UpLeft.x,UpLeft.y,DownRight.x,DownRight.y,p);
+                {
+                    if (dataPoints[i].close > dataPoints[i-1].close)
+                    {
+                        canvas.DrawRect(UpLeft.x, UpLeft.y, DownRight.x, DownRight.y, green);
+                    }
+                    else
+                        canvas.DrawRect(UpLeft.x, UpLeft.y, DownRight.x, DownRight.y, p);
+                }
             }
         }
 
@@ -649,11 +670,12 @@ namespace App1
 
 
 
-            float Bordar_x = point_x / 2;
-            float Bordar_y = point_y / 2;
+            //float Bordar_x = point_x / 2;
+            //float Bordar_y = point_y / 2;
 
 
-
+            float Bordar_x = 50;
+            float Bordar_y = 50;
 
             Paint paint = new Paint();
             paint.Color = Color.ParseColor("#999999");
@@ -669,7 +691,7 @@ namespace App1
             p_heigh.TextSize = 40;
 
             float box_width = Math.Max(canvas.Width / 3, p_text1.MeasureText(dataPoints[i].date) + 100);
-            float box_height = p_text1.TextSize + p_low.TextSize + p_heigh.TextSize + 10;
+            float box_height = p_text1.TextSize + 2*p_low.TextSize + 2*p_heigh.TextSize + 10;
             //canvas.DrawRect((float)(point_x / 2.5), 100, (float)(point_x * 2.5), 400, black);
             //canvas.DrawRect(point_x / 2, 120, point_x * 2, 320, paint);
 
@@ -684,6 +706,16 @@ namespace App1
 
             canvas.DrawText("heigh: " + dataPoints[i].heigh, Bordar_x + 1, Bordar_y + p_heigh.TextSize + p_text1.TextSize, p_heigh);
             canvas.DrawText("low: " + dataPoints[i].low, Bordar_x + 1, Bordar_y + p_low.TextSize + p_heigh.TextSize + p_text1.TextSize, p_low);
+            if (dataPoints[i].close > dataPoints[i].open)
+            {
+                canvas.DrawText("close: " + dataPoints[i].close, Bordar_x + 1, Bordar_y + 2 * p_heigh.TextSize + p_low.TextSize + p_text1.TextSize, p_heigh);
+                canvas.DrawText("open: " + dataPoints[i].open, Bordar_x + 1, Bordar_y + 2 * p_low.TextSize + 2 * p_heigh.TextSize + p_text1.TextSize, p_low);
+            }
+            else
+            {
+                canvas.DrawText("open: " + dataPoints[i].open, Bordar_x + 1, Bordar_y + 2 * p_heigh.TextSize + p_low.TextSize + p_text1.TextSize, p_heigh);
+                canvas.DrawText("close: " + dataPoints[i].close, Bordar_x + 1, Bordar_y + 2 * p_low.TextSize + 2 * p_heigh.TextSize + p_text1.TextSize, p_low);
+            }
 
         }
 
