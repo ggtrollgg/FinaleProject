@@ -291,11 +291,9 @@ namespace App1
             Console.WriteLine("dedualtI is: " + defualtI);
             Console.WriteLine("i is: " + i);
 
-            //Console.WriteLine("the soposed x from the calculation is: " + ((midPoint.x - camera.CameraOffSetX) / test_zoomfactor));
+            
             int defualtI2 = (int)Math.Round(defualtI);
             int i2 = (int)Math.Round(i);
-            //Console.WriteLine("i2 is:" + i2);
-            //return i2;
             return defualtI2;  
         }
     }

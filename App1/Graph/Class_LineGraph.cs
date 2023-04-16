@@ -89,7 +89,6 @@ namespace App1
             TextPaint_Y.StrokeWidth = 2;
             TextPaint_Y.TextScaleX = (float)2.0;
             TextPaint_Y.TextSize = 30;
-            //TextPaint_Y.TextAlign = Paint.Align.Center;
 
             r = new Paint();
             r.Color = Color.Red;
@@ -117,7 +116,6 @@ namespace App1
         {
             while (running)
             {
-                //Console.WriteLine("Invalidated from thread");
                 Invalidate();
                 Thread.Sleep((int)frame_rate * 1000);
             }
@@ -147,14 +145,11 @@ namespace App1
 
                     CalculateNewPointes();
                     ChangeInTextPlaceX(daltaOffsetX);
-                   //ChangeInTextPlaceY(daltaOffsetY);
 
 
                 }
 
                 DrawXexis();
-
-                //DrawYexis();
                 ChangeInTextPlaceY((float)0.01);
 
                 DrawTouching();
@@ -171,7 +166,6 @@ namespace App1
 
 
             TextPaint_X.TextSize = canvas.Width / 18;
-            //TextPaint_Y.TextSize = canvas.Height / (float)67.5;
             text_start_y = canvas.Width - TextPaint_Y.MeasureText("12.123") - text_margin_y;
 
 
@@ -179,10 +173,6 @@ namespace App1
             {
                 CreateChartPoints();
             }
-
-            //onsole.WriteLine(canvas.Height);
-            //Console.WriteLine(canvas.Width);
-           
             DrawXexis();
             DrawYexis();
 
@@ -201,7 +191,6 @@ namespace App1
 
             for (int i = 0; i < values.Count; i++)
             {
-                //canvas.DrawCircle(Changedpoints[i].x, Changedpoints[i].y, 2, p);
                 if (i != values.Count - 1)
                 {
                     if (i < values.Count-1)
@@ -223,7 +212,6 @@ namespace App1
         {
             foreach (DataPoint i in dataPoints)
             {
-                //float avr = (i.low + i.heigh)/(float)2.0;
                 values.Add(i.close);
             }
         }
@@ -244,8 +232,7 @@ namespace App1
 
                 for (int i = 0; i < values.Count; i++)
                 {
-                    //points.Add(new MyPoint(((i  * canvas.Width) * (float)(9.0 / 10.0)) / (values.Count - 1), canvas.Height * 19/20 + ((lowest - values[i]) * (1 / (heighest - lowest)) * canvas.Height * 19 / 20)));
-                    //points.Add(new MyPoint(i * canvas.Width * (float)(9.0 / 10.0) / (values.Count - 1), canvas.Height * 19 / 20 + ((lowest - values[i]) * (1 / (heighest - lowest)) * canvas.Height * 19 / 20)));
+
                     points.Add(new MyPoint(i * (text_start_y) / (values.Count - 1), canvas.Height * 19 / 20 + ((lowest - values[i]) * (1 / (heighest - lowest)) * canvas.Height * 19 / 20)));
                 }
                 CalculateNewPointes();
@@ -256,9 +243,9 @@ namespace App1
             Changedpoints.Clear();
             for (int i = 0; i < values.Count; i++)
             {
-                //Changedpoints.Add( new MyPoint((points[i].x) * test_zoomfactor + camera.CameraOffSetX, points[i].y + camera.CameraOffSetY));
+
                 Changedpoints.Add(new MyPoint((points[i].x) * zoomfactor_X + camera.CameraOffSetX, points[i].y * zoomfactor_Y + camera.CameraOffSetY));
-                //Console.WriteLine("test zoom factor is: " + test_zoomfactor);
+                
             }
             
         }
@@ -294,12 +281,8 @@ namespace App1
                 if (TextBlocks.Count != 0 && !TextBlocks[i].Hidden)
                 {
                     TheString = TextBlocks[i].Text;
-                    //TheString = TheString.Remove(0, 10);
                     canvas.DrawText(TheString, Changedpoints[i].x, canvas.Height, TextPaint_X);
 
-                    //width = TextPaint_X.MeasureText(TheString);
-                    //canvas.DrawCircle(Changedpoints[i].x - width / 2, TextBlocks[i].LeftDown.y, 5, red);
-                    //canvas.DrawCircle(Changedpoints[i].x  + width / 2, TextBlocks[i].RightDown.y, 5, green);
 
                 }
 
@@ -320,36 +303,18 @@ namespace App1
                     {
                         TheString = "" + values[i];
                         width = TextPaint_Y.MeasureText(TheString);
-                        //TextBlocks_Y.Add(new TextBlock(TheString, TextPaint_Y, canvas.Width * (float)(18.0 / 20) + 2*width, Changedpoints[i].y));
                         TextBlocks_Y.Add(new TextBlock(TheString, TextPaint_Y, text_start_y+(width/2), Changedpoints[i].y));
                     }
 
                 }
             }
 
-            //for (int i = 0; i < TextBlocks_Y.Count; i++)
-            //{
-
-            //    if (TextBlocks_Y.Count != 0 && !TextBlocks_Y[i].Hidden)
-            //    {
-            //        TheString = TextBlocks_Y[i].Text;
-            //        width = TextPaint_Y.MeasureText(TheString);
-            //        //canvas.DrawText(TheString, canvas.Width * (float)(18.0 / 20) + width, Changedpoints[i].y, TextPaint_Y);
-
-                  
-
-            //        //canvas.DrawCircle(Changedpoints[i].x - width / 2, TextBlocks[i].LeftDown.y, 5, red);
-            //        //canvas.DrawCircle(Changedpoints[i].x + width / 2, TextBlocks[i].RightDown.y, 5, green);
-
-            //    }
-
-            //}
         }
         private void ChangeInTextPlaceX(float v)
         {
             int Anchor_place = 0;
             int place = 0;
-           // Console.WriteLine(v);
+
 
             if (v != 0) 
             {
@@ -364,13 +329,13 @@ namespace App1
                         if (RightX >= LeftX)//hide text 
                         {
                             TextBlocks[i].Hidden = true;
-                           // Console.Write("i hid the text in place: ");
+
                             for (int g = i; g < TextBlocks.Count; g += 2 * i)
                             {
                                 TextBlocks[g].Hidden = true;
-                                //Console.Write(g + " ");
+
                             }
-                            // Console.WriteLine("  ");
+
                             ChangeInTextPlaceX((float)0.001);
                             return;
                         }
@@ -464,52 +429,7 @@ namespace App1
                 }
 
 
-                //if (heighest == lowest)
-                ////in case and there is a situation when there is only one point/price visibal on screen
-                ////the code will try to find a diffrent price which is higher or lower then the rightest point
-                ////so in the avaluation of value per pixel we wont divide by 0
-                //{
-                //    int i = Leftest_pointI;
-                //    while (i > -1 && heighest == lowest) //checking for lowest or highest in the left side of the graph
-                //    {
-                //        if (dataPoints != null && dataPoints.Count > i && dataPoints[i].close < lowest)
-                //        {
-                //            lowest = dataPoints[i].close;
-                //            l_hieght = Changedpoints[i].y;
-                //        }
-                //        else if (dataPoints != null && dataPoints.Count > i && dataPoints[i].close > heighest)
-                //        {
-                //            heighest = dataPoints[i].close;
-                //            h_hieght = Changedpoints[i].y;
-                //        }
-                //        i--;
-                //    }
-                //    if (heighest == lowest)//didnt find a lower/higher price
-                //    {
-                //        Console.WriteLine("could not calaculate price per pixel on screen becuase lowest == hieghest :" + lowest + " = " + heighest);
-                //        canvas.DrawCircle(Changedpoints[Rightest_pointI].x, Changedpoints[Rightest_pointI].y, 5, green);
-
-                //        if (values[Rightest_pointI] > values[Rightest_pointI - 1])
-                //        {
-                //            //canvas.DrawRect(text_start_y, TextBlocks_Y[Rightest_pointI].LeftDown.y - (height / 2), canvas.Width, TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 2), green);
-                //            canvas.DrawRect(text_start_y, Changedpoints[Rightest_pointI].y - (height / 2), canvas.Width, Changedpoints[Rightest_pointI].y + (height / 2), green);
-                //        }
-
-                //        else
-                //        {
-                //            // canvas.DrawRect(text_start_y, TextBlocks_Y[Rightest_pointI].LeftDown.y - (height / 2), canvas.Width, TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 2), red);
-                //            canvas.DrawRect(text_start_y, Changedpoints[Rightest_pointI].y - (height / 2), canvas.Width, Changedpoints[Rightest_pointI].y + (height / 2), red);
-                //        }
-                        
-                //        //canvas.DrawText(the_string, text_start_y, TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 4) + (i * height), TextPaint_Y);
-                //        canvas.DrawText("" + value_of_rightest, text_start_y, Changedpoints[Rightest_pointI].y + (height / 4), TextPaint_Y);
-                //        return;
-                //    }
-                //}
-
-                //value_of_canvasHeight = heighest - lowest; //value of the canvas height
-                //float value_per_pixel = value_of_canvasHeight / canvas.Height;
-
+                
 
                 float value_per_pixel = (heighest - lowest) / (Math.Abs(h_hieght - l_hieght));
                 value_of_canvasHeight = value_per_pixel*canvas.Height; //value of the canvas height
@@ -543,17 +463,14 @@ namespace App1
                     {
                         if (values[Rightest_pointI] > values[Rightest_pointI - 1])
                         {
-                            //canvas.DrawRect(text_start_y, TextBlocks_Y[Rightest_pointI].LeftDown.y - (height / 2), canvas.Width, TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 2), green);
                             canvas.DrawRect(text_start_y, Changedpoints[Rightest_pointI].y - (height / 2), canvas.Width, Changedpoints[Rightest_pointI].y + (height / 2), green);
                         }
                             
                         else
                         {
-                           // canvas.DrawRect(text_start_y, TextBlocks_Y[Rightest_pointI].LeftDown.y - (height / 2), canvas.Width, TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 2), red);
                             canvas.DrawRect(text_start_y, Changedpoints[Rightest_pointI].y - (height / 2), canvas.Width, Changedpoints[Rightest_pointI].y + (height / 2), red);
                         }
                     }
-                    //canvas.DrawText(the_string, text_start_y, TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 4) + (i * height), TextPaint_Y);
                     canvas.DrawText(the_string, text_start_y, Changedpoints[Rightest_pointI].y + (height / 4)  + (i * height), TextPaint_Y);
                 }
 
@@ -568,7 +485,6 @@ namespace App1
                     price = (int)(price * 100);
                     price = price / 100;
                     the_string = "" + price;
-                    //canvas.DrawText(the_string, text_start_y, TextBlocks_Y[Rightest_pointI].LeftDown.y + (height / 4) - (i * height), TextPaint_Y);
                     canvas.DrawText(the_string, text_start_y, Changedpoints[Rightest_pointI].y + (height / 4) - (i * height), TextPaint_Y);
                 }
 
@@ -583,56 +499,9 @@ namespace App1
 
 
         //calculations to find points on graph
-        private int CalculatePointZoomingOn()
-        {
-            double defualtPointx = (midPoint.x - camera.CameraOffSetX) / test_zoomfactor;
-            //double defualtPointx = ((midPoint.x ) / test_zoomfactor ) - camera.CameraOffSetX;
-           // Console.WriteLine("defalt x ix :" + defualtPointx);
-
-            //float x = (i * 9 / 10 * canvas.Width) / (values.Count - 1);
-            double g = ((values.Count - 1) * midPoint.x * 10) / (9  * canvas.Width);
-
-            double defualtI = (defualtPointx * (points.Count - 1)) / canvas.Width;
-            //float defualtI = ((midPoint.x) * (points.Count - 1)) / (canvas.Width );
-            //Console.WriteLine("mid point x:" + midPoint.x);
-
-            //float i = (((midPoint.x - camera.CameraOffSetX) / test_zoomfactor) / (canvas.Width / (points.Count - 1)));
-            float i = (((midPoint.x / test_zoomfactor) - camera.CameraOffSetX) / (canvas.Width / (points.Count - 1)));
-            //float i = ((((midPoint.x / test_zoomfactor) - camera.CameraOffSetX) * (points.Count - 1) )/ (canvas.Width));
-
-            double itest = (defualtPointx * (values.Count - 1) ) / ( canvas.Width);
-            itest = itest * (10 / 9);
-
-
-           // Console.WriteLine("dedualtI is: " + defualtI);
-            //Console.WriteLine("i is: " + i);
-            //Console.WriteLine("itest is: " + itest);
-            //Console.WriteLine("g is: " + g);
-
-            //Console.WriteLine("the soposed x from the calculation is: " + ((midPoint.x - camera.CameraOffSetX) / test_zoomfactor));
-            //Console.WriteLine("the soposed x from the calculation is: " + ((midPoint.x ) / test_zoomfactor)- camera.CameraOffSetX);
-
-
-
-            //double changed_x = midPoint.x * test_zoomfactor + camera.CameraOffSetX;
-            //double def_x = (changed_x - camera.CameraOffSetX) / test_zoomfactor;
-            double itest2 = ((defualtPointx * (points.Count))*20) / (canvas.Width*18);
-           // Console.WriteLine("itest2 : " + itest2);
-
-
-            int defualtI2 = (int)Math.Round(defualtI);
-            //int i2 = (int)Math.Round(i);
-            //int i2 = (int)Math.Round(itest);
-
-            int i2 = (int)Math.Round(itest2);
-            //return defualtI2;
-            return i2;
-        }
-
         private int Calculate_Original_Point_I(float x)
         {
             double defualtPointx = (x - camera.CameraOffSetX) / test_zoomfactor;
-           // double itest2 = ((defualtPointx * (points.Count)) * 20) / (canvas.Width * 18);
             double itest2 = ((defualtPointx * (points.Count-1)) ) / (text_start_y);
             int i = (int)Math.Round(itest2);
             return i;
@@ -641,7 +510,6 @@ namespace App1
         private int Calculate_Original_Point_I_without_rounding(float x)
         {
             double defualtPointx = (x - camera.CameraOffSetX) / test_zoomfactor;
-            //double itest2 = ((defualtPointx * (points.Count)) * 20) / (canvas.Width * 18);
             double itest2 = ((defualtPointx * (points.Count-1))) / (text_start_y);
             int i = (int)(itest2);
             return i;
@@ -700,12 +568,6 @@ namespace App1
 
             float box_width = Math.Max(canvas.Width / 3, p_text1.MeasureText(dataPoints[i].date) + 100);
             float box_height = p_text1.TextSize + p_low.TextSize + p_heigh.TextSize + 10;
-            //canvas.DrawRect((float)(point_x / 2.5), 100, (float)(point_x * 2.5), 400, black);
-            //canvas.DrawRect(point_x / 2, 120, point_x * 2, 320, paint);
-
-            //float Bordar_x = point_x / 2;
-            //float Bordar_y = 120;
-
             canvas.DrawRect(Bordar_x - 50, Bordar_y - 50, Bordar_x + box_width + 50, Bordar_y + box_height + 50, black);
             canvas.DrawRect(Bordar_x, Bordar_y, Bordar_x + box_width, Bordar_y + box_height, paint);
 
@@ -716,99 +578,6 @@ namespace App1
             canvas.DrawText("low: " + dataPoints[i].low, Bordar_x + 1, Bordar_y + p_low.TextSize + p_heigh.TextSize + p_text1.TextSize, p_low);
             
         }
-        
-        //public override bool OnTouchEvent(MotionEvent e)
-        //{
-        //    if (e.PointerCount > 1)
-        //    {
-        //        p1.Color = Color.Black;
-
-        //        point1 = new MyPoint((float)e.GetX(), (float)e.GetY());
-        //        point2 = new MyPoint(e.GetAxisValue(Axis.X, e.FindPointerIndex(e.GetPointerId(1))), e.GetAxisValue(Axis.Y, e.FindPointerIndex(e.GetPointerId(1))));
-
-        //        if (e.Action == MotionEventActions.Pointer2Down || e.Action == MotionEventActions.Down)
-        //        {
-        //            midPoint = new MyPoint((point1.x + point2.x) / 2, (point1.y + point2.y) / 2);
-        //        }
-        //    }
-        //    if (e.Action == MotionEventActions.Up)
-        //    {
-        //        point1 = null;
-        //        point2 = null;
-        //        midPoint = null;
-        //    }
-
-
-
-        //    if (lastPlace == null)
-        //    {
-        //        lastPlace = new MyPoint(e.GetX(), e.GetY());
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        if (e.Action == MotionEventActions.Move)
-        //        {
-        //            if (e.PointerCount > 1 && midPoint != null)
-        //            {
-        //                point2 = new MyPoint(e.GetAxisValue(Axis.X, e.FindPointerIndex(e.GetPointerId(1))), e.GetAxisValue(Axis.Y, e.FindPointerIndex(e.GetPointerId(1))));
-        //                if (lastPlace2 == null)
-        //                {
-        //                    lastPlace2 = new MyPoint(point2.x, point2.y);
-        //                }
-
-
-        //                //test_zoomfactor += Math.Max((Math.Abs((float)e.GetX() - midPoint.x) / 1000),Math.Abs( ((float)point2.x - midPoint.x) / 1000));
-
-        //                //if(Math.Abs((float)e.GetX() - lastPlace.x) > Math.Abs((float)point2.x - lastPlace2.x))
-        //                //{
-        //                //    test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100;
-        //                //}
-        //                //else
-        //                //{
-        //                //    test_zoomfactor += ((float)point2.x - lastPlace2.x) / 100;
-        //                //}
-
-        //                if((test_zoomfactor + ((float)e.GetX() - lastPlace.x) / 100) > 1)
-        //                {
-        //                    test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100;// + ((float)point2.x - lastPlace2.x) / 100;
-        //                    ChangeInTextPlace((float)e.GetX() - lastPlace.x);
-        //                }
-                        
-                        
-
-
-                        
-
-
-        //                lastPlace2.x = point2.x;
-        //                lastPlace2.y = point2.y;
-
-        //            }
-        //            else
-        //            {
-        //                //if (Zoom)
-        //                //{
-        //                //    test_zoomfactor += ((float)e.GetX() - lastPlace.x) / 100;
-        //                //}
-        //                if (!(camera.CameraOffSetX + (float)e.GetX() - lastPlace.x >= 0))
-        //                {
-        //                    camera.CameraOffSetX += (float)e.GetX() - lastPlace.x;
-        //                }
-        //                camera.CameraOffSetY += (float)e.GetY() - lastPlace.y;
-                        
-        //            }
-        //        }
-        //    }
-
-        //    CalculateNewPointes();
-
-        //    lastPlace.x = e.GetX();
-        //    lastPlace.y = e.GetY();
-        //    return true;
-
-
-        //}
 
         
     }

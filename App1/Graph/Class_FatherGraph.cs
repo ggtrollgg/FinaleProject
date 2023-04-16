@@ -61,35 +61,15 @@ namespace App1
             if(dataPoints.Count != 0 && canvas != null)
             {
                 int distance = canvas.Width/dataPoints.Count;
-                //Console.WriteLine("(test_zoomfactor + zoomfactor_x)! < 0.8), is: " + ((test_zoomfactor + zoomfactor_x)! < 0.8));
-                //Console.WriteLine("(test_zoomfactor + zoomfactor_x) !> (dataPoints.Count/2.0), is: " + (bool)((test_zoomfactor + zoomfactor_x)! > (dataPoints.Count / 2.0)));
-                //Console.WriteLine("!(test_zoomfactor + zoomfactor_x) < 0.8), is: " + !((test_zoomfactor + zoomfactor_x) < 0.8));
-                //Console.WriteLine("!(test_zoomfactor + zoomfactor_x) > (dataPoints.Count/2.0), is: " + !((test_zoomfactor + zoomfactor_x) > (dataPoints.Count / 2.0)));
-                //Console.WriteLine(" ");
                 if (!((test_zoomfactor + zoomfactor_x) < 0.8) && !((test_zoomfactor + zoomfactor_x) > (dataPoints.Count / 2.0))) // the graph can be spreard across 0.8 of the screen, or it can strech so the distance between each point is half canvas width
                 {
                     daltaOffsetX = zoomfactor_x * 10 / this.zoomfactor_X;
                     this.zoomfactor_X += zoomfactor_x;
-                    //this.zoomfactor_Y += zoomfactor_y;
-
-
-                    //daltaOffsetX = zoomfactor_x * 100;
                     test_zoomfactor += zoomfactor_x;
 
                     camera.X_zoom_changed = true;
                 }
-                //if (!((zoomfactor_Y + zoomfactor_y) < 0.4) && !((zoomfactor_Y + zoomfactor_y) > (dataPoints.Count / 0.5))) // the graph can be spreard across 0.4 of the screen, or it can strech so the distance between each point is 2 times canvas width
-                //{
-                //    daltaOffsetY = zoomfactor_y * 10 / this.zoomfactor_Y;
-                //    this.zoomfactor_Y += zoomfactor_y;
-                //    camera.Y_zoom_changed = true;
-                //}
 
-                //Console.WriteLine(" ");
-                //Console.WriteLine("changed the scale factor");
-                //Console.WriteLine("zoomfactor_x is: " + zoomfactor_X);
-                //Console.WriteLine("zoomfactor_Y is: " + zoomfactor_Y);
-                //Console.WriteLine(" ");
             }
 
         }
@@ -99,24 +79,11 @@ namespace App1
             {
                 camera.CameraOffSetX += offset_x;
                 camera.X_changed = true;
-                //Console.WriteLine("changed offset of x by: " + offset_x);
             }
 
-            //if (!(camera.CameraOffSetY + offset_y <= -canvas.Height+200)  && !(camera.CameraOffSetY + offset_y >= canvas.Height-200))
-            //{
                 camera.CameraOffSetY += offset_y;
                 daltaOffsetY = offset_y;
                 camera.Y_changed = true;
-            //}
-
-            
-          
-
-            //Console.WriteLine(" ");
-            //Console.WriteLine("changed the offset");
-            //Console.WriteLine("offset_x is: " + camera.CameraOffSetX);
-            //Console.WriteLine("offset_Y is: " + camera.CameraOffSetY);
-            //Console.WriteLine(" ");
         }
 
         public void SetNewMidPoint(float x, float y)
@@ -194,7 +161,6 @@ namespace App1
                         lastTouchX = e.GetX();
                         lastTouchY = e.GetY();
                     }
-                    //PivotPoint = null;
                     break;
                 case MotionEventActions.Move:
                     if (e.PointerCount == 1)
@@ -203,12 +169,6 @@ namespace App1
                         float translateY = e.GetY() - lastTouchY;
 
                         view.OffsetBy(translateX, translateY);
-                        //view.OffsetBy(translateX, 0);
-
-
-                        // Translate the graph by the calculated distance
-                        //view.Translate(translateX, translateY);
-
                         // Update the last touch coordinates with the current touch coordinates
                         lastTouchX = e.GetX();
                         lastTouchY = e.GetY();
