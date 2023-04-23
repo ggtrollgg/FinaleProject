@@ -32,7 +32,7 @@ namespace App1
         Button btnHome;
         ListView lvSearchedStocks;
 
-        public static List<ClassSearchStock> SearchDatalist = new List<ClassSearchStock>();
+        List<ClassSearchStock> SearchDatalist = new List<ClassSearchStock>();
         SearchStockAdapter adapter;
 
         CancellationTokenSource CTS = new CancellationTokenSource();
@@ -41,34 +41,77 @@ namespace App1
         LinearLayout l1;
         Class_LineGraph MiniGraph;
 
-        String lastSearch;
+        MyHandler handler;
+        string lastSearch = "TEST";
         int LongClick_pos;
 
+        bool running = false;
         Context content;
+        Thread Thread_CheckChange;
 
+        
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.SearchLayout);
             content = this;
-            lastSearch = "";
             etSearch = FindViewById<EditText>(Resource.Id.etSearch);
             btnHome = FindViewById<Button>(Resource.Id.btnHome);
-
-            //btnSearch.Click += BtnSearch_Click;
-
             lvSearchedStocks = (ListView)FindViewById(Resource.Id.lvSearchedStoks);
             lvSearchedStocks.ItemClick += LvSearchedStocks_ItemClick;
             lvSearchedStocks.ItemLongClick += LvSearchedStocks_ItemLongClick;
 
-            //8bdedb14d7674def460cb3a84f1fd429
-            //0a0b32a8d57dc7a4d38458de98803860
 
-            //etSearch.AfterTextChanged += EtSearch_AfterTextChanged;
-
+            SetUp_ListView();
             etSearch.TextChanged += EtSearch_TextChanged;
             btnHome.Click += BtnHome_Click;
+            //handler = new MyHandler(this);
 
+            //ThreadStart MyStartThread = new ThreadStart(CheckIfTextChanged);
+            //Thread_CheckChange = new Thread(CheckIfTextChanged);
+            //running = true;
+            //Thread_CheckChange.Start();
+
+        }
+
+        private void CheckIfTextChanged()
+        {
+            while(running == true)
+            {
+                test();
+
+                Thread.Sleep(1000);
+            }
+        }
+
+        private void test()
+        {
+            if (lastSearch != etSearch.Text)
+            {
+                if (CTS != null && CTS.Token != null && CTS.Token.CanBeCanceled)
+                {
+                    CTS.Cancel();
+                    CTS.Dispose();
+                    CTS = new CancellationTokenSource();
+                }
+                if (etSearch.Text != "")
+                {
+                    lastSearch = etSearch.Text;
+                    RefreshList();//refresh to the new closest 10 stocks
+                    Console.WriteLine("refresh");
+                }
+                else
+                {
+                    Console.WriteLine("et text == ''  ");
+                    lastSearch = etSearch.Text;
+                    if (SearchDatalist != null && SearchDatalist.Count > 0)
+                    {
+                        SearchDatalist.Clear();
+                    }
+                    //ShowListView(); // it will be empty
+                    RefreshListView();
+                }
+            }
         }
 
         //buttons
@@ -177,7 +220,7 @@ namespace App1
         {
             if (lastSearch != null && lastSearch != etSearch.Text)
             {
-                if(CTS.Token.CanBeCanceled)
+                if (CTS.Token.CanBeCanceled)
                 {
                     CTS.Cancel();
                     CTS.Dispose();
@@ -190,6 +233,7 @@ namespace App1
                     {
                         SearchDatalist.Clear();
                         ShowListView(); // it will be empty
+                        //RefreshListView();
                     }
                 }
                 else
@@ -201,28 +245,6 @@ namespace App1
             }
         }
 
-        //private void EtSearch_AfterTextChanged(object sender, Android.Text.AfterTextChangedEventArgs e)
-        //{
-            
-        //    if (lastSearch != null && lastSearch != etSearch.Text)
-        //    {
-        //        if (etSearch.Text == "")
-        //        {
-        //            lastSearch = "";
-        //            if (SearchDatalist != null && SearchDatalist.Count > 0)
-        //            {
-        //                SearchDatalist.Clear();
-        //                ShowListView();
-        //            }
-        //        }
-        //        else
-        //        {
-        //            lastSearch = etSearch.Text;
-        //            RefreshList();
-        //        }
-
-        //    }
-        //}
 
         public void RefreshList()
         {
@@ -250,9 +272,6 @@ namespace App1
             {
                 string link = "https://financialmodelingprep.com/api/v3/search?query=";
                 link = link.Insert(link.Length, symbol);
-                //link = link.Insert(link.Length, "&limit=10&exchange=NASDAQ&apikey=0a0b32a8d57dc7a4d38458de98803860");
-                //link = link.Insert(link.Length, "&limit=10&exchange=NASDAQ&apikey=8bdedb14d7674def460cb3a84f1fd429");
-
                 API_Key k = MainActivity.Manager_API_Keys.GetBestKey();
                 if (k != null && k.Key != "" && k.GetCallsRemaining() > 0)
                 {
@@ -267,7 +286,6 @@ namespace App1
 
                 using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
                 {
-                    //Toast.MakeText(this, "sending requast for info", ToastLength.Short).Show();
                     MainActivity.Manager_API_Keys.UseKey(k.Key);
                     var response2 = await httpClient2.SendAsync(request,CTS.Token);
                     
@@ -293,19 +311,18 @@ namespace App1
 
                         SearchDatalist.Add(new ClassSearchStock(sym, compName));
 
-
-                       // _ = GetImageAndPrice_FromWeb(i);
-                        //Thread.Sleep(0500);
                     }
 
                 }
-                //Toast.MakeText(this, "got symbol and company name", ToastLength.Short).Show();
-
                 Console.WriteLine("got symbol and company name");
+                adapter.NotifyDataSetChanged();
                 ShowListView();//Show the new 10 closest stocks
+                //RefreshListView();
             }
             Dispose(true);
             return;
+            
+            
         }
 
 
@@ -365,10 +382,21 @@ namespace App1
         //refresh/show the listview
         private void ShowListView()
         {
+            Console.WriteLine("ShowListView activated");
+            //handler.ShowListView_SearchStock(content, lvSearchedStocks, SearchDatalist, adapter);
             adapter = new SearchStockAdapter(this, SearchDatalist);
             lvSearchedStocks.Adapter = adapter;
         }
-
+        private void SetUp_ListView()
+        {
+            adapter = new SearchStockAdapter(this, SearchDatalist);
+            lvSearchedStocks.Adapter = adapter;
+        }
+        private void RefreshListView()
+        {
+            adapter = new SearchStockAdapter(this, SearchDatalist);
+            adapter.NotifyDataSetChanged();
+        }
 
         //detect which item was clicked and than move to the chart activity of the stock
         private void LvSearchedStocks_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
@@ -376,6 +404,31 @@ namespace App1
             Console.WriteLine("clicked! moving to chartActivity");
             Console.WriteLine("symbol clicked: " + SearchDatalist[e.Position].symbol);
             MoveToChartActivity(SearchDatalist[e.Position].symbol);
+        }
+
+
+
+        protected override void OnResume()
+        {
+            Console.WriteLine("Resume");
+            if (Thread_CheckChange == null || Thread_CheckChange.ThreadState != System.Threading.ThreadState.Running)
+            {
+                Thread_CheckChange = new Thread(CheckIfTextChanged);
+                running = true;
+                Thread_CheckChange.Start();
+            }
+            base.OnPause();
+        }
+        protected override void OnPause()
+        {
+            Console.WriteLine("Pause");
+            if (Thread_CheckChange != null && Thread_CheckChange.ThreadState == System.Threading.ThreadState.Running)
+            {
+                running= false;
+                Thread_CheckChange.Abort();
+
+            }
+            base.OnPause();
         }
     }
 }

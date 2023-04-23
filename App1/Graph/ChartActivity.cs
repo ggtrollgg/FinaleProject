@@ -47,7 +47,7 @@ namespace App1
         ImageButton ibHome,ibSave,ibTrack,ibData,ibType;
         LinearLayout l1;
 
-        StockChart chart;
+        //StockChart chart;
         Class_LineGraph chart2;
         
         Dialog d;
@@ -82,7 +82,7 @@ namespace App1
             //btnZoom.Click += BtnZoom_Click;
             //btnMove.Click += BtnMove_Click;
 
-            chart = new StockChart(this);
+            //chart = new StockChart(this);
             Symbol = Intent.GetStringExtra("symbol") ?? "";
             
 
@@ -157,8 +157,8 @@ namespace App1
                 arrey[i] = list[i];
                 arrey2[i] = list_Dates[i];
             }
-            chart.values = arrey;
-            chart.Dates = arrey2;
+            //chart.values = arrey;
+            //chart.Dates = arrey2;
 
             //chart2.dataPoints = list_DataPoints;
             //l1.AddView(chart2);

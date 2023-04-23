@@ -27,5 +27,11 @@ namespace App1
         {
             Toast.MakeText(context, "" + msg.Arg1, ToastLength.Short).Show();
         }
+        [Obsolete]
+        public void ShowListView_SearchStock(Context context, ListView listview, List<ClassSearchStock> SearchDatalist, SearchStockAdapter adapter)
+        {
+            adapter = new SearchStockAdapter(context, SearchDatalist);
+            listview.Adapter = adapter;
+        }
     }
 }

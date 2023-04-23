@@ -24,13 +24,24 @@ namespace App1
     {
         Android.Content.Context context;
         List<ClassSearchStock> objects;
-
+        
 
         public SearchStockAdapter(Context context, System.Collections.Generic.List<ClassSearchStock> objects)
         {
             this.context = context;
-            this.objects = objects;
+            if(objects != null && objects.Count > 0) 
+            {
+                this.objects = objects;
+            }
+            else
+            {
+                this.objects = new List<ClassSearchStock>();
+            }
+           
         }
+
+
+
         public List<ClassSearchStock> GetList()
         {
             return objects;
