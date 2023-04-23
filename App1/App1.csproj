@@ -81,6 +81,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Search\SearchActivity.cs" />
     <Compile Include="Search\SearchStockAdapter.cs" />
+    <Compile Include="Search\Search_Check.cs" />
     <Compile Include="Services\MyHandler.cs" />
     <Compile Include="Services\TrackingService.cs" />
     <Compile Include="StockVIew\StockAdapter.cs" />
@@ -218,6 +219,11 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Test_serviceANDnotification_layout.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\Custop_PopUp_Algorithem.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>

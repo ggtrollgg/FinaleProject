@@ -64,6 +64,7 @@ namespace App1
 
             SetUp_ListView();
             etSearch.TextChanged += EtSearch_TextChanged;
+
             btnHome.Click += BtnHome_Click;
             //handler = new MyHandler(this);
 
