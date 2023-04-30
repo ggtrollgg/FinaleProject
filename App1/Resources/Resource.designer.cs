@@ -4674,13 +4674,13 @@ namespace App1
 			public const int custom_dialog = 2131427360;
 			
 			// aapt resource value: 0x7F0B0021
-			public const int Custom_PopUp_MiniGraph = 2131427361;
+			public const int Custom_PopUp_Algorithm = 2131427361;
 			
 			// aapt resource value: 0x7F0B0022
-			public const int Custom_PopUp_Track = 2131427362;
+			public const int Custom_PopUp_MiniGraph = 2131427362;
 			
 			// aapt resource value: 0x7F0B0023
-			public const int Custop_PopUp_Algorithem = 2131427363;
+			public const int Custom_PopUp_Track = 2131427363;
 			
 			// aapt resource value: 0x7F0B0024
 			public const int design_bottom_navigation_item = 2131427364;

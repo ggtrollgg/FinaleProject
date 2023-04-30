@@ -1,30 +1,21 @@
 ﻿using Android.App;
 using Android.Content;
+using Android.Gms.Extensions;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Firebase;
+using Firebase.Firestore;
+//import doc, deleteDoc from firestore;
+using Java.Util;
+using Org.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 //using Syncfusion.SfChart.XForms;
 //using Xamarin.Forms;
 
 using System.Net.Http;
 using System.Threading.Tasks;
-using Org.Json;
-
-using Firebase.Firestore;
-using Firebase;
-//import doc, deleteDoc from firestore;
-using Java.Util;
-using Java.Lang.Reflect;
-using System.Runtime.InteropServices.ComTypes;
-using Android.Graphics;
-using Firestore.Admin.V1;
-using System.Collections.ObjectModel;
-using Android.Gms.Extensions;
 
 namespace App1
 {
@@ -41,11 +32,21 @@ namespace App1
         List<Class_FatherGraph> Charts = new List<Class_FatherGraph>();
         //Button btnMove, btnZoom;
 
-        Button btnTrack, btnCancel;
-        EditText etTrackingPrices;
+
+        LinearLayout l1, algoLL;
+
+        Button btnTrack, btnCancel, btnStart;
+        RadioButton RB1min, RB5min, RB15min, RB30min, RB1hour;
+        List<RadioButton> radioButtons= new List<RadioButton>();
+
+        CheckBox CBdoubleAver, CBdrawProcess;
+
+        EditText etTrackingPrices, ETdegree , ETfuterPoint;
+
+
 
         ImageButton ibHome,ibSave,ibTrack,ibData,ibType;
-        LinearLayout l1;
+        
 
         //StockChart chart;
         Class_LineGraph chart2;
@@ -227,7 +228,7 @@ namespace App1
                          string date = (string)HistInfo.GetJSONObject(i).Get("date");
 
                        // float avr = (float)(high + low) / 2;
-                      //  Console.WriteLine("avr: " + avr);
+                       //  Console.WriteLine("avr: " + avr);
                        // Console.WriteLine("close: " + close);
 
                         list.Add(close);
@@ -293,16 +294,6 @@ namespace App1
         {
             db = GetDataBase();
             _ = LoadItemsAsync();
-            
-
-
-            //string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
-            //if (Symbols_In_DataBase.Contains(symbol))
-            //{
-            //    Color c = new Color();
-            //    c = Color.Green;
-            //    ibSave.SetColorFilter(c);
-            //}
 
         }
         public FirebaseFirestore GetDataBase()
@@ -339,45 +330,7 @@ namespace App1
                 }
                 
             }
-
-            //var app = FirebaseApp.InitializeApp(this, options);
-            //db = FirebaseFirestore.GetInstance(app);
-            //return db;
         }
-
-        //private void LoadItems()
-        //{
-        //    // generate a query (request) from the database
-        //    Query q = db.Collection("Saved Stocks");
-        //    if (Symbols_In_DataBase.Count > 0)
-        //    {
-        //        Symbols_In_DataBase.Clear();
-        //        SymDoc_In_DataBase.Clear();
-        //    }
-        //    q.Get().AddOnSuccessListener(this); 
-        //}
-
-        //public void OnSuccess(Java.Lang.Object result)
-        //{
-        //    string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
-        //    var snapshot = (QuerySnapshot)result;
-        //    StockData data;
-        //    int i = 0;
-        //    // iterate through each document in the collection
-        //    foreach (var doc in snapshot.Documents)
-        //    {
-        //        Symbols_In_DataBase.Add((string)doc.Get("symbol"));
-        //        SymDoc_In_DataBase.Add(doc);
-        //       //if(symbol== (string)doc.Get("symbol"))
-        //       // {
-        //       //     Console.WriteLine("The stock is already in the data base");
-        //       //     return;
-        //       // }
-
-        //    }
-        //    //Console.WriteLine("the stock wasnt in the data base");
-        //    //AddItemSave(symbol);
-        //}
 
         private async Task LoadItemsAsync()
         {
@@ -457,37 +410,6 @@ namespace App1
             collection.Add(map);
         }
 
-
-        //private void AddItemSave(string symbol)
-        //{
-        //    Console.WriteLine("Adding the stock: " + symbol + " to the data base");
-
-        //    HashMap map = new HashMap();
-        //    map.Put("symbol", symbol);
-        //    map.Put("LastDate", "");
-        //    map.Put("SoundFile", "");
-        //    map.Put("TrackingPrices", "");
-        //    map.Put("heigh", 0);
-        //    map.Put("low", 0);
-        //    DocumentReference docRef = db.Collection("Saved Stocks").Document();
-
-        //    docRef.Set(map);
-
-        //    db.App.Dispose();
-        //    db.App.Delete();
-        //    //db.Terminate();
-        //}
-
-        //private void DeleteItemSave( int index)
-        //{
-        //    //db.Collection("Saved Stocks").Document(SymDoc_In_DataBase[index].Id).Delete();
-        //    DocumentReference doc = db.Collection("Saved Stocks").Document(SymDoc_In_DataBase[index].Id);
-        //    doc.Delete();
-
-
-        //    SymDoc_In_DataBase.RemoveAt(index);
-        //    Symbols_In_DataBase.RemoveAt((int)index);
-        //}
 
 
 
@@ -584,15 +506,6 @@ namespace App1
 
         }
 
-        private void IbData_Click(object sender, EventArgs e)
-        {
-            d = new Dialog(this);
-            d.SetContentView(Resource.Layout.Custom_PopUp_MiniGraph);
-            d.SetTitle("abot the stock");
-            d.SetCancelable(true);
-            d.Show();
-        }
-
         private void IbType_Click(object sender, EventArgs e)
         {
             //d = new Dialog(this);
@@ -612,6 +525,93 @@ namespace App1
             Finish();
         }
 
+
+        private void IbData_Click(object sender, EventArgs e)
+        {
+            d = new Dialog(this);
+            d.SetContentView(Resource.Layout.Custom_PopUp_Algorithm);
+            d.SetTitle("abot the stock");
+            d.SetCancelable(true);
+
+            if(radioButtons.Count > 0) 
+            {
+                radioButtons.Clear();
+            }
+
+            algoLL = d.FindViewById<LinearLayout>(Resource.Id.LLcanvas);
+
+            ETdegree = d.FindViewById<EditText>(Resource.Id.ETdegree);
+            ETfuterPoint = d.FindViewById<EditText>(Resource.Id.ETfuterPoint);
+
+            RB1min = d.FindViewById<RadioButton>(Resource.Id.RB1min);
+            RB5min = d.FindViewById<RadioButton>(Resource.Id.RB5min);
+            RB15min = d.FindViewById<RadioButton>(Resource.Id.RB15min);
+            RB30min = d.FindViewById<RadioButton>(Resource.Id.RB30min);
+            RB1hour = d.FindViewById<RadioButton>(Resource.Id.RB1hour);
+
+            radioButtons.Add(RB1min);
+            radioButtons.Add(RB5min);
+            radioButtons.Add(RB15min);
+            radioButtons.Add(RB30min);
+            radioButtons.Add(RB1hour);
+
+            CBdoubleAver  = d.FindViewById<CheckBox>(Resource.Id.CBdoubleAver);
+            CBdrawProcess = d.FindViewById<CheckBox> (Resource.Id.CBdrawProcess);
+
+            btnStart = d.FindViewById<Button>(Resource.Id.btnStart);
+
+
+            foreach (RadioButton rb in radioButtons)
+            {
+                rb.Click += (s, e) =>
+                {
+                    //when a radio button is clicked, turn off all other checked boxes. can be more efficent if stop when find a checked box because there will alwayes be only 2 boxes checked.
+                    foreach (RadioButton rb2 in radioButtons)
+                    {
+                        if (s != rb2 && rb2.Checked)
+                        {
+                            rb2.Checked = false;
+                        }
+                    }
+
+
+                };
+            }
+            CBdrawProcess.Click += CBdrawProcess_Click;
+
+
+            d.Show();
+
+
+
+
+            //LLcanvas
+            //ETdegree
+            //ETfuterPoint
+            //RB1min RB5min RB15min RB30min RB1hour
+            //CBdoubleAver 
+            //CBdrawProcess
+            //btnStart
+
+
+        }
+
+        
+
+        private void CBdrawProcess_Click(object sender, EventArgs e)
+        {
+            if (CBdrawProcess.Checked)
+            {
+                Console.WriteLine("CBdrawProcess is checked");
+                //add canvas view
+            }
+            else
+            {
+                //remove algo view
+            }
+        }
+
+       
         protected override void OnPause()
         {
             if(db!= null)

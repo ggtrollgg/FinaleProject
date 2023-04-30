@@ -223,7 +223,7 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\Custop_PopUp_Algorithem.xml">
+    <AndroidResource Include="Resources\layout\Custom_PopUp_Algorithm.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
