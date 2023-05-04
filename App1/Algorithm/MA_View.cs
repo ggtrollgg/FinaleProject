@@ -25,7 +25,7 @@ namespace App1.Algorithm
 
         bool DoOnce = true;
         bool running = true;
-        bool started = false;
+        bool started = true;
         float cilling = 100;
         float floor;
         float right_wall;
@@ -43,6 +43,7 @@ namespace App1.Algorithm
         List<Paint> randoms= new List<Paint>();
         public MA_View(Android.Content.Context context, List<MovingAverage_Graph> graphs) : base(context)
         {
+            Console.WriteLine("canvas created");
             this.context = context;
             Graphs = graphs;
 
@@ -73,15 +74,15 @@ namespace App1.Algorithm
 
 
             Thread frameRate = new Thread(FrameRate_Invalidate);
-            //frameRate.Start();
+            frameRate.Start();
         }
 
         protected override void OnDraw(Canvas canvas1)
         { 
-            //started= true;
-            if(DoOnce) 
+            started= true;
+            canvas = canvas1;
+            if (DoOnce) 
             {
-                canvas = canvas1;
                 Console.WriteLine("started drawing the MA graph");
                 floor = canvas.Height - 100;
                 right_wall= canvas.Width - 100;
@@ -93,16 +94,15 @@ namespace App1.Algorithm
             
             Check_time_span();
 
-            
 
+            //canvas.DrawCircle(0, 0, 100, black);
             Draw_Graphs();
             //if (canvas.SaveCount >= 1)
             //{
             //    canvas.Restore();
-            //    canvas.Save();
             //}
-            Invalidate();
-            //started= false;
+            //Invalidate();
+            started= false;
         }
 
         private void FrameRate_Invalidate()
@@ -112,7 +112,7 @@ namespace App1.Algorithm
                 if (!started)
                 {
                     Invalidate();
-                    //Console.WriteLine("Invalidated");
+                   // Console.WriteLine("Invalidated");
                 }
                     
                 Thread.Sleep(1000);
@@ -133,7 +133,7 @@ namespace App1.Algorithm
             {
                 currentTime = DateTime.Now;
                 index_action++;
-                Console.WriteLine("increast index_action to: " + index_action);
+                //Console.WriteLine("increast index_action to: " + index_action);
             }
         }
 
@@ -172,10 +172,10 @@ namespace App1.Algorithm
         private void Draw_Graphs()
         {
             int smaller_limit = Math.Min(index_action, Graphs.Count);
-           
+           // Console.WriteLine("drawing graph");
 
 
-            for(int graph = 0; graph< smaller_limit; graph++) 
+            for(int graph = 0; graph < smaller_limit; graph++) 
             {
                 //need to generete a random color
                 for (int i = 0; i < Graphs[graph].MA_Graph.Count-1; i++)
@@ -186,7 +186,8 @@ namespace App1.Algorithm
                 
             }
             //canvas.Save();
-            //started = false;
+            //canvas.Save();
+            started = false;
             //Invalidate();
         }
     }
