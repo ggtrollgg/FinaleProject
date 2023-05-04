@@ -75,14 +75,14 @@ namespace App1
 
         private void BtnTest_Click(object sender, EventArgs e)
         {
-            //Intent intent = new Intent(this, typeof(Testing_Database_Activity));
-            //intent.PutExtra("symbol", "OB");
-            //StartActivity(intent);
+            Intent intent = new Intent(this, typeof(Algorithm_Test_Activity));
+            intent.PutExtra("symbol", "OB");
+            StartActivity(intent);
 
             //var editor = sp.Edit();
-            //editor.PutInt("Key0CallsRemain", 249);
-            //editor.PutInt("Key1CallsRemain", 117);
-            //editor.PutInt("Key2CallsRemain", 117);
+            //editor.PutInt("Key0CallsRemain", 222);
+            //editor.PutInt("Key1CallsRemain", 222);
+            //editor.PutInt("Key2CallsRemain", 222);
             //editor.Commit();
 
             //for (int i = 0; i < sp.GetInt("KeysAmount", -1); i++)

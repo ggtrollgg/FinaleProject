@@ -176,6 +176,7 @@ namespace App1
             using (var httpClient = new HttpClient())
 
             {
+
                 string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
 
                 //Intent intent = new Intent(this, typeof(SearchActivity));
