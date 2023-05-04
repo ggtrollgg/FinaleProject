@@ -59,7 +59,7 @@ namespace App1
             //0a0b32a8d57dc7a4d38458de98803860  //ggtroll 35
             //8bdedb14d7674def460cb3a84f1fd429 //ggtroll 36
             //561897c32bf107b87c107244081b759f //ggtroll 37
-
+            //Console.WriteLine("Math.Round(0.5) is: " + Math.Round(0.5));
 
             Console.WriteLine();
             if (intent2 != null)

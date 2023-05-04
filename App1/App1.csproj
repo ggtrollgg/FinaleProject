@@ -63,8 +63,12 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithm\MATL_Algorithm.cs" />
+    <Compile Include="Algorithm\MA_View.cs" />
+    <Compile Include="Algorithm\MovingAverage_Graph.cs" />
     <Compile Include="General Classes\API_Key.cs" />
     <Compile Include="General Classes\Manager_API_Keys.cs" />
+    <Compile Include="General Classes\MA_Point.cs" />
     <Compile Include="General Classes\MySquare.cs" />
     <Compile Include="General Classes\TextBlock.cs" />
     <Compile Include="Graph\ChartActivity.cs" />

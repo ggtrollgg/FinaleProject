@@ -4,6 +4,7 @@ using Android.Gms.Extensions;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
+using App1.Algorithm;
 using Firebase;
 using Firebase.Firestore;
 //import doc, deleteDoc from firestore;
@@ -15,6 +16,7 @@ using System.Collections.Generic;
 //using Xamarin.Forms;
 
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace App1
@@ -578,25 +580,36 @@ namespace App1
                 };
             }
             CBdrawProcess.Click += CBdrawProcess_Click;
-
+            btnStart.Click += BtnStart_Click;
 
             d.Show();
 
-
-
-
-            //LLcanvas
-            //ETdegree
-            //ETfuterPoint
-            //RB1min RB5min RB15min RB30min RB1hour
-            //CBdoubleAver 
-            //CBdrawProcess
-            //btnStart
-
-
         }
 
-        
+        private void BtnStart_Click(object sender, EventArgs e)
+        {
+            if(RB1min.Checked)//if selected 1 min between each point
+            {
+                MATL_Algorithm MATLAlgo = new MATL_Algorithm(list_DataPoints, int.Parse(ETdegree.Text));
+                while(MATLAlgo.movingAverage_Graph.Count < int.Parse(ETdegree.Text))
+                {
+                    Thread.Sleep(1000);
+                }
+                
+                if (CBdrawProcess.Checked)
+                {
+                    Console.WriteLine("CBdrawProcess is checked");
+                    algoLL.Visibility = ViewStates.Visible;
+                    MA_View graph_view = new MA_View(this,MATLAlgo.movingAverage_Graph);
+                    algoLL.AddView(graph_view);
+                    //add canvas view
+                }
+            }
+            else
+            {
+                //need to get new series of points from web :(
+            }
+        }
 
         private void CBdrawProcess_Click(object sender, EventArgs e)
         {
