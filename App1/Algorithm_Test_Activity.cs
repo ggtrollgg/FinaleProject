@@ -1,10 +1,12 @@
 ﻿using Android.App;
 using Android.Content;
+using Android.Gms.Common.Api.Internal;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using App1.Algorithm;
+using Java.Lang;
 using Java.Util;
 using Org.Json;
 using System;
@@ -12,8 +14,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+
 using System.Threading;
 using System.Threading.Tasks;
+//using static Android.Bluetooth.BluetoothClass;
+//using static System.Net.Mime.MediaTypeNames;
 
 namespace App1
 {
@@ -38,15 +43,22 @@ namespace App1
 
         //StockChart chart;
         Class_LineGraph chart2;
-
+        MyHandler hand;
+        Handler handler;
+        Message m = new Message();
         Dialog d;
+        MATL_Algorithm MATLAlgo;
+
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+            hand = new MyHandler(this);
+
             StartDialog();
             // Create your application here
         }
+        
 
         private void StartDialog()
         {
@@ -107,8 +119,8 @@ namespace App1
 
         private void BtnStart_Click(object sender, EventArgs e)
         {
-            
-            foreach(RadioButton rb in radioButtons)
+
+            foreach (RadioButton rb in radioButtons)
             {
                 if (rb.Checked)
                 {
@@ -118,58 +130,29 @@ namespace App1
                     //Console.WriteLine("-------------------------");
                     //Console.WriteLine(timeleap);
                     //Console.WriteLine("-------------------------");
-
-                    Task<List<DataPoint>> ldp = getInfoFromWeb(timeleap);
-                    //ldp.Wait();
-                    //ldp.ConfigureAwait(true);
-
-                    //if (ldp.IsCompleted)
-                    //{
-                    //    if(ldp.Result != null)
-                    //    {
-                    //        MATL_Algorithm MATLAlgo = new MATL_Algorithm(ldp.Result, int.Parse(ETdegree.Text));
-                    //        while (MATLAlgo.movingAverage_Graph.Count < int.Parse(ETdegree.Text))
-                    //        {
-                    //            Thread.Sleep(1000);
-                    //        }
-
-                    //        if (CBdrawProcess.Checked)
-                    //        {
-                    //            Console.WriteLine("CBdrawProcess is checked");
-                    //            algoLL.Visibility = ViewStates.Visible;
-                    //            MA_View graph_view = new MA_View(this, MATLAlgo.movingAverage_Graph);
-                    //            algoLL.AddView(graph_view);
-
-                    //        }
-                    //    }
-                    //}
-
+                    if (ETdegree.Text.Length == 0)
+                    {
+                        Console.WriteLine("need to fill the text in MaxOrder");
+                        return;
+                    }
+                    _ = getInfoFromWeb(timeleap);
                     break;
                 }
             }
             //need to get new series of points from web :(
-            
+
         }
 
 
 
-        public async Task<List<DataPoint>> getInfoFromWeb(String timeLeap)
+        public async Task<List<DataPoint>> getInfoFromWeb(string timeLeap)
         {
             List<DataPoint> newList = new List<DataPoint>();
             using (var httpClient = new HttpClient())
             {
-                
+
 
                 string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
-
-                //Intent intent = new Intent(this, typeof(SearchActivity));
-
-                //Intent.GetFloatArrayExtra("Chart_Points_Heigh");
-                //Intent.GetFloatArrayExtra("Chart_Points_Low");
-                //Intent.GetStringArrayExtra("Chart_Points_Date");
-
-                //string link = "https://financialmodelingprep.com/api/v3/historical-chart/1min/";
-
                 string link = "https://financialmodelingprep.com/api/v3/historical-chart/";
                 link = link.Insert(link.Length, timeLeap + "/");
                 link = link.Insert(link.Length, symbol);
@@ -216,30 +199,96 @@ namespace App1
 
                 }
             }
-            StartAlgorithm(newList);
+
+
+            _ = StartAlgorithm(newList);
             return newList;
         }
 
-        private void StartAlgorithm(List<DataPoint> newList)
+        private async Task StartAlgorithm(List<DataPoint> newList)
         {
-            MATL_Algorithm MATLAlgo = new MATL_Algorithm(newList, int.Parse(ETdegree.Text));
-            while (MATLAlgo.movingAverage_Graph.Count < int.Parse(ETdegree.Text))
-            {
-                Thread.Sleep(1000);
-            }
+
+            MATLAlgo = new MATL_Algorithm(newList, int.Parse(ETdegree.Text));
+            MATLAlgo.ContinueProcess += Continue_Algorithm_Process;
+            MATLAlgo.Start_Algorithm();
+
+
+
+
+            //bool respone = await new Task<bool>(CheckAlgoProgress());
+
+            //Thread canvasView = new Thread(Algorithm_DrawProcess);
+            //canvasView.Start();
+
+            //while (MATLAlgo.movingAverage_Graph.Count < int.Parse(ETdegree.Text))
+            //{
+            //    System.Threading.Thread.Sleep(1000);
+            //    //Wait(1000);
+            //}
+
+            //Continue_Algorithm_Process();
+            //canvasView.Join();
+
+            ////await canvasView.Join();
+            //if (CBdrawProcess.Checked)
+            //{
+            //    Console.WriteLine("CBdrawProcess is checked");
+            //    algoLL.Visibility = ViewStates.Visible;
+            //    MA_View graph_view = new MA_View(this, MATLAlgo.movingAverage_Graph);
+            //    if (algoLL.RootView != null)
+            //    {
+            //        algoLL.RemoveAllViews();
+            //    }
+            //    algoLL.AddView(graph_view);
+
+            //}
+
+        }
+
+        
+        private void Continue_Algorithm_Process()
+        {
 
             if (CBdrawProcess.Checked)
             {
                 Console.WriteLine("CBdrawProcess is checked");
-                algoLL.Visibility = ViewStates.Visible;
                 MA_View graph_view = new MA_View(this, MATLAlgo.movingAverage_Graph);
-                if(algoLL.RootView != null)
-                {
-                    algoLL.RemoveAllViews();
-                }
-                algoLL.AddView(graph_view);
 
+                hand.LL = algoLL;
+                hand.graph_view = graph_view;
+
+                handler = hand;
+                Message m = new Message();
+                m.Arg1 = 1;
+                //handler.HandleMessage(m);
+                handler.SendMessage(m);
             }
+
+        }
+        private void Algorithm_DrawProcess()
+        {
+            //while (MATLAlgo.movingAverage_Graph.Count < int.Parse(ETdegree.Text))
+            //{
+            //    Thread.Sleep(1000);
+            //}
+            //if (CBdrawProcess.Checked)
+            //{
+            //    Console.WriteLine("CBdrawProcess is checked");
+            //    algoLL.Visibility = ViewStates.Visible;
+            //    MA_View graph_view = new MA_View(this, MATLAlgo.movingAverage_Graph);
+            //    if (algoLL.RootView != null)
+            //    {
+            //        algoLL.RemoveAllViews();
+            //    }
+            //    algoLL.AddView(graph_view);
+
+            //}
+        }
+
+        protected override void OnPause()
+        {
+
+            base.OnPause();
         }
     }
 

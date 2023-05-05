@@ -14,11 +14,11 @@ namespace App1
     public class MovingAverage_Graph
     {
         public List<MA_Point> MA_Graph;
-        public int degree = 1;
+        public int order = 1;
 
         public MovingAverage_Graph(List<DataPoint> points, int degree1)
         {
-            degree= degree1;
+            order= degree1;
             MA_Graph = new List<MA_Point>();
             Calculate_MA_Of(points);
         }
@@ -26,15 +26,15 @@ namespace App1
         private void Calculate_MA_Of(List<DataPoint> points)
         {
             float average = 0;
-            for(int i = 0; i < points.Count-degree; i++) 
+            for(int i = 0; i < points.Count-order; i++) 
             {
                 average = 0;
-                for(int g = i; g < degree+i; g++)
+                for(int g = i; g < order +i; g++)
                 {
                     average += points[g].close;
                 }
-                average = average /degree;
-                MA_Graph.Add(new MA_Point(average,i + (int)Math.Round(degree/2.0))); 
+                average = average /order;
+                MA_Graph.Add(new MA_Point(average,i + (int)Math.Round(order /2.0))); 
             }
         }
     }

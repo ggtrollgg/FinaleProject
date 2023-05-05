@@ -29,7 +29,7 @@ namespace App1
         bool running = false;
         int TimeBetweenChecks = 1; // seconds
         int numberOfCallsIcanMake = 250; // 250 is the number of calls i can make with one account in one day
-        MyHandler myhandler; //interacting with the gui/main thread
+        //MyHandler myhandler; //interacting with the gui/main thread
         public FirebaseFirestore db; //database
         PendingIntent pendingIntent; //peding intent for the alarm manager
         public static List<StockData> Datalist = new List<StockData>();
@@ -49,7 +49,7 @@ namespace App1
         public override void OnCreate()
         {
             base.OnCreate();
-            myhandler = new MyHandler(this);
+            //myhandler = new MyHandler(this);
             TimeBetweenChecks = 60 * 60 * 24; //seconds in the day
             TimeBetweenChecks = TimeBetweenChecks / numberOfCallsIcanMake; // (seconds in the day / number of calls i can make in a day) = time gap between each call
 

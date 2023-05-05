@@ -76,6 +76,7 @@ namespace App1
         private void BtnTest_Click(object sender, EventArgs e)
         {
             Intent intent = new Intent(this, typeof(Algorithm_Test_Activity));
+            //Intent intent = new Intent(this, typeof(PopUp_Handler_Activity_Test));
             intent.PutExtra("symbol", "OB");
             StartActivity(intent);
 
