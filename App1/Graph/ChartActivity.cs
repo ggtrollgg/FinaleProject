@@ -591,7 +591,7 @@ namespace App1
         {
             if(RB1min.Checked)//if selected 1 min between each point
             {
-                MATL_Algorithm MATLAlgo = new MATL_Algorithm(list_DataPoints, int.Parse(ETdegree.Text));
+                MATL_Algorithm MATLAlgo = new MATL_Algorithm(list_DataPoints, int.Parse(ETdegree.Text), int.Parse(ETfuterPoint.Text));
                 while(MATLAlgo.movingAverage_Graph.Count < int.Parse(ETdegree.Text))
                 {
                     Thread.Sleep(1000);

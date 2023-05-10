@@ -8,6 +8,7 @@ using Android.Widget;
 using Firebase.Firestore.Model;
 using System;
 using System.Collections.Generic;
+//using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -17,6 +18,7 @@ namespace App1.Algorithm
 {
     public class MA_View:View
     {
+        MATL_Algorithm Algorithm;
         List<MovingAverage_Graph> Graphs= new List<MovingAverage_Graph>();
         List<List<MyPoint>> Graphs_on_Canvas= new List<List<MyPoint>>();
 
@@ -41,40 +43,22 @@ namespace App1.Algorithm
         Paint red;
         //Paint random;
         List<Paint> randoms= new List<Paint>();
+
+
+        public MA_View(Android.Content.Context context, MATL_Algorithm algo) : base(context)
+        {
+            this.context = context;
+            Algorithm = algo;
+            Graphs = algo.movingAverage_Graph;
+            Do_OnCreate();
+        }
+
         public MA_View(Android.Content.Context context, List<MovingAverage_Graph> graphs) : base(context)
         {
-            Console.WriteLine("canvas created");
+            //Console.WriteLine("canvas created");
             this.context = context;
             Graphs = graphs;
-
-            
-            //random.SetARGB(1,0,0,0);
-            //random.Color = Color.Argb(255,0,0,0);
-            //random.StrokeWidth = 6;
-            //random.Color = 255255255;
-
-            black= new Paint();
-            black.Color= Color.Black;
-            black.StrokeWidth= 6;
-
-            red = new Paint();
-            red.Color= Color.Red;
-            red.StrokeWidth= 6;
-
-            Random ram = new Random();
-            for(int i = 0; i<graphs.Count; i++)
-            {
-                Paint random = new Paint();
-                random.Color = Color.Argb(255, ram.Next(200), ram.Next(200), ram.Next(200));
-                random.StrokeWidth= 6;
-                randoms.Add(random);
-            }
-           
-
-
-
-            Thread frameRate = new Thread(FrameRate_Invalidate);
-            //frameRate.Start();
+            Do_OnCreate();
         }
 
         protected override void OnDraw(Canvas canvas1)
@@ -103,6 +87,37 @@ namespace App1.Algorithm
             //}
             Invalidate();
             started= false;
+        }
+
+        private void Do_OnCreate()
+        {
+            //random.SetARGB(1,0,0,0);
+            //random.Color = Color.Argb(255,0,0,0);
+            //random.StrokeWidth = 6;
+            //random.Color = 255255255;
+
+            black = new Paint();
+            black.Color = Color.Black;
+            black.StrokeWidth = 6;
+
+            red = new Paint();
+            red.Color = Color.Red;
+            red.StrokeWidth = 6;
+
+            Random ram = new Random();
+            for (int i = 0; i < Graphs.Count; i++)
+            {
+                Paint random = new Paint();
+                random.Color = Color.Argb(255, ram.Next(200), ram.Next(200), ram.Next(200));
+                random.StrokeWidth = 6;
+                randoms.Add(random);
+            }
+
+
+
+
+            Thread frameRate = new Thread(FrameRate_Invalidate);
+            //frameRate.Start();
         }
 
         private void FrameRate_Invalidate()
@@ -137,6 +152,17 @@ namespace App1.Algorithm
             }
         }
 
+        private void FindLowHigh()
+        {
+            foreach (MA_Point i in Graphs[0].MA_Graph)
+            {
+                if (i.price > highest) highest = i.price;
+                if (i.price < lowest || lowest == -1) lowest = i.price;
+            }
+        }
+
+
+
         private void CreateALLGraphs()
         {
             int total_points = Graphs[0].MA_Graph.Count;
@@ -157,15 +183,6 @@ namespace App1.Algorithm
                 Console.WriteLine("----");
                 Console.WriteLine("Create next graph");
                 Console.WriteLine("----");
-            }
-        }
-
-        private void FindLowHigh()
-        {
-            foreach (MA_Point i in Graphs[0].MA_Graph)
-            {
-                if (i.price > highest) highest = i.price;
-                if (i.price < lowest || lowest == -1) lowest = i.price;
             }
         }
 

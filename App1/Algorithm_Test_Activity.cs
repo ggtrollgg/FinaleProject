@@ -34,7 +34,7 @@ namespace App1
 
         CheckBox CBdoubleAver, CBdrawProcess;
 
-        EditText etTrackingPrices, ETdegree, ETfuterPoint;
+        EditText etTrackingPrices, ETdegree,ETMinOrder, ETfuterPoint;
 
 
 
@@ -75,6 +75,7 @@ namespace App1
             algoLL = d.FindViewById<LinearLayout>(Resource.Id.LLcanvas);
 
             ETdegree = d.FindViewById<EditText>(Resource.Id.ETdegree);
+            ETMinOrder = d.FindViewById<EditText>(Resource.Id.ETMinOrder);
             ETfuterPoint = d.FindViewById<EditText>(Resource.Id.ETfuterPoint);
 
             RB1min = d.FindViewById<RadioButton>(Resource.Id.RB1min);
@@ -201,47 +202,28 @@ namespace App1
             }
 
 
-            _ = StartAlgorithm(newList);
+            StartAlgorithm(newList);
             return newList;
         }
 
-        private async Task StartAlgorithm(List<DataPoint> newList)
+        private void StartAlgorithm(List<DataPoint> newList)
         {
 
-            MATLAlgo = new MATL_Algorithm(newList, int.Parse(ETdegree.Text));
+            MATLAlgo = new MATL_Algorithm(newList, int.Parse(ETdegree.Text), int.Parse(ETfuterPoint.Text));
+            if(ETMinOrder.Text != "")
+            {
+                MATLAlgo.SetMinOrder(int.Parse(ETMinOrder.Text));
+                if(int.Parse(ETMinOrder.Text) > int.Parse(ETdegree.Text))
+                {
+                    Console.WriteLine("order need to be equal or bigger than Minorder ");
+                    return;
+                }
+            }
+                
+
             MATLAlgo.ContinueProcess += Continue_Algorithm_Process;
             MATLAlgo.Start_Algorithm();
 
-
-
-
-            //bool respone = await new Task<bool>(CheckAlgoProgress());
-
-            //Thread canvasView = new Thread(Algorithm_DrawProcess);
-            //canvasView.Start();
-
-            //while (MATLAlgo.movingAverage_Graph.Count < int.Parse(ETdegree.Text))
-            //{
-            //    System.Threading.Thread.Sleep(1000);
-            //    //Wait(1000);
-            //}
-
-            //Continue_Algorithm_Process();
-            //canvasView.Join();
-
-            ////await canvasView.Join();
-            //if (CBdrawProcess.Checked)
-            //{
-            //    Console.WriteLine("CBdrawProcess is checked");
-            //    algoLL.Visibility = ViewStates.Visible;
-            //    MA_View graph_view = new MA_View(this, MATLAlgo.movingAverage_Graph);
-            //    if (algoLL.RootView != null)
-            //    {
-            //        algoLL.RemoveAllViews();
-            //    }
-            //    algoLL.AddView(graph_view);
-
-            //}
 
         }
 
@@ -249,41 +231,35 @@ namespace App1
         private void Continue_Algorithm_Process()
         {
 
-            if (CBdrawProcess.Checked)
-            {
-                Console.WriteLine("CBdrawProcess is checked");
-                MA_View graph_view = new MA_View(this, MATLAlgo.movingAverage_Graph);
 
+
+            if (CBdrawProcess.Checked) //draw process
+            {
+                //Console.WriteLine("CBdrawProcess is checked");
+                MA_View graph_view = new MA_View(this, MATLAlgo);
                 hand.LL = algoLL;
                 hand.graph_view = graph_view;
-
                 handler = hand;
                 Message m = new Message();
                 m.Arg1 = 1;
                 //handler.HandleMessage(m);
                 handler.SendMessage(m);
             }
+            else
+            {
+                hand.LL = algoLL;
+                if (hand.graph_view != null)
+                {
+                    hand.graph_view = null;
+                }
+                handler = hand;
+                Message m = new Message();
+                m.Arg1 = 1;
+                handler.SendMessage(m); //hide the canvas if visiball
+            }
 
         }
-        private void Algorithm_DrawProcess()
-        {
-            //while (MATLAlgo.movingAverage_Graph.Count < int.Parse(ETdegree.Text))
-            //{
-            //    Thread.Sleep(1000);
-            //}
-            //if (CBdrawProcess.Checked)
-            //{
-            //    Console.WriteLine("CBdrawProcess is checked");
-            //    algoLL.Visibility = ViewStates.Visible;
-            //    MA_View graph_view = new MA_View(this, MATLAlgo.movingAverage_Graph);
-            //    if (algoLL.RootView != null)
-            //    {
-            //        algoLL.RemoveAllViews();
-            //    }
-            //    algoLL.AddView(graph_view);
-
-            //}
-        }
+       
 
         protected override void OnPause()
         {

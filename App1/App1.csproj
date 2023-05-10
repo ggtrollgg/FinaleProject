@@ -73,6 +73,7 @@
     <Compile Include="General Classes\MA_Point.cs" />
     <Compile Include="General Classes\MySquare.cs" />
     <Compile Include="General Classes\TextBlock.cs" />
+    <Compile Include="General Classes\TrendLine.cs" />
     <Compile Include="Graph\ChartActivity.cs" />
     <Compile Include="Graph\ColumGraph.cs" />
     <Compile Include="PopUp_Handler_Activity_Test.cs" />

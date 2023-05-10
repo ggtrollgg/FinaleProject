@@ -35,6 +35,18 @@ namespace App1
         public override void HandleMessage(Message msg)
         {
             //Toast.MakeText(context, "" + msg.Arg1, ToastLength.Short).Show();
+            if(graph_view== null)
+            {
+                if (LL != null)
+                {
+                    this.LL.Visibility = ViewStates.Gone;
+                    if (LL.RootView != null)
+                    {
+                        this.LL.RemoveAllViews();
+                    }
+                }
+                return;
+            }
             if(LL!= null) 
             {
                 this.LL.Visibility = ViewStates.Visible;
@@ -44,6 +56,7 @@ namespace App1
                 }
                 this.LL.AddView(graph_view);
             }
+
         }
 
     }

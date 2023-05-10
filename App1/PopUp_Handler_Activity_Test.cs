@@ -78,7 +78,7 @@ namespace App1
             newList.Add(new DataPoint(4, 4, 4, "2020-05-05"));
             newList.Add(new DataPoint(3, 2, 3, "2020-05-05"));
 
-            MATLAlgo = new MATL_Algorithm(newList, 2);
+            MATLAlgo = new MATL_Algorithm(newList, 2,2);
             //MATLAlgo.ContinueProcess += TestHandlerFromThread;
             MATLAlgo.ContinueProcess += Continue_Algorithm_Process;
             MATLAlgo.Start_Algorithm();
