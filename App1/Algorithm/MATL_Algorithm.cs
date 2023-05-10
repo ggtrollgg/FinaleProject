@@ -22,6 +22,8 @@ namespace App1
 
         public TrendLine trendline; //the trendline of the "Average_Of_Graphs"  graph
         public int FuterPoint;
+        public MA_Point prediction = new MA_Point(0, 0);
+        float variation = 0;
 
         //threads
         Thread subMainThread;
@@ -74,19 +76,42 @@ namespace App1
 
             if (!Create_Average_Of_Graphs())
             {
-
                 Console.WriteLine("something went wrong with 'create_Average_Of_graphs' ");
                 return;
-            }
+            } //creates average of all moving averages graphs including the original graph
+            Create_TrendLine();
 
-
-
-            trendline = new TrendLine(Average_Of_Graphs);
+            CalculateVariation();
+            CalculatePrediction();
             
+
+
             Console.WriteLine("event invoked form MATL_Algorithm");
             ContinueProcess?.Invoke();
 
         }
+        private void CalculatePrediction()
+        {
+            prediction.place = Average_Of_Graphs.Count + FuterPoint;
+            prediction.price = trendline.Calculate_Y_Of_futerPoint(FuterPoint) + variation;
+        }
+        private void CalculateVariation() //calculate and adjust the variation between the original graph and the average_of_Graphs
+        {
+            float sum_variatoin = 0;
+            for(int i =0; i < Average_Of_Graphs.Count; i++)
+            {
+                sum_variatoin += original_Graph[i].close - Average_Of_Graphs[i].price;
+            }
+            variation = sum_variatoin / Average_Of_Graphs.Count;
+        }
+
+        
+        private void Create_TrendLine()
+        {
+            trendline = new TrendLine(Average_Of_Graphs);
+            trendline.Create_TrendLine();
+        }
+
         private void Thread_Create_Ma_Graphs(int currentorder)
         {
             Console.WriteLine("1created with thread a MA graph in degree: " + currentDegree);
@@ -110,7 +135,7 @@ namespace App1
 
                 for (int i = 0; i < movingAverage_Graph.Count; i++)
                 {
-                    if (i == 0 && minOrder == 1) // if min order== 1 than the first graph is the original graph, and we already added the values of the original graph
+                    if (i == 0 && minOrder == 1 && movingAverage_Graph.Count > 1) // if min order== 1 than the first graph is the original graph, and we already added the values of the original graph
                     {
                         i = 1;
                     }

@@ -22,6 +22,9 @@ namespace App1.Algorithm
         List<MovingAverage_Graph> Graphs= new List<MovingAverage_Graph>();
         List<List<MyPoint>> Graphs_on_Canvas= new List<List<MyPoint>>();
 
+        List<MyPoint> OriginalGraph = new List<MyPoint>();
+        List<MyPoint> trendLine = new List<MyPoint>();
+
         public Android.Content.Context context;
         public Canvas canvas;
 
@@ -33,6 +36,7 @@ namespace App1.Algorithm
         float right_wall;
         float highest = -1;
         float lowest = -1;
+        int total_points;
 
         DateTime currentTime = DateTime.Now;
         TimeSpan span;
@@ -41,6 +45,7 @@ namespace App1.Algorithm
 
         Paint black;
         Paint red;
+        Paint green;
         //Paint random;
         List<Paint> randoms= new List<Paint>();
 
@@ -63,7 +68,7 @@ namespace App1.Algorithm
 
         protected override void OnDraw(Canvas canvas1)
         { 
-            started= true;
+            //started= true;
             canvas = canvas1;
             if (DoOnce) 
             {
@@ -72,21 +77,18 @@ namespace App1.Algorithm
                 right_wall= canvas.Width - 100;
                 FindLowHigh();
                 CreateALLGraphs();
+
                 //canvas.DrawCircle(0,0,100,black);
                 DoOnce = false;
             }
-            
-            Check_time_span();
 
-
-            //canvas.DrawCircle(0, 0, 100, black);
+            if (index_action < Graphs.Count + 5)
+            {
+                Check_time_span();
+            }
             Draw_Graphs();
-            //if (canvas.SaveCount >= 1)
-            //{
-            //    canvas.Restore();
-            //}
             Invalidate();
-            started= false;
+            //started= false;
         }
 
         private void Do_OnCreate()
@@ -95,14 +97,18 @@ namespace App1.Algorithm
             //random.Color = Color.Argb(255,0,0,0);
             //random.StrokeWidth = 6;
             //random.Color = 255255255;
-
+            total_points = Algorithm.original_Graph.Count;
             black = new Paint();
             black.Color = Color.Black;
-            black.StrokeWidth = 6;
+            black.StrokeWidth = 5;
 
             red = new Paint();
             red.Color = Color.Red;
             red.StrokeWidth = 6;
+
+            green = new Paint();
+            green.Color = Color.Green;
+            green.StrokeWidth = 6;
 
             Random ram = new Random();
             for (int i = 0; i < Graphs.Count; i++)
@@ -136,6 +142,7 @@ namespace App1.Algorithm
 
         private void Check_time_span()
         {
+            
             span = DateTime.Now - currentTime;
             difference = (int)(span.TotalMilliseconds);
 
@@ -154,10 +161,17 @@ namespace App1.Algorithm
 
         private void FindLowHigh()
         {
-            foreach (MA_Point i in Graphs[0].MA_Graph)
+            
+            //foreach (MA_Point i in Graphs[0].MA_Graph) // will streach so the graph fit the first graph in the order
+            //{
+            //    if (i.price > highest) highest = i.price;
+            //    if (i.price < lowest || lowest == -1) lowest = i.price;
+            //}
+
+            foreach (DataPoint i in Algorithm.original_Graph) // will streach so the graph fit the original graph
             {
-                if (i.price > highest) highest = i.price;
-                if (i.price < lowest || lowest == -1) lowest = i.price;
+                if (i.close > highest) highest = i.close;
+                if (i.close < lowest || lowest == -1) lowest = i.close;
             }
         }
 
@@ -165,9 +179,14 @@ namespace App1.Algorithm
 
         private void CreateALLGraphs()
         {
-            int total_points = Graphs[0].MA_Graph.Count;
+            //int total_points = Graphs[0].MA_Graph.Count;
+            
+
             float place = 0;
             float price = 0;
+
+            create_toScale_trendLine();
+            create_toScale_OriginalGraph();
 
             for (int graph = 0; graph < Graphs.Count; graph++)
             {
@@ -176,6 +195,7 @@ namespace App1.Algorithm
                 {
                     place = Graphs[graph].MA_Graph[i].place;
                     price = Graphs[graph].MA_Graph[i].price;
+
                     Graphs_on_Canvas[graph].Add(new MyPoint(place * (right_wall) / (total_points - 1), floor + ((lowest - price) * (1 / (highest - lowest)) * floor)));
 
                     Console.Write("(" + Graphs_on_Canvas[graph][i].x + ","+ Graphs_on_Canvas[graph][i].y + "), ");
@@ -186,13 +206,36 @@ namespace App1.Algorithm
             }
         }
 
+        private void create_toScale_OriginalGraph()
+        {
+            for (int i = 0; i < total_points; i++)
+            {
+                OriginalGraph.Add(Convert_To_defualt_scale(i, Algorithm.original_Graph[i].close));
+            }
+        }
+
+        private void create_toScale_trendLine()
+        {
+            MyPoint start = new MyPoint(0, Algorithm.trendline.Calculate_Y_Of(0));
+            trendLine.Add(Convert_To_defualt_scale(0, start.y));
+            trendLine.Add(Convert_To_defualt_scale(total_points+ Algorithm.FuterPoint, Algorithm.prediction.price));
+        }
+
+        private MyPoint Convert_To_defualt_scale(int place,float price)
+        {
+            return new MyPoint(place * (right_wall) / (total_points - 1), floor + ((lowest - price) * (1 / (highest - lowest)) * floor));
+        }
+
         private void Draw_Graphs()
         {
             int smaller_limit = Math.Min(index_action, Graphs.Count);
-           // Console.WriteLine("drawing graph");
+            // Console.WriteLine("drawing graph");
+            for (int i = 0; i < total_points - 1; i++) //drawing original/real stock price
+            {
+                canvas.DrawLine(OriginalGraph[i].x, OriginalGraph[i].y, OriginalGraph[i + 1].x, OriginalGraph[i + 1].y, black);
+            }
 
-
-            for(int graph = 0; graph < smaller_limit; graph++) 
+            for (int graph = 0; graph < smaller_limit; graph++) 
             {
                 //need to generete a random color
                 for (int i = 0; i < Graphs[graph].MA_Graph.Count-1; i++)
@@ -202,6 +245,10 @@ namespace App1.Algorithm
                 
                 
             }
+
+            
+            canvas.DrawLine(trendLine[0].x, trendLine[0].y, trendLine[1].x, trendLine[1].y, green); //draw trendline
+
             //canvas.Save();
             //canvas.Save();
             started = false;
