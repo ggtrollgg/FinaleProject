@@ -74,7 +74,7 @@ namespace App1.Algorithm
 
 
             Thread frameRate = new Thread(FrameRate_Invalidate);
-            frameRate.Start();
+            //frameRate.Start();
         }
 
         protected override void OnDraw(Canvas canvas1)
@@ -101,7 +101,7 @@ namespace App1.Algorithm
             //{
             //    canvas.Restore();
             //}
-            //Invalidate();
+            Invalidate();
             started= false;
         }
 
@@ -115,7 +115,7 @@ namespace App1.Algorithm
                    // Console.WriteLine("Invalidated");
                 }
                     
-                Thread.Sleep(1000);
+                Thread.Sleep(500);
             }
         }
 
@@ -129,7 +129,7 @@ namespace App1.Algorithm
                 difference = 1000 - difference;
             }
 
-            if (difference > 2000)
+            if (difference > 500)
             {
                 currentTime = DateTime.Now;
                 index_action++;
