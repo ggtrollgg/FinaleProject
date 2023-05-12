@@ -72,9 +72,9 @@ namespace App1
                 Console.WriteLine(currentDegree);
                 threads.Add(new Thread(() => Thread_Create_Ma_Graphs(currentDegree)));
                 threads[i-minOrder].Start();
-                Thread.Sleep(10); //for preformence
-                Test_add_curretDegree();
-                //currentDegree++;
+                Thread.Sleep(20); //for preformence
+                //Test_add_curretDegree();
+                currentDegree++;
             }
             //Looper.Prepare();
 
@@ -165,13 +165,13 @@ namespace App1
                     {
                         place = (int)movingAverage_Graph[i].MA_Graph[g].place;
                         price = movingAverage_Graph[i].MA_Graph[g].price;
-                        Average_Of_Graphs[place].price += price;
-
+                        //Average_Of_Graphs[place].price += price;
+                        Average_Of_Graphs[place - (int)(Math.Floor(minOrder/2.0)) ].price += price;
 
                         //using place as counter to see how many prices have been added to this point > because every order reduces the amount of points on the graph by 2
                         //this isent progremer friendly at all, but the allternetive is adding another field to the class or create an arrey thar will
                         //keep track of the amount of times that i added price to a field
-                        Average_Of_Graphs[place].place += 1;
+                        Average_Of_Graphs[place - (int)(Math.Floor(minOrder / 2.0))].place += 1;
                        
 
                     }
@@ -211,6 +211,8 @@ namespace App1
             for (int i = 0; i < movingAverage_Graph.Count; i++)
             {
                 Console.WriteLine("movingAverage_Graph[" + i + "] count is: " + movingAverage_Graph[i].MA_Graph.Count);
+                Console.WriteLine("his Order is: " + movingAverage_Graph[i].order);
+                Console.WriteLine("his first point place is: " + movingAverage_Graph[i].MA_Graph[0].place);
                 Console.WriteLine("his last point place is: " + movingAverage_Graph[i].MA_Graph[movingAverage_Graph[i].MA_Graph.Count - 1].place);
                 Console.WriteLine("____");
             }
