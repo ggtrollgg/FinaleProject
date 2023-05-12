@@ -16,9 +16,9 @@ namespace App1
         public List<MA_Point> MA_Graph;
         public int order = 1;
 
-        public MovingAverage_Graph(List<DataPoint> points, int degree1)
+        public MovingAverage_Graph(List<DataPoint> points, int order1)
         {
-            order= degree1;
+            order= order1;
             MA_Graph = new List<MA_Point>();
             Calculate_MA_Of(points);
         }

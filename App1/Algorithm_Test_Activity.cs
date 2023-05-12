@@ -208,6 +208,17 @@ namespace App1
 
         private void StartAlgorithm(List<DataPoint> newList)
         {
+            if(ETdegree.Text.Length < 1)
+            {
+                Console.WriteLine("need to fill the order field ");
+                return;
+            }
+            if(ETfuterPoint.Text.Length < 1)
+            {
+                Console.WriteLine("need to fill the futer point field ");
+                return;
+            }
+
 
             MATLAlgo = new MATL_Algorithm(newList, int.Parse(ETdegree.Text), int.Parse(ETfuterPoint.Text));
             if(ETMinOrder.Text != "")

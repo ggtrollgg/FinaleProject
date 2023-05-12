@@ -24,6 +24,7 @@ namespace App1.Algorithm
 
         List<MyPoint> OriginalGraph = new List<MyPoint>();
         List<MyPoint> trendLine = new List<MyPoint>();
+        MyPoint prediction = new MyPoint(0,0);
 
         public Android.Content.Context context;
         public Canvas canvas;
@@ -44,6 +45,7 @@ namespace App1.Algorithm
         int difference = 0;
 
         Paint black;
+        Paint black_graph;
         Paint red;
         Paint green;
         //Paint random;
@@ -102,20 +104,25 @@ namespace App1.Algorithm
             black.Color = Color.Black;
             black.StrokeWidth = 5;
 
+            black_graph = new Paint();
+            black_graph.Color = Color.Argb(155,0,0,0);
+            black_graph.StrokeWidth = 6;
+
             red = new Paint();
             red.Color = Color.Red;
             red.StrokeWidth = 6;
 
             green = new Paint();
-            green.Color = Color.Green;
+            green.Color = Color.DarkGreen;
             green.StrokeWidth = 6;
+
 
             Random ram = new Random();
             for (int i = 0; i < Graphs.Count; i++)
             {
                 Paint random = new Paint();
-                random.Color = Color.Argb(255, ram.Next(200), ram.Next(200), ram.Next(200));
-                random.StrokeWidth = 6;
+                random.Color = Color.Argb(255, ram.Next(150)+50, ram.Next(150)+50, ram.Next(150) + 50);
+                random.StrokeWidth = 8;
                 randoms.Add(random);
             }
 
@@ -187,6 +194,7 @@ namespace App1.Algorithm
 
             create_toScale_trendLine();
             create_toScale_OriginalGraph();
+            create_toScale_Prediction();
 
             for (int graph = 0; graph < Graphs.Count; graph++)
             {
@@ -204,6 +212,12 @@ namespace App1.Algorithm
                 Console.WriteLine("Create next graph");
                 Console.WriteLine("----");
             }
+        }
+
+        private void create_toScale_Prediction()
+        {
+            prediction = Convert_To_defualt_scale(Algorithm.FuterPoint + total_points, Algorithm.prediction.price + Algorithm.variation);
+            Console.WriteLine("variation is: " + Algorithm.variation);
         }
 
         private void create_toScale_OriginalGraph()
@@ -232,7 +246,7 @@ namespace App1.Algorithm
             // Console.WriteLine("drawing graph");
             for (int i = 0; i < total_points - 1; i++) //drawing original/real stock price
             {
-                canvas.DrawLine(OriginalGraph[i].x, OriginalGraph[i].y, OriginalGraph[i + 1].x, OriginalGraph[i + 1].y, black);
+                canvas.DrawLine(OriginalGraph[i].x, OriginalGraph[i].y, OriginalGraph[i + 1].x, OriginalGraph[i + 1].y, black_graph);
             }
 
             for (int graph = 0; graph < smaller_limit; graph++) 
@@ -248,7 +262,7 @@ namespace App1.Algorithm
 
             
             canvas.DrawLine(trendLine[0].x, trendLine[0].y, trendLine[1].x, trendLine[1].y, green); //draw trendline
-
+            canvas.DrawCircle(prediction.x, prediction.y, 8, red);
             //canvas.Save();
             //canvas.Save();
             started = false;

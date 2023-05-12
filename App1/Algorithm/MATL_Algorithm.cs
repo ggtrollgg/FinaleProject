@@ -23,7 +23,7 @@ namespace App1
         public TrendLine trendline; //the trendline of the "Average_Of_Graphs"  graph
         public int FuterPoint;
         public MA_Point prediction = new MA_Point(0, 0);
-        float variation = 0;
+        public float variation = 0;
 
         //threads
         Thread subMainThread;
@@ -31,8 +31,8 @@ namespace App1
 
         //MA order controll
         public int maxOrder = 2;
-        public int currentDegree = 1;
-        public int minOrder = 1;
+        public int currentDegree = 2;
+        public int minOrder = 2;
 
 
 
@@ -65,6 +65,7 @@ namespace App1
         }
         private void Create_MA_Graphs()
         {
+            //currentDegree= minOrder;
             for(int i = minOrder; i <= maxOrder; i++)
             {
                 threads.Add(new Thread(() => Thread_Create_Ma_Graphs(currentDegree)));
@@ -124,27 +125,33 @@ namespace App1
         {
             if (movingAverage_Graph.Count > 0 && original_Graph.Count > 0)
             {
-                foreach (DataPoint point in original_Graph)
+                //foreach (DataPoint point in original_Graph)
+                //{
+                //    Average_Of_Graphs.Add(new MA_Point(point.close, 1));
+                //}
+                foreach (MA_Point point in movingAverage_Graph[0].MA_Graph)
                 {
-                    Average_Of_Graphs.Add(new MA_Point(point.close, 1));
+                    Average_Of_Graphs.Add(new MA_Point(point.price, 1));
                 }
-
                 float price;
                 int place;
                 //int count = 0;
 
-                for (int i = 0; i < movingAverage_Graph.Count; i++)
+                for (int i = 1; i < movingAverage_Graph.Count; i++)
                 {
-                    if (i == 0 && minOrder == 1 && movingAverage_Graph.Count > 1) // if min order== 1 than the first graph is the original graph, and we already added the values of the original graph
-                    {
-                        i = 1;
-                    }
+                    //if (i == 0 && minOrder == 1 && movingAverage_Graph.Count > 1) // if min order== 1 than the first graph is the original graph, and we already added the values of the original graph
+                    //{
+                    //    i = 1;
+                    //}
                    // count = movingAverage_Graph[i].MA_Graph.Count;
+
                     for (int g = 0; g < movingAverage_Graph[i].MA_Graph.Count ; g++)
                     {
                         place = (int)movingAverage_Graph[i].MA_Graph[g].place;
                         price = movingAverage_Graph[i].MA_Graph[g].price;
                         Average_Of_Graphs[place].price += price;
+
+
                         //using place as counter to see how many prices have been added to this point > because every order reduces the amount of points on the graph by 2
                         //this isent progremer friendly at all, but the allternetive is adding another field to the class or create an arrey thar will
                         //keep track of the amount of times that i added price to a field
@@ -159,10 +166,12 @@ namespace App1
                 
                 for(int i = 0; i < Average_Of_Graphs.Count; i++)
                 {
-                    price = Average_Of_Graphs[i].price / Average_Of_Graphs[i].place;
-                    Average_Of_Graphs[i].price = price;
-                    Average_Of_Graphs[i].place = i;
-
+                    if(Average_Of_Graphs[i].place!= 0)
+                    {
+                        price = Average_Of_Graphs[i].price / Average_Of_Graphs[i].place;
+                        Average_Of_Graphs[i].price = price;
+                        Average_Of_Graphs[i].place = i;
+                    }
                 }
                 //process ended
 
