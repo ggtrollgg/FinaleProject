@@ -26,6 +26,9 @@ namespace App1
         private void Calculate_MA_Of(List<DataPoint> points)
         {
             float average = 0;
+           // Console.WriteLine("order: " + order);
+           // Console.WriteLine("points.count: " + points.Count);
+
             for(int i = 0; i < points.Count-order; i++) 
             {
                 average = 0;
@@ -34,7 +37,10 @@ namespace App1
                     average += points[g].close;
                 }
                 average = average /order;
-                MA_Graph.Add(new MA_Point(average,i + (int)Math.Round(order /2.0))); 
+                MA_Graph.Add(new MA_Point(average,i + (int)Math.Round(order /2.0) -1 ));
+
+                //Console.WriteLine(" MA_graph[" + i + "] place is : " + MA_Graph[i].place);
+               // Console.WriteLine("order is: " + order);
             }
         }
     }
