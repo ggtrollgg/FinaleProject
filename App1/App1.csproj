@@ -67,7 +67,6 @@
     <Compile Include="Algorithm\MA_View.cs" />
     <Compile Include="Algorithm\MovingAverage_Graph.cs" />
     <Compile Include="Algorithm_Test_Activity.cs" />
-    <Compile Include="EventStarter_Test.cs" />
     <Compile Include="General Classes\API_Key.cs" />
     <Compile Include="General Classes\Manager_API_Keys.cs" />
     <Compile Include="General Classes\MA_Point.cs" />
@@ -76,7 +75,6 @@
     <Compile Include="General Classes\TrendLine.cs" />
     <Compile Include="Graph\ChartActivity.cs" />
     <Compile Include="Graph\ColumGraph.cs" />
-    <Compile Include="PopUp_Handler_Activity_Test.cs" />
     <Compile Include="Search\ClassSearchStock.cs" />
     <Compile Include="Graph\Class_CandleGraph.cs" />
     <Compile Include="Graph\Class_FatherGraph.cs" />
@@ -91,6 +89,7 @@
     <Compile Include="Search\SearchStockAdapter.cs" />
     <Compile Include="Search\Search_Check.cs" />
     <Compile Include="Services\MyHandler.cs" />
+    <Compile Include="Services\ProgressBarHandler.cs" />
     <Compile Include="Services\TrackingService.cs" />
     <Compile Include="StockVIew\StockAdapter.cs" />
     <Compile Include="Graph\StockChart.cs" />
@@ -232,11 +231,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Custom_PopUp_Algorithm.xml">
-      <SubType>Designer</SubType>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\PopUp_Test.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>

@@ -15,6 +15,10 @@ namespace App1
 {
     public class MATL_Algorithm
     {
+
+        //Context context;
+        Algorithm_Test_Activity context;
+
         public List<DataPoint> original_Graph = new List<DataPoint>(); // the original graph
         public List<MovingAverage_Graph> movingAverage_Graph = new List<MovingAverage_Graph>(); // list of all moving averages -> list of graphs 
         public List<MA_Point> Average_Of_Graphs = new List<MA_Point>(); // average of all moving graphs -> a graph
@@ -36,11 +40,13 @@ namespace App1
         public int minOrder = 2;
 
 
-
+        //Actions
         public event Action ContinueProcess;
+        
 
-        public MATL_Algorithm(List<DataPoint> points,int maxorder, int futerPoint)
+        public MATL_Algorithm(List<DataPoint> points,int maxorder, int futerPoint ,Context context)
         {
+            this.context = (Algorithm_Test_Activity)context;
             //currentDegree = 1;
             original_Graph= points;
             maxOrder = maxorder;
@@ -58,48 +64,54 @@ namespace App1
         }
         public void Start_Algorithm()
         {
-            subMainThread = new Thread(Create_MA_Graphs);
+            subMainThread = new Thread(OverViewProccess);
             subMainThread.Start();
            
 
             //Continue_Algorithm_Process?.Invoke();
         }
+
+        private void OverViewProccess()
+        {
+            Create_MA_Graphs();
+            //(Algorithm_Test_Activity)
+            context.Add_progress_ToBar("created Moving averages  graphs");
+            Thread.Sleep(1000);
+
+            if (!Create_Average_Of_Graphs())//creates average of all moving averages graphs including the original graph
+            {
+                Console.WriteLine("something went wrong with 'create_Average_Of_graphs' ");
+                return;
+            }
+            context.Add_progress_ToBar("created Average of Moving average graphs");
+            Thread.Sleep(1000);
+
+            Create_TrendLine();
+            context.Add_progress_ToBar("created TrendLine");
+            Thread.Sleep(1000);
+
+            CalculateVariation();
+            context.Add_progress_ToBar("calculated variation");
+            Thread.Sleep(1000);
+
+            CalculatePrediction();
+
+
+
+            Console.WriteLine("event invoked form MATL_Algorithm");
+            ContinueProcess?.Invoke();
+        }
         private void Create_MA_Graphs()
         {
-            //currentDegree= minOrder;
             for(int i = minOrder; i <= maxOrder; i++)
             {
                 Console.WriteLine(currentDegree);
                 threads.Add(new Thread(() => Thread_Create_Ma_Graphs(currentDegree)));
                 threads[i-minOrder].Start();
                 Thread.Sleep(20); //for preformence
-                //Test_add_curretDegree();
                 currentDegree++;
             }
             //Looper.Prepare();
-
-            if (!Create_Average_Of_Graphs())
-            {
-                Console.WriteLine("something went wrong with 'create_Average_Of_graphs' ");
-                return;
-            } //creates average of all moving averages graphs including the original graph
-            Create_TrendLine();
-
-            CalculateVariation();
-            CalculatePrediction();
-            
-
-
-            Console.WriteLine("event invoked form MATL_Algorithm");
-            ContinueProcess?.Invoke();
-
-        }
-
-        private void Test_add_curretDegree()
-        {
-            Console.Write("added to current degree, was: " + currentDegree);
-            Console.WriteLine(" and now: " +( currentDegree + 1));
-            currentDegree++;
         }
         private void CalculatePrediction()
         {
@@ -135,10 +147,6 @@ namespace App1
         {
             if (movingAverage_Graph.Count > 0 && original_Graph.Count > 0)
             {
-                //foreach (DataPoint point in original_Graph)
-                //{
-                //    Average_Of_Graphs.Add(new MA_Point(point.close, 1));
-                //}
 
                 foreach (MA_Point point in movingAverage_Graph[0].MA_Graph)
                 {
@@ -147,25 +155,13 @@ namespace App1
 
                 float price;
                 int place;
-                //int count = 0;
-
-                Print_info_of_graphs();
-
-
-                //for (int i = 0; i < movingAverage_Graph.Count; i++)
                 for (int i = 1; i < movingAverage_Graph.Count; i++)
                 {
-                    //if (i == 0 && minOrder == 1 && movingAverage_Graph.Count > 1) // if min order== 1 than the first graph is the original graph, and we already added the values of the original graph
-                    //{
-                    //    i = 1;
-                    //}
-                   // count = movingAverage_Graph[i].MA_Graph.Count;
 
                     for (int g = 0; g < movingAverage_Graph[i].MA_Graph.Count ; g++)
                     {
                         place = (int)movingAverage_Graph[i].MA_Graph[g].place;
                         price = movingAverage_Graph[i].MA_Graph[g].price;
-                        //Average_Of_Graphs[place].price += price;
                         Average_Of_Graphs[place - (int)(Math.Floor(minOrder/2.0)) ].price += price;
 
                         //using place as counter to see how many prices have been added to this point > because every order reduces the amount of points on the graph by 2

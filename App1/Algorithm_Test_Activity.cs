@@ -26,35 +26,41 @@ namespace App1
     public class Algorithm_Test_Activity : Activity
     {
         public List<DataPoint> list_dataPoints = new List<DataPoint>();
-        LinearLayout l1, algoLL;
-
-        Button btnTrack, btnCancel, btnStart;
-        RadioButton RB1min, RB5min, RB15min, RB30min, RB1hour;
-        List<RadioButton> radioButtons = new List<RadioButton>();
-
-        CheckBox CBdoubleAver, CBdrawProcess;
-
-        EditText etTrackingPrices, ETdegree,ETMinOrder, ETfuterPoint;
-
-
-
+        LinearLayout l1;
+        Button btnTrack, btnCancel;
+        EditText etTrackingPrices;
         ImageButton ibHome, ibSave, ibTrack, ibData, ibType;
-
-
         //StockChart chart;
         Class_LineGraph chart2;
+
+
+        //algorithm added to activity:
+        Context context;
+        LinearLayout algoLL, LLProgress, LLProgressBar, LLPrediction;
+        Button btnStart, btnGoBack;
+        List<RadioButton> radioButtons = new List<RadioButton>();
+        RadioButton RB1min, RB5min, RB15min, RB30min, RB1hour;
+        TextView TVProgress, TVPrediction;
+        CheckBox CBdoubleAver, CBdrawProcess;
+        EditText ETdegree, ETMinOrder, ETfuterPoint;
+
+
         MyHandler hand;
+        ProgressBarHandler Hand_Progress;
         Handler handler;
         Message m = new Message();
+
         Dialog d;
         MATL_Algorithm MATLAlgo;
 
+        string timeleap = "";
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             hand = new MyHandler(this);
-
+            Hand_Progress = new ProgressBarHandler(this);
+            context = this;
             StartDialog();
             // Create your application here
         }
@@ -73,10 +79,17 @@ namespace App1
             }
 
             algoLL = d.FindViewById<LinearLayout>(Resource.Id.LLcanvas);
+            LLProgress = d.FindViewById<LinearLayout>(Resource.Id.LLProgress);
+            LLProgressBar = d.FindViewById<LinearLayout>(Resource.Id.LLProgressBar);
+            LLPrediction = d.FindViewById<LinearLayout>(Resource.Id.LLPrediction);
 
             ETdegree = d.FindViewById<EditText>(Resource.Id.ETdegree);
             ETMinOrder = d.FindViewById<EditText>(Resource.Id.ETMinOrder);
             ETfuterPoint = d.FindViewById<EditText>(Resource.Id.ETfuterPoint);
+
+            TVPrediction = d.FindViewById<TextView>(Resource.Id.TVPrediction);
+            TVProgress = d.FindViewById<TextView>(Resource.Id.TVProgress);
+
 
             RB1min = d.FindViewById<RadioButton>(Resource.Id.RB1min);
             RB5min = d.FindViewById<RadioButton>(Resource.Id.RB5min);
@@ -95,7 +108,14 @@ namespace App1
 
             btnStart = d.FindViewById<Button>(Resource.Id.btnStart);
 
+            //setting up handler for progress bar
+            Hand_Progress.TVPrediction = TVPrediction;
+            Hand_Progress.TVProgress = TVProgress;
+            Hand_Progress.LLPrediction = LLPrediction;
+            Hand_Progress.LLProgress = LLProgress;
+            Hand_Progress.LLProgressBar = LLProgressBar;
 
+            //there can only be one raidobutton check in any instance
             foreach (RadioButton rb in radioButtons)
             {
                 rb.Click += (s, e) =>
@@ -126,7 +146,7 @@ namespace App1
                 if (rb.Checked)
                 {
                     string buttonText = rb.Text.Trim();
-                    string timeleap = buttonText.Replace(" ", "");
+                    timeleap = buttonText.Replace(" ", "");
 
                     //Console.WriteLine("-------------------------");
                     //Console.WriteLine(timeleap);
@@ -220,15 +240,17 @@ namespace App1
             }
 
 
-            MATLAlgo = new MATL_Algorithm(newList, int.Parse(ETdegree.Text), int.Parse(ETfuterPoint.Text));
+            MATLAlgo = new MATL_Algorithm(newList, int.Parse(ETdegree.Text), int.Parse(ETfuterPoint.Text),this);
+
             if(ETMinOrder.Text != "")
             {
-                MATLAlgo.SetMinOrder(int.Parse(ETMinOrder.Text));
                 if(int.Parse(ETMinOrder.Text) > int.Parse(ETdegree.Text))
                 {
                     Console.WriteLine("order need to be equal or bigger than Minorder ");
                     return;
                 }
+
+                MATLAlgo.SetMinOrder(int.Parse(ETMinOrder.Text));
             }
                 
 
@@ -251,10 +273,12 @@ namespace App1
                 hand.LL = algoLL;
                 hand.graph_view = graph_view;
                 handler = hand;
-                Message m = new Message();
+                 m = new Message();
                 m.Arg1 = 1;
                 //handler.HandleMessage(m);
                 handler.SendMessage(m);
+                Add_progress_ToBar("drawing graphs");
+
             }
             else
             {
@@ -264,14 +288,33 @@ namespace App1
                     hand.graph_view = null;
                 }
                 handler = hand;
-                Message m = new Message();
+                 m = new Message();
                 m.Arg1 = 1;
                 handler.SendMessage(m); //hide the canvas if visiball
             }
-
+            Add_Prediction("My predection is: \n in " + MATLAlgo.FuterPoint + " * " + timeleap + " the price of the stock will be: " + MATLAlgo.prediction.price);
         }
        
 
+
+
+        public void Add_progress_ToBar(string description)
+        {
+            m = new Message();
+            m.Arg1 = 0; //0 == add image view to progress bar
+            Hand_Progress.status = description;
+            handler = Hand_Progress;
+            handler.SendMessage(m);
+
+        }
+        public void Add_Prediction(string description)
+        {
+            m = new Message();
+            m.Arg1 = 1; //1 == show prediction
+            Hand_Progress.prediction = description;
+            handler = Hand_Progress;
+            handler.SendMessage(m);
+        }
         protected override void OnPause()
         {
 

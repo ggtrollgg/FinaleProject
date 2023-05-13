@@ -591,17 +591,17 @@ namespace App1
         {
             if(RB1min.Checked)//if selected 1 min between each point
             {
-                MATL_Algorithm MATLAlgo = new MATL_Algorithm(list_DataPoints, int.Parse(ETdegree.Text), int.Parse(ETfuterPoint.Text));
-                while(MATLAlgo.movingAverage_Graph.Count < int.Parse(ETdegree.Text))
+                MATL_Algorithm MATLAlgo = new MATL_Algorithm(list_DataPoints, int.Parse(ETdegree.Text), int.Parse(ETfuterPoint.Text), this);
+                while (MATLAlgo.movingAverage_Graph.Count < int.Parse(ETdegree.Text))
                 {
                     Thread.Sleep(1000);
                 }
-                
+
                 if (CBdrawProcess.Checked)
                 {
                     Console.WriteLine("CBdrawProcess is checked");
                     algoLL.Visibility = ViewStates.Visible;
-                    MA_View graph_view = new MA_View(this,MATLAlgo.movingAverage_Graph);
+                    MA_View graph_view = new MA_View(this, MATLAlgo.movingAverage_Graph);
                     algoLL.AddView(graph_view);
                     //add canvas view
                 }

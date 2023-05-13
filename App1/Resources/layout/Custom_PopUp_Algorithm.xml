@@ -23,17 +23,65 @@
         >
 
         
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Testing visability"/>
+       
          
     
     
     
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/LLProgress"
+        android:visibility="gone"
+        >
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="horizontal"
+            android:id = "@+id/LLProgressBar">
+            
+        
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="calculating moving averages graphs"
+            android:id="@+id/TVProgress"
+            android:gravity="center"
+            android:layout_margin="10dp"
+            />
+
+       
+    
+    
+    
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/LLPrediction"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="here i will describe the prediction"
+            android:gravity="center"
+            android:id="@+id/TVPrediction"
+            android:layout_margin="10dp"
+            />
+        
+
+    </LinearLayout>
+   
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -135,12 +183,30 @@
             android:text="draw process"
             android:id="@+id/CBdrawProcess"/>
 
-
-        <Button
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Start Algorithm"
-            android:id="@+id/btnStart"/>
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Start Algorithm"
+                android:layout_weight="1"
+                android:background="#28F10E"
+                android:id="@+id/btnStart"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnGoBack"
+                android:layout_weight="1"
+                android:background="#E11E20"
+                android:text="Go Back"/>
+            
+        </LinearLayout>
+
+        
     
     </LinearLayout>
 
