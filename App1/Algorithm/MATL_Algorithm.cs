@@ -55,7 +55,20 @@ namespace App1
 
         }
 
+        public void AbortProcess()
+        {
+            if(subMainThread!= null)
+            {
+                subMainThread.Abort();
 
+                
+            }
+            foreach (Thread t in threads)
+            {
+                t.Abort();
+            }
+
+        }
 
         public void SetMinOrder(int order)
         {
@@ -64,6 +77,7 @@ namespace App1
         }
         public void Start_Algorithm()
         {
+            
             subMainThread = new Thread(OverViewProccess);
             subMainThread.Start();
            
@@ -73,6 +87,7 @@ namespace App1
 
         private void OverViewProccess()
         {
+            
             Create_MA_Graphs();
             //(Algorithm_Test_Activity)
             context.Add_progress_ToBar("created Moving averages  graphs");

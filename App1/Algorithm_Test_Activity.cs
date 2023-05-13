@@ -107,7 +107,7 @@ namespace App1
             CBdrawProcess = d.FindViewById<CheckBox>(Resource.Id.CBdrawProcess);
 
             btnStart = d.FindViewById<Button>(Resource.Id.btnStart);
-
+            btnGoBack = d.FindViewById<Button>(Resource.Id.btnGoBack);
             //setting up handler for progress bar
             Hand_Progress.TVPrediction = TVPrediction;
             Hand_Progress.TVProgress = TVProgress;
@@ -133,9 +133,19 @@ namespace App1
                 };
             }
             btnStart.Click += BtnStart_Click;
-
+            btnGoBack.Click += BtnGoBack_Click;
             d.Show();
 
+        }
+
+        private void BtnGoBack_Click(object sender, EventArgs e)
+        {
+            d.Cancel();
+            if(MATLAlgo != null)
+            {
+                MATLAlgo.AbortProcess();
+                algoLL.RemoveAllViews();
+            }
         }
 
         private void BtnStart_Click(object sender, EventArgs e)
@@ -252,8 +262,8 @@ namespace App1
 
                 MATLAlgo.SetMinOrder(int.Parse(ETMinOrder.Text));
             }
-                
 
+            Start_progress_Bar("creating graphs of moving averages ");
             MATLAlgo.ContinueProcess += Continue_Algorithm_Process;
             MATLAlgo.Start_Algorithm();
 
@@ -294,10 +304,18 @@ namespace App1
             }
             Add_Prediction("My predection is: \n in " + MATLAlgo.FuterPoint + " * " + timeleap + " the price of the stock will be: " + MATLAlgo.prediction.price);
         }
-       
 
 
 
+        public void Start_progress_Bar(string description)
+        {
+            m = new Message();
+            m.Arg1 = -1; //0 == add image view to progress bar
+            Hand_Progress.status = description;
+            handler = Hand_Progress;
+            handler.SendMessage(m);
+
+        }
         public void Add_progress_ToBar(string description)
         {
             m = new Message();

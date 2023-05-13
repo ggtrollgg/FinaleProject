@@ -54,6 +54,10 @@ namespace App1
                 LLProgress.Visibility = ViewStates.Visible;
                 LLPrediction.Visibility = ViewStates.Gone;
             }
+            if (msg.Arg1 == -1)
+            {
+                TVProgress.Text = "" + status;
+            }
             if(msg.Arg1== 0)
             {
                 Add_progress_ToBar();
