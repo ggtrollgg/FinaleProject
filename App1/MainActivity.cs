@@ -124,25 +124,9 @@ namespace App1
 
         private void BtnTest_Click(object sender, EventArgs e)
         {
-            Intent intent = new Intent(this, typeof(Algorithm_Test_Activity));
-            //Intent intent = new Intent(this, typeof(PopUp_Handler_Activity_Test));
-            //intent.PutExtra("symbol", "OB");
-            StartActivity(intent);
-
-            offlineMode= true;
-
-            //for (int i = 0; i < sp.GetInt("KeysAmount", -1); i++)
-            //{
-            //    Console.WriteLine("   ");
-
-            //    Console.WriteLine("ShardPrefrenc: Key" + i + " is: " +  sp.GetString("Key" + i, ""));
-            //    Console.WriteLine("ShardPrefrenc: CallsRemain: " + sp.GetInt("Key" + i + "CallsRemain", 0));
-            //    Console.WriteLine("Manager_API_Key: Key" + i + " is: " + Manager_API_Keys.API_Keys[i].Key);
-            //    Console.WriteLine("ShardPrefrenc: CallsRemain: " + Manager_API_Keys.API_Keys[i].GetCallsRemaining());
-
-
-            //    Console.WriteLine("   ");
-            //}
+            
+            offlineMode = !offlineMode;
+            Toast.MakeText(this, "offlineMode is: " + offlineMode, ToastLength.Short).Show();
 
 
 

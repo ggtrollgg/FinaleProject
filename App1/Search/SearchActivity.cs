@@ -49,6 +49,8 @@ namespace App1
         Context content;
         Thread Thread_CheckChange;
 
+        bool offlineMode = false;
+
         
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -61,13 +63,18 @@ namespace App1
             lvSearchedStocks.ItemClick += LvSearchedStocks_ItemClick;
             lvSearchedStocks.ItemLongClick += LvSearchedStocks_ItemLongClick;
 
+            offlineMode = Intent.GetBooleanExtra("OfflineMode", false);
+            if (offlineMode)
+            {
+                SearchDatalist.Add(new ClassSearchStock("Demo_Stock", "Matan Inc"));
+            }
 
             SetUp_ListView();
-            etSearch.TextChanged += EtSearch_TextChanged;
 
+            etSearch.TextChanged += EtSearch_TextChanged;
             btnHome.Click += BtnHome_Click;
             //handler = new MyHandler(this);
-
+            
             //ThreadStart MyStartThread = new ThreadStart(CheckIfTextChanged);
             //Thread_CheckChange = new Thread(CheckIfTextChanged);
             //running = true;
@@ -130,21 +137,25 @@ namespace App1
         //which item was clicked and what symbol it has, and create popup
         private void LvSearchedStocks_ItemLongClick(object sender, AdapterView.ItemLongClickEventArgs e)
         {
-            LongClick_pos= e.Position;
-            d = new Dialog(content);
-
-            d.SetContentView(Resource.Layout.Custom_PopUp_MiniGraph);
-            d.SetTitle(SearchDatalist[LongClick_pos].symbol);
-            d.SetCancelable(true);
-            l1 = d.FindViewById<LinearLayout>(Resource.Id.LLChart);
-
-
-            MiniGraph = new Class_LineGraph(this);
-            if (Chart_Points.Count > 0)
+            if (!offlineMode)
             {
-                Chart_Points.Clear();
+                LongClick_pos = e.Position;
+                d = new Dialog(content);
+
+                d.SetContentView(Resource.Layout.Custom_PopUp_MiniGraph);
+                d.SetTitle(SearchDatalist[LongClick_pos].symbol);
+                d.SetCancelable(true);
+                l1 = d.FindViewById<LinearLayout>(Resource.Id.LLChart);
+
+
+                MiniGraph = new Class_LineGraph(this);
+                if (Chart_Points.Count > 0)
+                {
+                    Chart_Points.Clear();
+                }
+                _ = GetPricePoints(SearchDatalist[LongClick_pos].symbol);
             }
-            _ = GetPricePoints(SearchDatalist[LongClick_pos].symbol);
+
             //activatePopUp();
 
 
@@ -219,7 +230,7 @@ namespace App1
         //if cancalltoin token is cancenlble => meaning a reqwest was already made => i can stop it and not waste resorces on it
         private void EtSearch_TextChanged(object sender, Android.Text.TextChangedEventArgs e)
         {
-            if (lastSearch != null && lastSearch != etSearch.Text)
+            if (lastSearch != null && lastSearch != etSearch.Text && !offlineMode)
             {
                 if (CTS.Token.CanBeCanceled)
                 {
@@ -376,6 +387,7 @@ namespace App1
         {
             Intent intent = new Intent(this, typeof(ChartActivity));
             intent.PutExtra("symbol", symbol);
+            intent.PutExtra("OfflineMode", offlineMode);
             StartActivity(intent);
         }
 
@@ -412,23 +424,23 @@ namespace App1
         protected override void OnResume()
         {
             Console.WriteLine("Resume");
-            if (Thread_CheckChange == null || Thread_CheckChange.ThreadState != System.Threading.ThreadState.Running)
-            {
-                Thread_CheckChange = new Thread(CheckIfTextChanged);
-                running = true;
-                Thread_CheckChange.Start();
-            }
+            //if (Thread_CheckChange == null || Thread_CheckChange.ThreadState != System.Threading.ThreadState.Running)
+            //{
+            //    //Thread_CheckChange = new Thread(CheckIfTextChanged);
+            //    //running = true;
+            //    //Thread_CheckChange.Start();
+            //}
             base.OnPause();
         }
         protected override void OnPause()
         {
             Console.WriteLine("Pause");
-            if (Thread_CheckChange != null && Thread_CheckChange.ThreadState == System.Threading.ThreadState.Running)
-            {
-                running= false;
-                Thread_CheckChange.Abort();
+            //if (Thread_CheckChange != null && Thread_CheckChange.ThreadState == System.Threading.ThreadState.Running)
+            //{
+            //    running= false;
+            //    Thread_CheckChange.Abort();
 
-            }
+            //}
             base.OnPause();
         }
     }

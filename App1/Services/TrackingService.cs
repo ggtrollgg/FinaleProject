@@ -230,6 +230,30 @@ namespace App1
 
 
                 Console.WriteLine("creating a get request to financialmodeling ");
+
+                try
+                {
+                    using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
+                    {
+                        Console.WriteLine("sending request to financialmodeling ");
+                        MainActivity.Manager_API_Keys.UseKey(k.Key);
+
+                        var response2 = await httpClient2.SendAsync(request);
+                        response2.EnsureSuccessStatusCode();
+
+                        string responseBody = await response2.Content.ReadAsStringAsync();
+                    }
+                    
+                }
+                catch
+                {
+                    Console.WriteLine("something went wrong with requesting info from web about stock in Trackingservice");
+                    Console.WriteLine("disposing of tracking service");
+                    this.Dispose();
+                    return;
+                }
+
+
                 using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
                 {
                     Console.WriteLine("sending request to financialmodeling ");

@@ -55,6 +55,9 @@ namespace App1
 
         bool ShowOnlyTracking= false;
 
+
+        bool offlineMode= false;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -68,11 +71,29 @@ namespace App1
 
             btnReturnHome.Click += BtnReturnHome_Click;
             list = new List<string>();
+            
             Datalist = new List<StockData>();
             lvStock = (ListView)FindViewById(Resource.Id.lvStock);
 
-            db = GetDataBase();;
-            LoadItems();
+            if (Intent.GetBooleanExtra("OfflineMode", false))
+            {
+                List<float> tp = new List<float>
+                {
+                    20,
+                    (float)21.3
+                }; //tracking prices
+
+                offlineMode = true;
+                Datalist.Add(new StockData(100, (float)95.3, "Demo_stock"));
+                Datalist.Add(new StockData((float)27.9, (float)29.2, "Demo2_stock", "", tp));
+                ShowListView();
+            }
+            else
+            {
+                db = GetDataBase(); ;
+                LoadItems();
+            }
+            
 
            //_ = processAllSavedStocks();
         }
@@ -80,7 +101,28 @@ namespace App1
         //buttons
         private void BtnShowSaved_Click(object sender, EventArgs e)
         {
-            if(ShowOnlyTracking)
+            if (offlineMode)
+            {
+                if (ShowOnlyTracking)
+                {
+                    ShowOnlyTracking = false;
+                    Datalist.Clear();
+
+                    List<float> tp = new List<float>
+                    {
+                        20,
+                        (float)21.3
+                    }; //tracking prices
+                    Datalist.Add(new StockData(100, (float)95.3, "Demo_stock"));
+                    Datalist.Add(new StockData((float)27.9, (float)29.2, "Demo2_stock", "", tp));
+
+                    ShowListView();
+                }
+
+
+                return;
+            }
+            else if(ShowOnlyTracking)
             {
                 queryType = "normal";
                 ShowOnlyTracking = false;
@@ -92,7 +134,25 @@ namespace App1
         }
         private void BtnShowTrack_Click(object sender, EventArgs e)
         {
-            if(!ShowOnlyTracking)
+            if (offlineMode)
+            {
+                if (!ShowOnlyTracking)
+                {
+                    ShowOnlyTracking = true;
+                    Datalist.Clear();
+
+                    List<float> tp = new List<float>
+                    {
+                        20,
+                        (float)21.3
+                    }; //tracking prices
+                    Datalist.Add(new StockData((float)27.9, (float)29.2, "Demo2_stock", "", tp));
+                    ShowListView();
+                }
+
+                return;
+            }
+            if (!ShowOnlyTracking && !offlineMode)
             {
                 queryType = "Tracking";
                 ShowOnlyTracking = true;
@@ -106,7 +166,8 @@ namespace App1
         private void BtnReturnHome_Click(object sender, EventArgs e)
         {
             //ShowListView();
-             db.App.Dispose();
+            if( !offlineMode)
+                db.App.Dispose();
             if(t!= null && t.ThreadState== System.Threading.ThreadState.Running)
             {
                 t.Abort();
@@ -482,6 +543,7 @@ namespace App1
         {
             Intent intent = new Intent(this, typeof(ChartActivity));
             intent.PutExtra("symbol", symbol);
+            intent.PutExtra("OfflineMode", offlineMode);
             StartActivity(intent);
         }
 
@@ -509,7 +571,9 @@ namespace App1
 
         protected override void OnResume()
         {
-            if(db == null)
+            offlineMode = Intent.GetBooleanExtra("OfflineMode", false);
+
+            if(db == null && offlineMode)
             {
                 db = GetDataBase();
                 //AddItem();
