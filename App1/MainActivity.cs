@@ -26,13 +26,13 @@ namespace App1
     public class MainActivity : Activity
     {
 
-        public static ISharedPreferences sp;
+        public static ISharedPreferences sp;//,offsp;
         public static Manager_API_Keys Manager_API_Keys;
         Button btnstart,btnToListView,btnExit,btnTest;
         Android.Content.Intent intent2;
         //
         PendingIntent pendingIntent;
-
+        bool offlineMode = false;
 
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -54,6 +54,9 @@ namespace App1
 
 
             sp = GetSharedPreferences("KeysForFinaleProject", FileCreationMode.Private);
+            //offsp = GetSharedPreferences("OfflineMode", FileCreationMode.Private);
+
+
             Manager_API_Keys = new Manager_API_Keys();
 
 
@@ -62,22 +65,32 @@ namespace App1
             //0a0b32a8d57dc7a4d38458de98803860  //ggtroll 35
             //8bdedb14d7674def460cb3a84f1fd429 //ggtroll 36
             //561897c32bf107b87c107244081b759f //ggtroll 37
+            ResetKeys_Alaram_setup();
 
+            
+            
+
+
+            Console.WriteLine();
+            if (intent2 != null)
+            {
+                
+                StopService(intent2);
+            }
+            intent2 = new Intent(this, typeof(TrackingService));
+            StartService(intent2);
+
+
+           
+        }
+
+        private void ResetKeys_Alaram_setup()
+        {
             AlarmManager alarmManager = (AlarmManager)GetSystemService(AlarmService);
-            Console.WriteLine(" ");
-            Console.WriteLine("  ");
-            Console.WriteLine("   ");
-            Console.WriteLine("     ");
-            Console.WriteLine("      ");
-            Console.WriteLine("       ");
-            Console.WriteLine("        ");
-
-
-            Console.WriteLine("alarmManageris null?  " + (alarmManager == null));
             if (alarmManager.NextAlarmClock != null)
                 Console.WriteLine("netxt allarm clock is:   " + alarmManager.NextAlarmClock);
 
-            if (alarmManager.NextAlarmClock == null )
+            if (alarmManager.NextAlarmClock == null)
             {
                 TimeSpan UntillMidNight = DateTime.MaxValue.TimeOfDay - DateTime.Now.TimeOfDay;
                 //TimeSpan UntillMidNight = DateTime.Now.TimeOfDay - DateTime.Now.TimeOfDay;
@@ -104,44 +117,19 @@ namespace App1
 
                 //pendingIntent = PendingIntent.GetBroadcast(this, 1, intent, 0);
 
-                //alarmManager.SetExactAndAllowWhileIdle(AlarmType.ElapsedRealtimeWakeup, SystemClock.ElapsedRealtime() + UntillMidNight_Mili, pendingIntent);
-                alarmManager.SetExactAndAllowWhileIdle(AlarmType.ElapsedRealtimeWakeup, SystemClock.ElapsedRealtime() + 60000, pendingIntent);
+                alarmManager.SetExactAndAllowWhileIdle(AlarmType.ElapsedRealtimeWakeup, SystemClock.ElapsedRealtime() + UntillMidNight_Mili, pendingIntent);
+                //alarmManager.SetExactAndAllowWhileIdle(AlarmType.ElapsedRealtimeWakeup, SystemClock.ElapsedRealtime() + 1000, pendingIntent);
             }
-
-            Console.WriteLine(" ");
-            Console.WriteLine("  ");
-            Console.WriteLine("   ");
-            Console.WriteLine("     ");
-            Console.WriteLine("      ");
-            Console.WriteLine("       ");
-            Console.WriteLine("        ");
-
-
-            Console.WriteLine();
-            if (intent2 != null)
-            {
-                
-                StopService(intent2);
-            }
-            intent2 = new Intent(this, typeof(TrackingService));
-            StartService(intent2);
-
-
-           
         }
 
         private void BtnTest_Click(object sender, EventArgs e)
         {
             Intent intent = new Intent(this, typeof(Algorithm_Test_Activity));
             //Intent intent = new Intent(this, typeof(PopUp_Handler_Activity_Test));
-            intent.PutExtra("symbol", "OB");
+            //intent.PutExtra("symbol", "OB");
             StartActivity(intent);
 
-            //var editor = sp.Edit();
-            //editor.PutInt("Key0CallsRemain", 222);
-            //editor.PutInt("Key1CallsRemain", 222);
-            //editor.PutInt("Key2CallsRemain", 222);
-            //editor.Commit();
+            offlineMode= true;
 
             //for (int i = 0; i < sp.GetInt("KeysAmount", -1); i++)
             //{
@@ -165,6 +153,7 @@ namespace App1
         private void BtnToListView_Click(object sender, EventArgs e)
         {
             Intent intent = new Intent(this, typeof(StockViewActivity));
+            intent.PutExtra("OfflineMode", offlineMode);
             StartActivity(intent);
         }
 
@@ -177,6 +166,7 @@ namespace App1
         {
             //Intent intent = new Intent(this, typeof(ChartActivity));
             Intent intent = new Intent(this, typeof(SearchActivity));
+            intent.PutExtra("OfflineMode", offlineMode);
             StartActivity(intent);
 
         }
