@@ -67,8 +67,9 @@
     <Compile Include="Algorithm\MA_View.cs" />
     <Compile Include="Algorithm\MovingAverage_Graph.cs" />
     <Compile Include="Algorithm_Test_Activity.cs" />
-    <Compile Include="General Classes\API_Key.cs" />
-    <Compile Include="General Classes\Manager_API_Keys.cs" />
+    <Compile Include="API_KEYS\API_Key.cs" />
+    <Compile Include="API_KEYS\Manager_API_Keys.cs" />
+    <Compile Include="API_KEYS\ResetKeys.cs" />
     <Compile Include="General Classes\MA_Point.cs" />
     <Compile Include="General Classes\MySquare.cs" />
     <Compile Include="General Classes\TextBlock.cs" />

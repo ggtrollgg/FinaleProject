@@ -17,7 +17,8 @@ namespace App1
     {
 
         //Context context;
-        Algorithm_Test_Activity context;
+        ChartActivity context_activity;
+        Context context;
 
         public List<DataPoint> original_Graph = new List<DataPoint>(); // the original graph
         public List<MovingAverage_Graph> movingAverage_Graph = new List<MovingAverage_Graph>(); // list of all moving averages -> list of graphs 
@@ -46,9 +47,28 @@ namespace App1
 
         public MATL_Algorithm(List<DataPoint> points,int maxorder, int futerPoint ,Context context)
         {
-            this.context = (Algorithm_Test_Activity)context;
+            bool succsuss = true;
+            
+            try
+            {
+                //((ChartActivity)context).Add_progress_ToBar("created Moving averages  graphs");
+                //context_activity.Add_progress_ToBar("created Moving averages  graphs");
+                this.context_activity = (ChartActivity)context;
+            }
+            catch
+            {
+                succsuss = false;
+            }
+            
+            if(succsuss == false)
+            {
+                Console.WriteLine("must put a chart activity context in the MATL algorithm builder");
+                return;
+            }
+            this.context_activity = (ChartActivity)context;
+
             //currentDegree = 1;
-            original_Graph= points;
+            original_Graph = points;
             maxOrder = maxorder;
             FuterPoint = futerPoint;
             
@@ -90,7 +110,7 @@ namespace App1
             
             Create_MA_Graphs();
             //(Algorithm_Test_Activity)
-            context.Add_progress_ToBar("created Moving averages  graphs");
+            context_activity.Add_progress_ToBar("created Moving averages  graphs");
             Thread.Sleep(1000);
 
             if (!Create_Average_Of_Graphs())//creates average of all moving averages graphs including the original graph
@@ -98,15 +118,15 @@ namespace App1
                 Console.WriteLine("something went wrong with 'create_Average_Of_graphs' ");
                 return;
             }
-            context.Add_progress_ToBar("created Average of Moving average graphs");
+            context_activity.Add_progress_ToBar("created Average of Moving average graphs");
             Thread.Sleep(1000);
 
             Create_TrendLine();
-            context.Add_progress_ToBar("created TrendLine");
+            context_activity.Add_progress_ToBar("created TrendLine");
             Thread.Sleep(1000);
 
             CalculateVariation();
-            context.Add_progress_ToBar("calculated variation");
+            context_activity.Add_progress_ToBar("calculated variation");
             Thread.Sleep(1000);
 
             CalculatePrediction();

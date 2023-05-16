@@ -16,6 +16,9 @@ using Android.Content;
 using App1.General_Classes;
 using Android.Gms.Common.Api.Internal;
 using static Android.Provider.CallLog;
+using static System.Net.Mime.MediaTypeNames;
+using static Xamarin.Essentials.Platform;
+using Intent = Android.Content.Intent;
 
 namespace App1
 {
@@ -26,11 +29,11 @@ namespace App1
         public static ISharedPreferences sp;
         public static Manager_API_Keys Manager_API_Keys;
         Button btnstart,btnToListView,btnExit,btnTest;
-        Intent intent2;
+        Android.Content.Intent intent2;
         //
+        PendingIntent pendingIntent;
 
-        
-        
+
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -59,9 +62,60 @@ namespace App1
             //0a0b32a8d57dc7a4d38458de98803860  //ggtroll 35
             //8bdedb14d7674def460cb3a84f1fd429 //ggtroll 36
             //561897c32bf107b87c107244081b759f //ggtroll 37
-            Console.WriteLine("Math.Round(0.5) is: " + Math.Round(0.5));
-            Console.WriteLine("Math.Round(7/2.0) is: " + (int)Math.Round(7 / 2.0));
-            Console.WriteLine("Math.Round(9/2.0) is: " + (int)Math.Round(9/2.0));
+
+            AlarmManager alarmManager = (AlarmManager)GetSystemService(AlarmService);
+            Console.WriteLine(" ");
+            Console.WriteLine("  ");
+            Console.WriteLine("   ");
+            Console.WriteLine("     ");
+            Console.WriteLine("      ");
+            Console.WriteLine("       ");
+            Console.WriteLine("        ");
+
+
+            Console.WriteLine("alarmManageris null?  " + (alarmManager == null));
+            if (alarmManager.NextAlarmClock != null)
+                Console.WriteLine("netxt allarm clock is:   " + alarmManager.NextAlarmClock);
+
+            if (alarmManager.NextAlarmClock == null )
+            {
+                TimeSpan UntillMidNight = DateTime.MaxValue.TimeOfDay - DateTime.Now.TimeOfDay;
+                //TimeSpan UntillMidNight = DateTime.Now.TimeOfDay - DateTime.Now.TimeOfDay;
+                int UntillMidNight_Mili = (int)(UntillMidNight.TotalMilliseconds);
+
+                Console.WriteLine("UntillMidNight_Mili: " + UntillMidNight_Mili + " UntillMidNight: " + UntillMidNight);
+                Console.WriteLine("DateTime.MaxValue.TimeOfDay: " + DateTime.MaxValue.TimeOfDay + " DateTime.Now.TimeOfDay: " + DateTime.Now.TimeOfDay);
+                Console.WriteLine("DateTime.MaxValue.TimeOfDay - DateTime.Now.TimeOfDay: " + (DateTime.MaxValue.TimeOfDay - DateTime.Now.TimeOfDay) + " UntillMidNight: " + UntillMidNight);
+
+                //UntillMidNight_Mili = 5000;
+
+                Intent intent = new Intent(this, typeof(ResetKeys));
+                pendingIntent = null;
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.S)
+                {
+                    pendingIntent = PendingIntent.GetBroadcast
+                           (this, 1, intent, PendingIntentFlags.Mutable);
+                }
+                else
+                {
+                    pendingIntent = PendingIntent.GetBroadcast
+                           (this, 1, intent, PendingIntentFlags.OneShot);//PendingIntent.FLAG_ONE_SHOT);
+                }
+
+                //pendingIntent = PendingIntent.GetBroadcast(this, 1, intent, 0);
+
+                //alarmManager.SetExactAndAllowWhileIdle(AlarmType.ElapsedRealtimeWakeup, SystemClock.ElapsedRealtime() + UntillMidNight_Mili, pendingIntent);
+                alarmManager.SetExactAndAllowWhileIdle(AlarmType.ElapsedRealtimeWakeup, SystemClock.ElapsedRealtime() + 60000, pendingIntent);
+            }
+
+            Console.WriteLine(" ");
+            Console.WriteLine("  ");
+            Console.WriteLine("   ");
+            Console.WriteLine("     ");
+            Console.WriteLine("      ");
+            Console.WriteLine("       ");
+            Console.WriteLine("        ");
+
 
             Console.WriteLine();
             if (intent2 != null)
@@ -73,6 +127,7 @@ namespace App1
             StartService(intent2);
 
 
+           
         }
 
         private void BtnTest_Click(object sender, EventArgs e)

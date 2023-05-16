@@ -43,21 +43,18 @@ namespace App1
         TextView TVProgress, TVPrediction;
         CheckBox CBdoubleAver, CBdrawProcess;
         EditText ETdegree, ETMinOrder, ETfuterPoint;
-
-
         MyHandler hand;
         ProgressBarHandler Hand_Progress;
         Handler handler;
         Message m = new Message();
-
         Dialog d;
         MATL_Algorithm MATLAlgo;
-
         string timeleap = "";
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+
             hand = new MyHandler(this);
             Hand_Progress = new ProgressBarHandler(this);
             context = this;
