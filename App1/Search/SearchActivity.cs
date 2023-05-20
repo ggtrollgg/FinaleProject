@@ -40,14 +40,11 @@ namespace App1
         Dialog d;
         LinearLayout l1;
         Class_LineGraph MiniGraph;
-
-        MyHandler handler;
         string lastSearch = "TEST";
         int LongClick_pos;
 
         bool running = false;
         Context content;
-        Thread Thread_CheckChange;
 
         bool offlineMode = false;
 

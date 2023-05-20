@@ -51,8 +51,6 @@ namespace App1
             
             try
             {
-                //((ChartActivity)context).Add_progress_ToBar("created Moving averages  graphs");
-                //context_activity.Add_progress_ToBar("created Moving averages  graphs");
                 this.context_activity = (ChartActivity)context;
             }
             catch
@@ -66,8 +64,6 @@ namespace App1
                 return;
             }
             this.context_activity = (ChartActivity)context;
-
-            //currentDegree = 1;
             original_Graph = points;
             maxOrder = maxorder;
             FuterPoint = futerPoint;
@@ -100,16 +96,12 @@ namespace App1
             
             subMainThread = new Thread(OverViewProccess);
             subMainThread.Start();
-           
-
-            //Continue_Algorithm_Process?.Invoke();
         }
 
         private void OverViewProccess()
         {
             
             Create_MA_Graphs();
-            //(Algorithm_Test_Activity)
             context_activity.Add_progress_ToBar("created Moving averages  graphs");
             Thread.Sleep(1000);
 
@@ -229,24 +221,6 @@ namespace App1
             
         }
 
-        private void Print_info_of_graphs()
-        {
-            Console.WriteLine("Average of graphs count is: " + Average_Of_Graphs.Count);
-            Console.WriteLine("his last point place is: " + Average_Of_Graphs[Average_Of_Graphs.Count - 1].place);
-            Console.WriteLine("____");
-
-            Console.WriteLine("movingAverage_Graph.Count is: " + movingAverage_Graph.Count);
-            Console.WriteLine("___");
-
-
-            for (int i = 0; i < movingAverage_Graph.Count; i++)
-            {
-                Console.WriteLine("movingAverage_Graph[" + i + "] count is: " + movingAverage_Graph[i].MA_Graph.Count);
-                Console.WriteLine("his Order is: " + movingAverage_Graph[i].order);
-                Console.WriteLine("his first point place is: " + movingAverage_Graph[i].MA_Graph[0].place);
-                Console.WriteLine("his last point place is: " + movingAverage_Graph[i].MA_Graph[movingAverage_Graph[i].MA_Graph.Count - 1].place);
-                Console.WriteLine("____");
-            }
-        }
+       
     }
 }

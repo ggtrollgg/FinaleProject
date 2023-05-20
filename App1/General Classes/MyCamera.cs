@@ -26,10 +26,7 @@ namespace App1
             CameraOffSetX = cameraOffSetX;
             CameraOffSetY = cameraOffSetY;
         }
-        public MyCamera()
-        {
 
-        }
 
 
     }

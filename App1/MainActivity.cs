@@ -30,7 +30,6 @@ namespace App1
         public static Manager_API_Keys Manager_API_Keys;
         Button btnstart,btnToListView,btnExit,btnTest;
         Android.Content.Intent intent2;
-        //
         PendingIntent pendingIntent;
         bool offlineMode = false;
 
@@ -96,12 +95,6 @@ namespace App1
                 //TimeSpan UntillMidNight = DateTime.Now.TimeOfDay - DateTime.Now.TimeOfDay;
                 int UntillMidNight_Mili = (int)(UntillMidNight.TotalMilliseconds);
 
-                Console.WriteLine("UntillMidNight_Mili: " + UntillMidNight_Mili + " UntillMidNight: " + UntillMidNight);
-                Console.WriteLine("DateTime.MaxValue.TimeOfDay: " + DateTime.MaxValue.TimeOfDay + " DateTime.Now.TimeOfDay: " + DateTime.Now.TimeOfDay);
-                Console.WriteLine("DateTime.MaxValue.TimeOfDay - DateTime.Now.TimeOfDay: " + (DateTime.MaxValue.TimeOfDay - DateTime.Now.TimeOfDay) + " UntillMidNight: " + UntillMidNight);
-
-                //UntillMidNight_Mili = 5000;
-
                 Intent intent = new Intent(this, typeof(ResetKeys));
                 pendingIntent = null;
                 if (Build.VERSION.SdkInt >= BuildVersionCodes.S)
@@ -115,10 +108,7 @@ namespace App1
                            (this, 1, intent, PendingIntentFlags.OneShot);//PendingIntent.FLAG_ONE_SHOT);
                 }
 
-                //pendingIntent = PendingIntent.GetBroadcast(this, 1, intent, 0);
-
                 alarmManager.SetExactAndAllowWhileIdle(AlarmType.ElapsedRealtimeWakeup, SystemClock.ElapsedRealtime() + UntillMidNight_Mili, pendingIntent);
-                //alarmManager.SetExactAndAllowWhileIdle(AlarmType.ElapsedRealtimeWakeup, SystemClock.ElapsedRealtime() + 1000, pendingIntent);
             }
         }
 
@@ -127,9 +117,6 @@ namespace App1
             
             offlineMode = !offlineMode;
             Toast.MakeText(this, "offlineMode is: " + offlineMode, ToastLength.Short).Show();
-
-
-
         }
 
 

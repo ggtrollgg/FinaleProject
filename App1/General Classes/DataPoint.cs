@@ -22,25 +22,7 @@ namespace App1
 
         //
        
-        public DataPoint()
-        {
 
-        }
-        public DataPoint(float heigh, float low, String date)
-        {
-            this.heigh = heigh;
-            this.low = low;
-            this.date = date;
-
-        }
-        public DataPoint(float heigh, float low, float close, String date)
-        {
-            this.heigh = heigh;
-            this.low = low;
-            this.close = close;
-            this.date = date;
-
-        }
         public DataPoint(float heigh, float low, float close,float open, String date)
         {
             this.heigh = heigh;

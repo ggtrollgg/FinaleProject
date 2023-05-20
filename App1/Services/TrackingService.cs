@@ -29,16 +29,11 @@ namespace App1
         bool running = false;
         int TimeBetweenChecks = 1; // seconds
         int numberOfCallsIcanMake = 250; // 250 is the number of calls i can make with one account in one day
-        //MyHandler myhandler; //interacting with the gui/main thread
         public FirebaseFirestore db; //database
-        PendingIntent pendingIntent; //peding intent for the alarm manager
-        public static List<StockData> Datalist = new List<StockData>();
-        List<Integer> TrackPriceSurDes = new List<Integer>();
-        int NotificationCount = 0;
+        public List<StockData> Datalist = new List<StockData>();
         string NOTIFICATION_CHANNEL_ID = "StockPriceAlarm";
         int NOTIFICATION_ID = 1;
         bool CallInProcess = false;
-        Intent intent2;
 
         public override IBinder OnBind(Intent intent)
         {

@@ -66,7 +66,6 @@
     <Compile Include="Algorithm\MATL_Algorithm.cs" />
     <Compile Include="Algorithm\MA_View.cs" />
     <Compile Include="Algorithm\MovingAverage_Graph.cs" />
-    <Compile Include="Algorithm_Test_Activity.cs" />
     <Compile Include="API_KEYS\API_Key.cs" />
     <Compile Include="API_KEYS\Manager_API_Keys.cs" />
     <Compile Include="API_KEYS\ResetKeys.cs" />
@@ -88,12 +87,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Search\SearchActivity.cs" />
     <Compile Include="Search\SearchStockAdapter.cs" />
-    <Compile Include="Search\Search_Check.cs" />
     <Compile Include="Services\MyHandler.cs" />
     <Compile Include="Services\ProgressBarHandler.cs" />
     <Compile Include="Services\TrackingService.cs" />
     <Compile Include="StockVIew\StockAdapter.cs" />
-    <Compile Include="Graph\StockChart.cs" />
     <Compile Include="General Classes\StockData.cs" />
     <Compile Include="StockVIew\StockViewActivity.cs" />
   </ItemGroup>
@@ -198,11 +195,6 @@
     <AndroidResource Include="Resources\drawable\Icon_Track.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\Testing_DataBase_Layout.xml">
-      <SubType>Designer</SubType>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\drawable\Icon_Favorite_colored.png" />
   </ItemGroup>
   <ItemGroup>
@@ -224,11 +216,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\stocks_icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\Test_serviceANDnotification_layout.xml">
-      <SubType>Designer</SubType>
-    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Custom_PopUp_Algorithm.xml">

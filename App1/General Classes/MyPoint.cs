@@ -15,10 +15,7 @@ namespace App1
     {
         public float x;
         public float y;
-        public MyPoint()
-        {
 
-        }
         
         public MyPoint(float x, float y)
         {

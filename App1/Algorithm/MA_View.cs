@@ -32,7 +32,7 @@ namespace App1.Algorithm
         bool DoOnce = true;
         bool running = true;
         bool started = true;
-        float cilling = 100;
+
         float floor;
         float right_wall;
         float highest = -1;
@@ -62,7 +62,7 @@ namespace App1.Algorithm
 
         public MA_View(Android.Content.Context context, List<MovingAverage_Graph> graphs) : base(context)
         {
-            //Console.WriteLine("canvas created");
+
             this.context = context;
             Graphs = graphs;
             Do_OnCreate();
@@ -70,7 +70,7 @@ namespace App1.Algorithm
 
         protected override void OnDraw(Canvas canvas1)
         { 
-            //started= true;
+
             canvas = canvas1;
             if (DoOnce) 
             {
@@ -80,7 +80,6 @@ namespace App1.Algorithm
                 FindLowHigh();
                 CreateALLGraphs();
 
-                //canvas.DrawCircle(0,0,100,black);
                 DoOnce = false;
             }
 
@@ -90,15 +89,11 @@ namespace App1.Algorithm
             }
             Draw_Graphs();
             Invalidate();
-            //started= false;
+
         }
 
         private void Do_OnCreate()
         {
-            //random.SetARGB(1,0,0,0);
-            //random.Color = Color.Argb(255,0,0,0);
-            //random.StrokeWidth = 6;
-            //random.Color = 255255255;
             total_points = Algorithm.original_Graph.Count;
             black = new Paint();
             black.Color = Color.Black;
@@ -169,12 +164,6 @@ namespace App1.Algorithm
         private void FindLowHigh()
         {
             
-            //foreach (MA_Point i in Graphs[0].MA_Graph) // will streach so the graph fit the first graph in the order
-            //{
-            //    if (i.price > highest) highest = i.price;
-            //    if (i.price < lowest || lowest == -1) lowest = i.price;
-            //}
-
             foreach (DataPoint i in Algorithm.original_Graph) // will streach so the graph fit the original graph
             {
                 if (i.close > highest) highest = i.close;
@@ -263,10 +252,7 @@ namespace App1.Algorithm
             
             canvas.DrawLine(trendLine[0].x, trendLine[0].y, trendLine[1].x, trendLine[1].y, green); //draw trendline
             canvas.DrawCircle(prediction.x, prediction.y, 8, red);
-            //canvas.Save();
-            //canvas.Save();
             started = false;
-            //Invalidate();
         }
     }
 }
