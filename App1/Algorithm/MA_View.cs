@@ -48,7 +48,6 @@ namespace App1.Algorithm
         Paint black_graph;
         Paint red;
         Paint green;
-        //Paint random;
         List<Paint> randoms= new List<Paint>();
 
 
@@ -98,20 +97,15 @@ namespace App1.Algorithm
             black = new Paint();
             black.Color = Color.Black;
             black.StrokeWidth = 5;
-
             black_graph = new Paint();
             black_graph.Color = Color.Argb(155,0,0,0);
             black_graph.StrokeWidth = 6;
-
             red = new Paint();
             red.Color = Color.Red;
             red.StrokeWidth = 6;
-
             green = new Paint();
             green.Color = Color.DarkGreen;
             green.StrokeWidth = 6;
-
-
             Random ram = new Random();
             for (int i = 0; i < Graphs.Count; i++)
             {
@@ -119,13 +113,9 @@ namespace App1.Algorithm
                 random.Color = Color.Argb(255, ram.Next(150)+50, ram.Next(150)+50, ram.Next(150) + 50);
                 random.StrokeWidth = 8;
                 randoms.Add(random);
+
             }
-
-
-
-
             Thread frameRate = new Thread(FrameRate_Invalidate);
-            //frameRate.Start();
         }
 
         private void FrameRate_Invalidate()
@@ -135,7 +125,6 @@ namespace App1.Algorithm
                 if (!started)
                 {
                     Invalidate();
-                   // Console.WriteLine("Invalidated");
                 }
                     
                 Thread.Sleep(500);
@@ -157,7 +146,6 @@ namespace App1.Algorithm
             {
                 currentTime = DateTime.Now;
                 index_action++;
-                //Console.WriteLine("increast index_action to: " + index_action);
             }
         }
 
@@ -175,12 +163,9 @@ namespace App1.Algorithm
 
         private void CreateALLGraphs()
         {
-            //int total_points = Graphs[0].MA_Graph.Count;
-            
 
             float place = 0;
             float price = 0;
-
             create_toScale_trendLine();
             create_toScale_OriginalGraph();
             create_toScale_Prediction();
@@ -232,7 +217,6 @@ namespace App1.Algorithm
         private void Draw_Graphs()
         {
             int smaller_limit = Math.Min(index_action, Graphs.Count);
-            // Console.WriteLine("drawing graph");
             for (int i = 0; i < total_points - 1; i++) //drawing original/real stock price
             {
                 canvas.DrawLine(OriginalGraph[i].x, OriginalGraph[i].y, OriginalGraph[i + 1].x, OriginalGraph[i + 1].y, black_graph);
@@ -240,7 +224,6 @@ namespace App1.Algorithm
 
             for (int graph = 0; graph < smaller_limit; graph++) 
             {
-                //need to generete a random color
                 for (int i = 0; i < Graphs[graph].MA_Graph.Count-1; i++)
                 {
                     canvas.DrawLine(Graphs_on_Canvas[graph][i].x, Graphs_on_Canvas[graph][i].y, Graphs_on_Canvas[graph][i+1].x, Graphs_on_Canvas[graph][i+1].y, randoms[graph]);

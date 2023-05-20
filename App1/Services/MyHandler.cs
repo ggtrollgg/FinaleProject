@@ -29,12 +29,10 @@ namespace App1
         {
             this.context = context;
             this.LL = LL;
-            //this.graph_view = graph_view;
         }
         
         public override void HandleMessage(Message msg)
         {
-            //Toast.MakeText(context, "" + msg.Arg1, ToastLength.Short).Show();
             if(graph_view== null)
             {
                 if (LL != null)

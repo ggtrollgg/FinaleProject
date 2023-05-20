@@ -34,7 +34,6 @@ namespace App1
         string NOTIFICATION_CHANNEL_ID = "StockPriceAlarm";
         int NOTIFICATION_ID = 1;
         bool CallInProcess = false;
-
         public override IBinder OnBind(Intent intent)
         {
             return null;
@@ -44,14 +43,8 @@ namespace App1
         public override void OnCreate()
         {
             base.OnCreate();
-            //myhandler = new MyHandler(this);
             TimeBetweenChecks = 60 * 60 * 24; //seconds in the day
             TimeBetweenChecks = TimeBetweenChecks / numberOfCallsIcanMake; // (seconds in the day / number of calls i can make in a day) = time gap between each call
-
-            Console.WriteLine("------------------------------------------------------------------------------------------------------------------");
-            Console.WriteLine("service created");
-            Console.WriteLine("seconds between checks: " + TimeBetweenChecks);
-            Console.WriteLine("------------------------------------------------------------------------------------------------------------------");
             db = GetDataBase();
 
         }
@@ -59,15 +52,9 @@ namespace App1
         public override StartCommandResult OnStartCommand(Intent intent, [GeneratedEnum] StartCommandFlags flags, int startId)
         {
             Toast.MakeText(this, "Service started", ToastLength.Short).Show();
-            Console.WriteLine("------------------------------------------------------------------------------------------------------------------");
-            Console.WriteLine("service started");
-            Console.WriteLine("------------------------------------------------------------------------------------------------------------------");
-
             System.Threading.Thread t = new System.Threading.Thread(Run);
             t.Start();
-
             return base.OnStartCommand(intent, flags, startId);
-
         }
         private void Run()
         {
@@ -83,7 +70,6 @@ namespace App1
 
                     LoadItems();
                 }
-                Console.WriteLine("time between checks is: " + TimeBetweenChecks + " seconds");
                 System.Threading.Thread.Sleep(TimeBetweenChecks * 1000);
             }
 
@@ -96,7 +82,6 @@ namespace App1
             running = false;//stop condition
             var notificationManager = (NotificationManager)GetSystemService(NotificationService);
             notificationManager.CancelAll();
-
             if (db != null)
             {
                 if (db.App != null)
@@ -105,7 +90,6 @@ namespace App1
                 db = null;
             }
             Toast.MakeText(this, "Service stopped ", ToastLength.Short).Show();
-
         }
 
 
@@ -119,8 +103,6 @@ namespace App1
             .SetApiKey("AIzaSyCjiFrMsBwOFvqUZRdohfIiqMsJC5QG_kc")
             .SetStorageBucket("stock-data-base-finalproject.appspot.com")
             .Build();
-
-
             try
             {
                 var app = FirebaseApp.InitializeApp(this, options);
@@ -141,8 +123,6 @@ namespace App1
             {
                 Datalist.Clear();
             }
-
-
             // generate a query (request) from the database
             Query q = db.Collection("Saved Stocks").WhereNotEqualTo("TrackingPrices", "");
             q.Get().AddOnSuccessListener(this);
@@ -152,7 +132,6 @@ namespace App1
 
         public async void OnSuccess(Java.Lang.Object result)
         {
-            //IsDataCountFull = false;
             Console.WriteLine("OnSuccess");
             var snapshot = (QuerySnapshot)result;
             StockData data;
@@ -204,14 +183,8 @@ namespace App1
                 {
                     symbolss = symbolss + ',' + symbol;
                 }
-
-
                 string link = "https://financialmodelingprep.com/api/v3/quote/";
                 link = link.Insert(link.Length, symbolss);
-                //link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
-                //link = link.Insert(link.Length, "?apikey=8bdedb14d7674def460cb3a84f1fd429");
-                //8bdedb14d7674def460cb3a84f1fd429
-
                 API_Key k = MainActivity.Manager_API_Keys.GetBestKey();
                 if (k != null && k.Key != "" && k.GetCallsRemaining() > 0)
                 {
@@ -222,20 +195,14 @@ namespace App1
                     Console.WriteLine("there was a problem with the keys at stockview activity ");
                     return;
                 }
-
-
-                Console.WriteLine("creating a get request to financialmodeling ");
-
                 try
                 {
                     using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
                     {
                         Console.WriteLine("sending request to financialmodeling ");
                         MainActivity.Manager_API_Keys.UseKey(k.Key);
-
                         var response2 = await httpClient2.SendAsync(request);
                         response2.EnsureSuccessStatusCode();
-
                         string responseBody = await response2.Content.ReadAsStringAsync();
                     }
                     
@@ -247,8 +214,6 @@ namespace App1
                     this.Dispose();
                     return;
                 }
-
-
                 using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
                 {
                     Console.WriteLine("sending request to financialmodeling ");
@@ -313,8 +278,6 @@ namespace App1
                     }
                 }
             }
-
-            //Toast.MakeText(this, "data list count is: " + Datalist.Count, ToastLength.Short).Show();
             CallInProcess = false;
             Dispose(true);
             return;

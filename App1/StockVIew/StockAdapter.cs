@@ -23,7 +23,7 @@ namespace App1
         Android.Content.Context context;
         List<StockData> objects;
 
-        public StockAdapter(Context context, System.Collections.Generic.List<StockData> objects)
+        public StockAdapter(Context context,List<StockData> objects)
         {
             this.context = context;
             this.objects = objects;
@@ -39,8 +39,8 @@ namespace App1
 
         public override View GetView(int position, View convertView, ViewGroup parent)
         {
-            Android.Views.LayoutInflater layoutInflater = ((StockViewActivity)context).LayoutInflater;
-            Android.Views.View view = SavedLayout(position, convertView, parent);
+            LayoutInflater layoutInflater = ((StockViewActivity)context).LayoutInflater;
+            View view = SavedLayout(position, convertView, parent);
             StockData Temp = objects[position];
 
             if (Temp!=null && Temp.TrackingPrices!=null )//&& Temp.SoundName != null && Temp.SoundName != "")
@@ -53,35 +53,21 @@ namespace App1
 
         private View TrackingLayout(int position, View convertView, ViewGroup parent)
         {
-
-            Android.Views.LayoutInflater layoutInflater = ((StockViewActivity)context).LayoutInflater;
+            LayoutInflater layoutInflater = ((StockViewActivity)context).LayoutInflater;
             TextView tvSymbol, tvTrackingPrices, tvOpen, tvPrice;
 
-            Android.Views.View view = layoutInflater.Inflate(Resource.Layout.ListView_Track_Layout, parent, false);
+            View view = layoutInflater.Inflate(Resource.Layout.ListView_Track_Layout, parent, false);
             tvSymbol = view.FindViewById<TextView>(Resource.Id.tvSymbol);
             tvOpen = view.FindViewById<TextView>(Resource.Id.tvOpen);
             tvPrice = view.FindViewById<TextView>(Resource.Id.tvPrice);
-
-            //tvAlarmSound = view.FindViewById<TextView>(Resource.Id.tvAlarmSound);
             tvTrackingPrices = view.FindViewById<TextView>(Resource.Id.tvTrackingPrices);
-            
-
-
-
             StockData Temp = objects[position];
-
-
             if (Temp != null)
             {
-                //Task t = testAsync(Temp);
-                //t.Wait();
-
                 tvSymbol.Text = Temp.symbol;
                 tvOpen.Text = "Open " + Temp.open;
                 tvPrice.Text = "Current price: " + Temp.price;
                 tvTrackingPrices.Text = "";
-
-
                 if (Temp.open > Temp.price)
                 {
                     tvPrice.SetTextColor(Android.Graphics.Color.ParseColor("#FF0000")); //red
@@ -105,9 +91,6 @@ namespace App1
                     text = text.Remove(index);
                     tvTrackingPrices.Text = text;
                 }
-                
-
-                //tvAlarmSound.Text = "" + Temp.SoundName;
             }
             return view;
         }
@@ -116,17 +99,11 @@ namespace App1
         {
             Android.Views.LayoutInflater layoutInflater = ((StockViewActivity)context).LayoutInflater;
             Android.Views.View view = layoutInflater.Inflate(Resource.Layout.ListView_Saved_Layout, parent, false);
-
             TextView tvSymbol, tvOpen, tvPrice;
             tvSymbol = view.FindViewById<TextView>(Resource.Id.tvSymbol);
-            //tvOpen = view.FindViewById<TextView>(Resource.Id.tvOpen);
             tvOpen = view.FindViewById<TextView> (Resource.Id.tvOpen);
             tvPrice = view.FindViewById<TextView>(Resource.Id.tvPrice);
-
-
             StockData Temp = objects[position];
-
-            
             if (Temp.open > Temp.price)
             {
                 tvPrice.SetTextColor(Android.Graphics.Color.ParseColor("#FF0000")); //red

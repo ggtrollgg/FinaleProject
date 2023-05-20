@@ -207,14 +207,6 @@ namespace App1
             
         }
 
-        private void DeleteItem_fromDataBase(int index)
-        {
-            DocumentReference doc = db.Collection("Saved Stocks").Document(Docs_In_DataBase[index].Id);
-            doc.Delete();
-            Docs_In_DataBase.RemoveAt(index);
-        }
-       
-
 
         private void LoadItems()
         {
@@ -289,20 +281,15 @@ namespace App1
                         data = new StockData((float)doc.Get("Price"), (float)doc.Get("Open"), (string)doc.Get("symbol"), (string)doc.Get("SoundFile"), trackingprices);
                         Datalist.Add(data);
                         Docs_In_DataBase.Add(doc);
-                       // _ = GetInfoFromWeb(data.symbol, i);
                     }
                     else
                     {
                         data = new StockData((float)doc.Get("Price"), (float)doc.Get("Open"), (string)doc.Get("symbol"), (string)doc.Get("SoundFile"));
                         Datalist.Add(data);
                         Docs_In_DataBase.Add(doc);
-                        //_ = GetInfoFromWeb(data.symbol, i);
                     }
-
                     i++;
                 }
-
-
             }
 
             if (queryType == "Tracking")
@@ -338,22 +325,16 @@ namespace App1
                         data = new StockData((float)doc.Get("Price"), (float)doc.Get("Open"), (string)doc.Get("symbol"), (string)doc.Get("SoundFile"), trackingprices);
                         Datalist.Add(data);
                         Docs_In_DataBase.Add(doc);
-                        //_ = GetInfoFromWeb(data.symbol, i);
                     }
                     i++;
                 }
-
             }
-
-
             List<string> symbols= new List<string>();
             foreach(var stock in Datalist)
             {
                 symbols.Add(stock.symbol);
             }
-
             await Bulk_GetInfoFromWeb(symbols);
-
             Toast.MakeText(this, "got all data from requests", ToastLength.Short).Show();
             IsDataCountFull = true;
             
@@ -368,48 +349,6 @@ namespace App1
             }
 
             return true;
-        }
-
-        //loading checker
-        private void TimeOut()
-        {
-            System.Threading.Thread.Sleep(3000);
-            Console.WriteLine("I am Function");
-        }
-
-        private void Checkifstillloading()
-        {
-            bool flag = true;
-            int counter = 0;
-            while(flag)
-            {
-                System.Threading.Thread.Sleep(10000);
-                if (IsDataCountFull && Temp_Datalist.Count == Datalist.Count)
-                {
-                    //Toast.MakeText(this, "something went wrong", ToastLength.Short).Show();
-                    //Console.WriteLine("something went wrong");
-                    flag = false;
-
-                }
-                else
-                {
-                    if (counter == 12)
-                    {
-                        Console.WriteLine("the code should not be stuck in loading for 2 min L :(");
-                        //Toast.MakeText(this, "loading... for 2 min", ToastLength.Short).Show();
-                        flag = false;
-                    }
-                    else
-                    {
-                        Console.WriteLine("loading...");
-                        //Toast.MakeText(this, "loading...", ToastLength.Short).Show();
-                    }
-                     
-
-                }
-                counter++;
-            }
-            return;
         }
 
 

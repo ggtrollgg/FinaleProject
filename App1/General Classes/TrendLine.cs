@@ -40,10 +40,6 @@ namespace App1.General_Classes
         {
             for(int i = 0; i < graph.Count; i++ ) 
             {
-                //each point is 1 unit appart from each other
-                //so when i want to draw the graph i could just calculate the distance between point1 and point2 on the graph
-                //the graph in MA_view -> that was calculated to fit the entire graph on the screen at once
-                // and put multuplay the x value with this distance (in order to put the point in prespective of the graph)
                 Points.Add(new MyPoint(i, graph[i].price)); 
             }
         }

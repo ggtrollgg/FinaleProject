@@ -26,11 +26,11 @@ namespace App1
         List<TextBlock> TextBlocks_Price = new List<TextBlock>();
         float squars_Width = 2;
         float distance = 2;
+        public bool Zoom = false;
+        public bool Move = false;
         float lowest = -1, highest = 0;
         bool doOnce = true;
         float textprice_margin = 0;
-        public bool Zoom = false;
-        public bool Move = false;
         Paint p;
         Paint p1 = new Paint();
         Paint orange;
@@ -61,7 +61,7 @@ namespace App1
             textPaint_Price.StrokeWidth = 2;
             textPaint_Price.TextScaleX = (float)2.0;
             textPaint_Price.TextSize = 30;
-            //Text  Paint_Y.TextAlign = Paint.Align.Center;
+
 
             orange = new Paint();
             orange.Color = Color.Orange;
@@ -174,7 +174,7 @@ namespace App1
 
                 float x_point_0 = (0 * (price_text_start_x)) / ((dataPoints.Count - 1));
                 float x_point_1 = (1 * (price_text_start_x)) / ((dataPoints.Count - 1));
-                squars_Width = (float)0.9*x_point_1 - x_point_0; //temporery
+                squars_Width = (float)0.9*x_point_1 - x_point_0; 
 
                 for (int i = 0; i < dataPoints.Count; i++)
                 {
@@ -270,6 +270,7 @@ namespace App1
             }
 
         }
+
         private void DrawYexis()
         {
             String TheString;
@@ -336,24 +337,7 @@ namespace App1
         {
 
             canvas.DrawRect(price_text_start_x, 0, canvas.Width, canvas.Height, background);
-            int Anchor_place = 0;
-            int place = 0;
 
-
-            //pre-theory: 
-            //
-            //1) find lowest on screen point
-            //2) find heighst on screnn point 
-            //3)take their values
-            //4)the values between the two points on the y acssis shold be the range of prices showen in the y=exies
-
-            //thoery 2:
-            //the "anchor"/absolot value is the right most point on screen
-            // than showes the neerest price thats is 1 height of text from him (on the y exies)
-            //than calculate the dividance between lowest and heighest point on screen
-            //to calculate the value of 1 height text in reffrence to the value of canvas height in the current zoom(value of canvas height =  dividance between lowest and heighest point on screen)
-
-            //practice 
             if (v != 0 && dataPoints.Count != 0) // change in y exies
             {
                 int Leftest_pointI = Calculate_Original_Point_I(0);//the left most visibal point on the screen
@@ -454,8 +438,6 @@ namespace App1
 
                 canvas.DrawCircle(ChangedSquares[Rightest_pointI].Center.x, ChangedSquares[Rightest_pointI].Center.y, 5, green);
 
-
-                
                 string the_string = "";
 
                 //generete text-price below the furthest-right point
@@ -502,10 +484,6 @@ namespace App1
             }
         }
 
-
-
-
-
         private int Calculate_Original_Point_I(float x)
         {
             double defualtPointx = (x - camera.CameraOffSetX) / zoomfactor_X;
@@ -521,7 +499,6 @@ namespace App1
             int i = (int)(i_d);
             return i;
         }
-
 
 
         private void DrawTouching()

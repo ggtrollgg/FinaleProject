@@ -18,9 +18,8 @@ namespace App1
         public float close;
         public string date;
         public float open;
-        public float price; // in case it didnt close yet
+        public float price; 
 
-        //
        
 
         public DataPoint(float heigh, float low, float close,float open, String date)

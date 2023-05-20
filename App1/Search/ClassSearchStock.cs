@@ -31,14 +31,11 @@ namespace App1
         {
             this.symbol = symbol;
             this.companyName = companyName;
-            //this.price = price;
 
         }
         public ClassSearchStock(String symbol, String companyName, float price,String StockImage)
         {
-            //this.StockImage = StockImage;
             this.symbol = symbol;
-            //this.price = price;
             this.companyName = companyName;
         }
     }

@@ -20,11 +20,7 @@ namespace App1
         public string status;
         public string prediction;
         ImageView iv;
-
         public int maxProgress_calls = 5;
-        //List<ImageView> list;
-
-
 
         [Obsolete]
         public ProgressBarHandler(Context context)
@@ -76,11 +72,6 @@ namespace App1
 
         private void Add_progress_ToBar()
         {
-            //list.Add(new ImageView(context));
-            //LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(100, 100);
-            //list[list.Count-1].LayoutParameters = layoutParams;
-            //list[list.Count - 1].SetBackgroundColor(Android.Graphics.Color.Aqua);
-            //LLProgressBar.AddView(iv);
             TVProgress.Text ="" + status;
             float screen_width = LLProgress.Width;
             screen_width -= 20 * maxProgress_calls; //20 - margin

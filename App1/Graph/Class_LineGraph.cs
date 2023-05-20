@@ -97,29 +97,6 @@ namespace App1
             g = new Paint();
             g.Color = Color.Green;
             g.StrokeWidth = 5;
-
-           // start_Refresh_Thread();
-
-
-
-        }
-
-        public void start_Refresh_Thread()
-        {
-            running = true;
-            ThreadStart MyThreadStart = new ThreadStart(RefreshInvalidate);
-            Thread t = new Thread(MyThreadStart);
-            t.Start();
-        }
-
-        private void RefreshInvalidate()
-        {
-            while (running)
-            {
-                Invalidate();
-                Thread.Sleep((int)frame_rate * 1000);
-            }
-            return;
         }
 
         public Class_LineGraph(Context context, Canvas canvas, List<DataPoint> dataPoints) : base(context,canvas,dataPoints) { }
@@ -361,25 +338,14 @@ namespace App1
             int place = 0;
 
 
-            //pre-theory: 
-            //
             //1) find lowest on screen point
             //2) find heighst on screnn point 
             //3)take their values
-            //4)the values between the two points on the y acssis shold be the range of prices showen in the y=exies
+            //4)the difference of valuse between the two points on the y axessis shold be the range of prices showen in the y=exies
+            //5) the anchor point is the rightest point on the screen
 
-            //thoery 1:
-            //the "anchor"/absolot value is the right most point on screen
-            // than showes the neerest price thats is 1 height of text from him (on the y exies)
-            // if there is no point at exectly 1 height of text from the point (upword or downword):  --- maybe uneccery 
-            //      than calculate the dividance between lowest and heighest point on screen
-            //      to calculate the value of 1 height text in reffrence to the value of canvas height in the current zoom(value of canvas height =  dividance between lowest and heighest point on screen)
 
-            //thoery 2:
-            //the "anchor"/absolot value is the right most point on screen
-            // than showes the neerest price thats is 1 height of text from him (on the y exies)
-            //than calculate the dividance between lowest and heighest point on screen
-            //to calculate the value of 1 height text in reffrence to the value of canvas height in the current zoom(value of canvas height =  dividance between lowest and heighest point on screen)
+
 
             //practice 
             if (v != 0 && values.Count!=0) // change in y exies

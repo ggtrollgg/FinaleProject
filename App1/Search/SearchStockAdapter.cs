@@ -57,10 +57,6 @@ namespace App1
             Android.Views.View view = layoutInflater.Inflate(Resource.Layout.ListView_Search_OnlyText_Layout2, parent, false);
 
             TextView tvSymbol, tvName;
-
-
-           
-
             tvSymbol = view.FindViewById<TextView>(Resource.Id.tvSymbol);
             tvName = view.FindViewById<TextView>(Resource.Id.tvName);
 
@@ -80,9 +76,6 @@ namespace App1
 
         }
 
-       
-
-
         public override int Count
         {
             get { return this.objects.Count; }
@@ -91,16 +84,5 @@ namespace App1
         {
             get { return this.objects[position]; }
         }
-
-
-
-
-
-
-
-
-
-
-       
     }
 }

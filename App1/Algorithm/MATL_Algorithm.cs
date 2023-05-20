@@ -16,7 +16,6 @@ namespace App1
     public class MATL_Algorithm
     {
 
-        //Context context;
         ChartActivity context_activity;
         Context context;
 
@@ -32,14 +31,12 @@ namespace App1
 
         //threads
         Thread subMainThread;
-        //Thread tempThred;
         List<Thread> threads = new List<Thread>();
 
         //MA order controll
         public int maxOrder = 2;
         public int currentDegree = 2;
         public int minOrder = 2;
-
 
         //Actions
         public event Action ContinueProcess;
@@ -138,7 +135,6 @@ namespace App1
                 Thread.Sleep(20); //for preformence
                 currentDegree++;
             }
-            //Looper.Prepare();
         }
         private void CalculatePrediction()
         {

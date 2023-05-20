@@ -38,7 +38,6 @@ namespace App1
         {
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
-            // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
             btnstart = FindViewById<Button>(Resource.Id.btnstart);
             btnExit = FindViewById<Button>(Resource.Id.btnExit);
@@ -53,22 +52,11 @@ namespace App1
 
 
             sp = GetSharedPreferences("KeysForFinaleProject", FileCreationMode.Private);
-            //offsp = GetSharedPreferences("OfflineMode", FileCreationMode.Private);
+            ResetKeys_Alaram_setup();
+
 
 
             Manager_API_Keys = new Manager_API_Keys();
-
-
-            //API_Keys.Add(new API_Key("0a0b32a8d57dc7a4d38458de98803860"));
-
-            //0a0b32a8d57dc7a4d38458de98803860  //ggtroll 35
-            //8bdedb14d7674def460cb3a84f1fd429 //ggtroll 36
-            //561897c32bf107b87c107244081b759f //ggtroll 37
-            ResetKeys_Alaram_setup();
-
-            
-            
-
 
             Console.WriteLine();
             if (intent2 != null)
@@ -92,7 +80,6 @@ namespace App1
             if (alarmManager.NextAlarmClock == null)
             {
                 TimeSpan UntillMidNight = DateTime.MaxValue.TimeOfDay - DateTime.Now.TimeOfDay;
-                //TimeSpan UntillMidNight = DateTime.Now.TimeOfDay - DateTime.Now.TimeOfDay;
                 int UntillMidNight_Mili = (int)(UntillMidNight.TotalMilliseconds);
 
                 Intent intent = new Intent(this, typeof(ResetKeys));
@@ -105,7 +92,7 @@ namespace App1
                 else
                 {
                     pendingIntent = PendingIntent.GetBroadcast
-                           (this, 1, intent, PendingIntentFlags.OneShot);//PendingIntent.FLAG_ONE_SHOT);
+                           (this, 1, intent, PendingIntentFlags.OneShot);
                 }
 
                 alarmManager.SetExactAndAllowWhileIdle(AlarmType.ElapsedRealtimeWakeup, SystemClock.ElapsedRealtime() + UntillMidNight_Mili, pendingIntent);

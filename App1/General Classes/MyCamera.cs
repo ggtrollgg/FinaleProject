@@ -20,7 +20,6 @@ namespace App1
         public bool Y_changed = false;
         public bool X_zoom_changed = false;
         public bool Y_zoom_changed = false;
-        //
         public MyCamera(float cameraOffSetX, float cameraOffSetY)
         {
             CameraOffSetX = cameraOffSetX;

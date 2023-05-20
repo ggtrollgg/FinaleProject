@@ -56,9 +56,6 @@ namespace App1
         string trackingprices = "";
 
 
-
-
-
         //algorithm added to activity:
         Context context;
         LinearLayout algoLL, LLProgress, LLProgressBar, LLPrediction;
@@ -83,8 +80,6 @@ namespace App1
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.ChartLayout);
-            //btnMove = FindViewById<Button>(Resource.Id.btnMove);
-            //btnZoom = FindViewById<Button>(Resource.Id.btnZoom);
 
             l1 = FindViewById<LinearLayout>(Resource.Id.LLChart);
             ibHome = FindViewById<ImageButton>(Resource.Id.ibHome);
@@ -95,16 +90,10 @@ namespace App1
 
 
             ibHome.Click += IbHome_Click;
-            ibType.Click += IbType_Click;
             ibData.Click += IbData_Click;
 
             ibSave.Click += IbSave_Click;
             ibTrack.Click += IbTrack_Click;
-
-            //btnZoom.Click += BtnZoom_Click;
-            //btnMove.Click += BtnMove_Click;
-
-            //chart = new StockChart(this);
             Symbol = Intent.GetStringExtra("symbol") ?? "";
             
 
@@ -186,22 +175,8 @@ namespace App1
         //putting the info into the class and putting the class in the linear layout
         public void StartDrawingGraphs()
         {
-
-            //float[] arrey = new float[list.Count];
-            //String[] arrey2 = new string[list.Count];
-            //for (int i = 0; i < arrey.Length; i++)
-            //{
-            //    arrey[i] = list[i];
-            //    arrey2[i] = list_Dates[i];
-            //}
-            //chart.values = arrey;
-            //chart.Dates = arrey2;
-
-            //chart2.dataPoints = list_DataPoints;
-            //l1.AddView(chart2);
             Charts[0].dataPoints = list_DataPoints;
             l1.AddView(Charts[0]);
-            //l1.AddView(chart);
         }
         //taking information about stock from the internet
         public async Task getInfoFromWeb()
@@ -212,19 +187,8 @@ namespace App1
             {
 
                 string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
-
-                //Intent intent = new Intent(this, typeof(SearchActivity));
-
-                //Intent.GetFloatArrayExtra("Chart_Points_Heigh");
-                //Intent.GetFloatArrayExtra("Chart_Points_Low");
-                //Intent.GetStringArrayExtra("Chart_Points_Date");
-
-
                 string link = "https://financialmodelingprep.com/api/v3/historical-chart/1min/";
                 link = link.Insert(link.Length, symbol);
-                //link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
-
-
                 API_Key k = MainActivity.Manager_API_Keys.GetBestKey();
                 if (k != null && k.Key != "" && k.GetCallsRemaining() > 0)
                 {
@@ -235,14 +199,8 @@ namespace App1
                     Console.WriteLine("there was a problem with the keys at stockview activity ");
                     return;
                 }
-                
-
-
-                // using (var request = new HttpRequestMessage(new HttpMethod("GET"), "https://financialmodelingprep.com/api/v3/quote-short/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860"))
-                //using (var request = new HttpRequestMessage(new HttpMethod("GET"), "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860"))
                 using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
                 {
-                    //request.Headers.TryAddWithoutValidation("Upgrade-Insecure-Requests", "1");
                     MainActivity.Manager_API_Keys.UseKey(k.Key);
                     var response = await httpClient.SendAsync(request);
                     response.EnsureSuccessStatusCode();
@@ -263,17 +221,9 @@ namespace App1
                          close = (float)HistInfo.GetJSONObject(i).GetDouble("close");
                          open = (float)HistInfo.GetJSONObject(i).GetDouble("open");
                          string date = (string)HistInfo.GetJSONObject(i).Get("date");
-
-                       // float avr = (float)(high + low) / 2;
-                       //  Console.WriteLine("avr: " + avr);
-                       // Console.WriteLine("close: " + close);
-
                         list.Add(close);
                         list_Dates.Add(date);
                         list_DataPoints.Add(new DataPoint(high,low,close,open, date));
-
-
-                        //Console.WriteLine((string)(HistInfo.GetJSONObject(i).Get("date")));
                     }
 
 
@@ -310,7 +260,6 @@ namespace App1
             if (IsInDataBase) //it is in the data base
             {
                 Console.WriteLine("change to colored icon");
-                //ibSave.SetImageDrawable((Android.Graphics.Drawables.Drawable)"@drawble/icon_favorite_colored");
                 ibSave.SetImageResource(Resource.Drawable.Icon_Favorite_colored2);
                 if (Istracked)
                 {
@@ -321,7 +270,6 @@ namespace App1
             else
             {
                 Console.WriteLine("change to uncolored icon");
-                //ibSave.SetImageDrawable((Android.Graphics.Drawables.Drawable)Resource.Drawable.Icon_Favorite);
                 ibSave.SetImageResource(Resource.Drawable.Icon_Favorite2);
                 ibTrack.SetImageResource(Resource.Drawable.Icon_Track);
             }
@@ -401,7 +349,6 @@ namespace App1
             DocumentReference doc = db.Collection("Saved Stocks").Document(Docs_In_DataBase[index].Id);
             doc.Delete();
             Docs_In_DataBase.RemoveAt(index);
-            //ibSave.SetImageDrawable((Android.Graphics.Drawables.Drawable)Resource.Drawable.Icon_Favorite);
             ibSave.SetImageResource(Resource.Drawable.Icon_Favorite2);
         }
         private void AddItem_ToDataBAse(string symbol)
@@ -433,8 +380,6 @@ namespace App1
         }
         private void UpdateTrackItemAsync(string symbol,int index)
         {
-            //Docs_In_DataBase[index].("TrackingPrices").Set(etTrackingPrices.Text);
-            //await Docs_In_DataBase[index].UpdateAsync("Capital", false);
             string soundfile = (string)Docs_In_DataBase[index].Get("SoundFile");
             DeleteItem_fromDataBase(index);
 
@@ -545,25 +490,13 @@ namespace App1
 
         }
 
-        private void IbType_Click(object sender, EventArgs e)
-        {
-            //d = new Dialog(this);
-            //d.SetContentView(Resource.Layout.Custom_PopUp_MiniGraph);
-            //d.SetTitle("type of graphs");
-            //d.SetCancelable(true);
-            //d.Show();
-        }
-
         private void IbHome_Click(object sender, EventArgs e)
         {
-            //db.App.Delete();
+
             if(db != null && db.App!=null)
             {
                 db.App.Dispose();
             }
-            
-            //db.Dispose();
-            //db = null;
 
             Finish();
         }
@@ -666,10 +599,6 @@ namespace App1
                     {
                         string buttonText = rb.Text.Trim();
                         timeleap = buttonText.Replace(" ", "");
-
-                        //Console.WriteLine("-------------------------");
-                        //Console.WriteLine(timeleap);
-                        //Console.WriteLine("-------------------------");
                         if (ETdegree.Text.Length == 0)
                         {
                             Console.WriteLine("need to fill the text in MaxOrder");
@@ -684,7 +613,7 @@ namespace App1
                     }
                 }
             }
-            //need to get new series of points from web :(
+
 
         }
 
@@ -714,7 +643,6 @@ namespace App1
                 }
                 using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
                 {
-                    //request.Headers.TryAddWithoutValidation("Upgrade-Insecure-Requests", "1");
                     MainActivity.Manager_API_Keys.UseKey(k.Key);
                     var response = await httpClient.SendAsync(request);
                     response.EnsureSuccessStatusCode();
@@ -738,7 +666,7 @@ namespace App1
 
                         newList.Add(new DataPoint(high, low, close, open, date));
 
-                        //Console.WriteLine((string)(HistInfo.GetJSONObject(i).Get("date")));
+
                     }
 
 
@@ -762,8 +690,6 @@ namespace App1
                 Console.WriteLine("need to fill the futer point field ");
                 return;
             }
-
-
             MATLAlgo = new MATL_Algorithm(newList, int.Parse(ETdegree.Text), int.Parse(ETfuterPoint.Text), this);
 
             if (ETMinOrder.Text != "")
@@ -784,7 +710,6 @@ namespace App1
 
         }
 
-
         private void Continue_Algorithm_Process()
         {
 
@@ -792,14 +717,12 @@ namespace App1
 
             if (CBdrawProcess.Checked) //draw process
             {
-                //Console.WriteLine("CBdrawProcess is checked");
                 MA_View graph_view = new MA_View(this, MATLAlgo);
                 hand.LL = algoLL;
                 hand.graph_view = graph_view;
                 handler = hand;
                 m = new Message();
                 m.Arg1 = 1;
-                //handler.HandleMessage(m);
                 handler.SendMessage(m);
                 Add_progress_ToBar("drawing graphs");
 
@@ -819,12 +742,10 @@ namespace App1
             Add_Prediction("My predection is: \n in " + MATLAlgo.FuterPoint + " * " + timeleap + " the price of the stock will be: " + MATLAlgo.prediction.price);
         }
 
-
-
         public void Start_progress_Bar(string description)
         {
             m = new Message();
-            m.Arg1 = -1; //0 == add image view to progress bar
+            m.Arg1 = -1; //-1 == make bar visiball
             Hand_Progress.status = description;
             handler = Hand_Progress;
             handler.SendMessage(m);
@@ -896,35 +817,13 @@ namespace App1
             {
                 if (db.App != null)
                 {
-                    //db.App.Delete();
-                    //db.Terminate();
                     db.App.Dispose();
-                    //db = null;
                 }
             }
             
             
             base.OnPause();
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         private void CreateOfflineGraph()
         {
             //in order to get these line i printed the points of the stock : INTC

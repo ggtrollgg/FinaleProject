@@ -31,10 +31,8 @@ namespace App1
         EditText etSearch;
         Button btnHome;
         ListView lvSearchedStocks;
-
         List<ClassSearchStock> SearchDatalist = new List<ClassSearchStock>();
         SearchStockAdapter adapter;
-
         CancellationTokenSource CTS = new CancellationTokenSource();
         List<DataPoint> Chart_Points = new List<DataPoint>();
         Dialog d;
@@ -42,10 +40,7 @@ namespace App1
         Class_LineGraph MiniGraph;
         string lastSearch = "TEST";
         int LongClick_pos;
-
-        bool running = false;
         Context content;
-
         bool offlineMode = false;
 
         
@@ -70,53 +65,7 @@ namespace App1
 
             etSearch.TextChanged += EtSearch_TextChanged;
             btnHome.Click += BtnHome_Click;
-            //handler = new MyHandler(this);
-            
-            //ThreadStart MyStartThread = new ThreadStart(CheckIfTextChanged);
-            //Thread_CheckChange = new Thread(CheckIfTextChanged);
-            //running = true;
-            //Thread_CheckChange.Start();
 
-        }
-
-        private void CheckIfTextChanged()
-        {
-            while(running == true)
-            {
-                test();
-
-                Thread.Sleep(1000);
-            }
-        }
-
-        private void test()
-        {
-            if (lastSearch != etSearch.Text)
-            {
-                if (CTS != null && CTS.Token != null && CTS.Token.CanBeCanceled)
-                {
-                    CTS.Cancel();
-                    CTS.Dispose();
-                    CTS = new CancellationTokenSource();
-                }
-                if (etSearch.Text != "")
-                {
-                    lastSearch = etSearch.Text;
-                    RefreshList();//refresh to the new closest 10 stocks
-                    Console.WriteLine("refresh");
-                }
-                else
-                {
-                    Console.WriteLine("et text == ''  ");
-                    lastSearch = etSearch.Text;
-                    if (SearchDatalist != null && SearchDatalist.Count > 0)
-                    {
-                        SearchDatalist.Clear();
-                    }
-                    //ShowListView(); // it will be empty
-                    RefreshListView();
-                }
-            }
         }
 
         //buttons
@@ -124,10 +73,7 @@ namespace App1
         {
             Finish();
         }
-        private void BtnSearch_Click(object sender, EventArgs e)
-        {
-            RefreshList();
-        }
+
 
 
         //-------mini graph------
@@ -153,7 +99,7 @@ namespace App1
                 _ = GetPricePoints(SearchDatalist[LongClick_pos].symbol);
             }
 
-            //activatePopUp();
+ 
 
 
 
@@ -168,9 +114,7 @@ namespace App1
             {
                 string link = "https://financialmodelingprep.com/api/v3/historical-chart/1min/";
                 link = link.Insert(link.Length, symbol);
-                //link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
-                // using (var request = new HttpRequestMessage(new HttpMethod("GET"), "https://financialmodelingprep.com/api/v3/quote-short/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860"))
-                //using (var request = new HttpRequestMessage(new HttpMethod("GET"), "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=0a0b32a8d57dc7a4d38458de98803860"))
+
 
                 API_Key k = MainActivity.Manager_API_Keys.GetBestKey();
                 if (k != null && k.Key != "" && k.GetCallsRemaining() > 0)
@@ -179,7 +123,7 @@ namespace App1
                 }
                 else
                 {
-                    Console.WriteLine("there was a problem with the keys at stockview activity ");
+                    Console.WriteLine("there was a problem with the keys at search activity ");
                     return;
                 }
 
@@ -207,7 +151,6 @@ namespace App1
                 }
             }
             activatePopUp();
-            //Dispose();
             return;
         }
 
@@ -421,23 +364,12 @@ namespace App1
         protected override void OnResume()
         {
             Console.WriteLine("Resume");
-            //if (Thread_CheckChange == null || Thread_CheckChange.ThreadState != System.Threading.ThreadState.Running)
-            //{
-            //    //Thread_CheckChange = new Thread(CheckIfTextChanged);
-            //    //running = true;
-            //    //Thread_CheckChange.Start();
-            //}
             base.OnPause();
         }
         protected override void OnPause()
         {
             Console.WriteLine("Pause");
-            //if (Thread_CheckChange != null && Thread_CheckChange.ThreadState == System.Threading.ThreadState.Running)
-            //{
-            //    running= false;
-            //    Thread_CheckChange.Abort();
 
-            //}
             base.OnPause();
         }
     }
