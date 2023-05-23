@@ -278,50 +278,7 @@ namespace App1
         }
 
 
-        //when i call for information i can get specific info for each line,
-        //so when i want x of closest stocks i dont get much info aside from name and descripation
-        //so this is to get the image of the stock from web and for the current price of the stock
-        public async System.Threading.Tasks.Task GetImageAndPrice_FromWeb(int place)
-        {
-            using (var httpClient = new HttpClient())
-            {
-
-                string link = "https://financialmodelingprep.com/api/v3/profile/";
-                link = link.Insert(link.Length, SearchDatalist[place].symbol);
-                //link = link.Insert(link.Length, "?apikey=0a0b32a8d57dc7a4d38458de98803860");
-                link = link.Insert(link.Length, "?apikey=8bdedb14d7674def460cb3a84f1fd429");
-
-
-                using (var request = new HttpRequestMessage(new HttpMethod("GET"), link))
-                {
-                    //Toast.MakeText(this, "sending requast for info", ToastLength.Short).Show();
-                    var response2 = await httpClient.SendAsync(request);
-                    response2.EnsureSuccessStatusCode();
-
-                    string responseBody = await response2.Content.ReadAsStringAsync();
-                    JSONArray Data = new JSONArray(responseBody);
-
-                    String compName = (string)Data.GetJSONObject(0).Get("companyName");
-                    float price = (float)Data.GetJSONObject(0).GetDouble("price");
-                    String urlImage = (string)Data.GetJSONObject(0).Get("image");
-                    //SearchDatalist.Add(new ClassSearchStock(sym,compName,price,urlImage));
-
-                    SearchDatalist[place].companyName = compName;
-                    //SearchDatalist[place].price = price;
-                    //SearchDatalist[place].StockImage = urlImage;
-                }
-                //Toast.MakeText(this, "got symbol and company name", ToastLength.Short).Show();
-                Console.WriteLine("got image and price");
-
-            }
-
-            //ShowListView();
-            Dispose(true);
-            return;
-        }
-
-
-
+       
         //moving to the chart activity
         public void MoveToChartActivity(String symbol)
         {
@@ -345,11 +302,7 @@ namespace App1
             adapter = new SearchStockAdapter(this, SearchDatalist);
             lvSearchedStocks.Adapter = adapter;
         }
-        private void RefreshListView()
-        {
-            adapter = new SearchStockAdapter(this, SearchDatalist);
-            adapter.NotifyDataSetChanged();
-        }
+
 
         //detect which item was clicked and than move to the chart activity of the stock
         private void LvSearchedStocks_ItemClick(object sender, AdapterView.ItemClickEventArgs e)

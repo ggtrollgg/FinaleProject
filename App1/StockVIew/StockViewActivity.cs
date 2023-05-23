@@ -42,20 +42,13 @@ namespace App1
         public static List<StockData> Datalist = new List<StockData>();
         public static List<StockData> Temp_Datalist = new List<StockData>();
         List<DocumentSnapshot> Docs_In_DataBase = new List<DocumentSnapshot>();
-
-
         System.Threading.Thread t;
         bool IsDataCountFull = false;
         ListView lvStock;
         StockAdapter adapter;
         string queryType = "normal";
-
         public FirebaseFirestore db;
-       
-
         bool ShowOnlyTracking= false;
-
-
         bool offlineMode= false;
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -132,6 +125,7 @@ namespace App1
             
 
         }
+        //Refresh the items in firestore, clear the view and get from firestore only the stocks i have tracking prices on
         private void BtnShowTrack_Click(object sender, EventArgs e)
         {
             if (offlineMode)
@@ -178,7 +172,7 @@ namespace App1
         }
 
 
-
+        //create conntectin to the firestore data base
         public FirebaseFirestore GetDataBase()
         {
             FirebaseFirestore db;
@@ -207,7 +201,7 @@ namespace App1
             
         }
 
-
+        //request get all the items from the friestore
         private void LoadItems()
         {
             if(Datalist.Count > 0)
@@ -226,6 +220,8 @@ namespace App1
             Query q = db.Collection("Saved Stocks");
             q.Get().AddOnSuccessListener(this);
         }
+
+        //request et from fire store only the items with traking prices
         private void LoadTrackingItems()
         {
             if (Datalist.Count > 0)
@@ -247,6 +243,8 @@ namespace App1
                 .WhereNotEqualTo("TrackingPrices", "");
             q.Get().AddOnSuccessListener(this);
         }
+
+        //on getting the info from fire store, extract the info on the stocks from it
         public async void OnSuccess(Java.Lang.Object result)
         {
 
@@ -340,6 +338,7 @@ namespace App1
             
         }
 
+        //is a string composed of only strings
         public bool IsDigitsOnly(string str)
         {
             foreach (char c in str)
@@ -411,6 +410,7 @@ namespace App1
             return;
         }
 
+        //apdate all the stocks in the firestore
         private void UpdateAllItems_V2()
         {
 

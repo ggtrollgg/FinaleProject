@@ -68,6 +68,8 @@ namespace App1
 
         }
 
+        //I activate it when the algorithm PopUp is stopped (while the algorithm is running)
+        //it stops/abort all the thread 
         public void AbortProcess()
         {
             if(subMainThread!= null)
@@ -95,6 +97,7 @@ namespace App1
             subMainThread.Start();
         }
 
+        //over view of all te process for easier time understanding the 
         private void OverViewProccess()
         {
             
@@ -125,6 +128,8 @@ namespace App1
             Console.WriteLine("event invoked form MATL_Algorithm");
             ContinueProcess?.Invoke();
         }
+
+        //create all moving averages graphs
         private void Create_MA_Graphs()
         {
             for(int i = minOrder; i <= maxOrder; i++)
@@ -136,11 +141,15 @@ namespace App1
                 currentDegree++;
             }
         }
+
+        //calculate the prediction for the wanted futer point
         private void CalculatePrediction()
         {
             prediction.place = Average_Of_Graphs.Count + FuterPoint;
             prediction.price = trendline.Calculate_Y_Of_futerPoint(FuterPoint) + variation;
         }
+
+        
         private void CalculateVariation() //calculate and adjust the variation between the original graph and the average_of_Graphs
         {
             float sum_variatoin = 0;
@@ -151,21 +160,21 @@ namespace App1
             variation = sum_variatoin / Average_Of_Graphs.Count;
         }
 
-        
+        //create the trend line of the Average of graphs graph
         private void Create_TrendLine()
         {
             trendline = new TrendLine(Average_Of_Graphs);
             trendline.Create_TrendLine();
         }
 
+        //create a singular moving average graph in order/degree: "current order" 
         private void Thread_Create_Ma_Graphs(int currentorder)
         {
-            Console.WriteLine("1created with thread a MA graph in degree: " + currentDegree);
             movingAverage_Graph.Add(new MovingAverage_Graph(original_Graph, currentorder));
-            Console.WriteLine("2created with thread a MA graph in degree: " + currentorder);
 
         }
 
+        //create the average graphs of all the MAGraphs (the original graph isnt included in it
         public bool Create_Average_Of_Graphs()
         {
             if (movingAverage_Graph.Count > 0 && original_Graph.Count > 0)

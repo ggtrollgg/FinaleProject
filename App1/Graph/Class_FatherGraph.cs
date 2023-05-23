@@ -55,7 +55,7 @@ namespace App1
             this.dataPoints = points;
         }
         
-
+        //add to zoom scale the values of zoomfactor_x and zoomfactor y
         public void ZoomBy(float zoomfactor_x , float zoomfactor_y)
         {
             if(dataPoints.Count != 0 && canvas != null)
@@ -73,6 +73,8 @@ namespace App1
             }
 
         }
+
+        //offset the camera by these values
         public void OffsetBy(float offset_x , float offset_y)
         {
             if (!(camera.CameraOffSetX + offset_x >= 0))
@@ -86,6 +88,8 @@ namespace App1
                 camera.Y_changed = true;
         }
 
+        //sey new mid/pivitPoint point 
+        //mid/pivitPoints is the point betwween two of my fingers that i zoom in/out of
         public void SetNewMidPoint(float x, float y)
         {
             midPoint = new MyPoint(x, y);
@@ -120,6 +124,7 @@ namespace App1
 
         }
 
+        //on touch detection calculates the new pivitpoints,the change in offset
         public bool OnTouch(View v, MotionEvent e)
         {
             if (view.midPoint == null && e.PointerCount == 2)
@@ -194,7 +199,7 @@ namespace App1
             {
                 this.view = view;
             }
-
+            //on scale hand gester detection calculate the change in scale factor that needed to be added to the zoom factor
             public override bool OnScale(ScaleGestureDetector detector)
             {
                 //Console.WriteLine("detector event time: + " + detector.EventTime);

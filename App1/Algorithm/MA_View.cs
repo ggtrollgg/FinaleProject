@@ -71,7 +71,7 @@ namespace App1.Algorithm
         { 
 
             canvas = canvas1;
-            if (DoOnce) 
+            if (DoOnce) //things i want to do only once at the start (and  they need canvas)
             {
                 Console.WriteLine("started drawing the MA graph");
                 floor = canvas.Height - 100;
@@ -91,6 +91,7 @@ namespace App1.Algorithm
 
         }
 
+        //things i want to do only once at the start (and  they dont need canvas)
         private void Do_OnCreate()
         {
             total_points = Algorithm.original_Graph.Count;
@@ -115,22 +116,12 @@ namespace App1.Algorithm
                 randoms.Add(random);
 
             }
-            Thread frameRate = new Thread(FrameRate_Invalidate);
+
         }
 
-        private void FrameRate_Invalidate()
-        {
-            while(running)
-            {
-                if (!started)
-                {
-                    Invalidate();
-                }
-                    
-                Thread.Sleep(500);
-            }
-        }
-
+        //check the time between the last time the draw function was invalidated
+        //after enought time has past than up the index action by one ->
+        //index action = how many graphs to draw 
         private void Check_time_span()
         {
             
@@ -149,6 +140,7 @@ namespace App1.Algorithm
             }
         }
 
+        //find the point with the highest value and the lowest value
         private void FindLowHigh()
         {
             
@@ -160,7 +152,8 @@ namespace App1.Algorithm
         }
 
 
-
+        //create the lists that contains the points of the graphs with values of x and y
+        //and fill these lists so all the points are within an area i want 
         private void CreateALLGraphs()
         {
 
@@ -188,12 +181,14 @@ namespace App1.Algorithm
             }
         }
 
+        //create the prediction of the futer value and translate it to fit the canvas/graph scale
         private void create_toScale_Prediction()
         {
             prediction = Convert_To_defualt_scale(Algorithm.FuterPoint + total_points, Algorithm.prediction.price + Algorithm.variation);
             Console.WriteLine("variation is: " + Algorithm.variation);
         }
 
+        //translate the original graph  to fit the canvas/graph scale with x and y values
         private void create_toScale_OriginalGraph()
         {
             for (int i = 0; i < total_points; i++)
@@ -202,6 +197,7 @@ namespace App1.Algorithm
             }
         }
 
+        //create the TrendLine and translate it to fit the canvas/graph scale
         private void create_toScale_trendLine()
         {
             MyPoint start = new MyPoint(0, Algorithm.trendline.Calculate_Y_Of(0));
@@ -209,11 +205,13 @@ namespace App1.Algorithm
             trendLine.Add(Convert_To_defualt_scale(total_points+ Algorithm.FuterPoint, Algorithm.prediction.price));
         }
 
+        //gets an MA_Point values and translates them to MyPoint values
         private MyPoint Convert_To_defualt_scale(int place,float price)
         {
             return new MyPoint(place * (right_wall) / (total_points - 1), floor + ((lowest - price) * (1 / (highest - lowest)) * floor));
         }
 
+        //Draws the MA Graphs, the original graph and the trendline
         private void Draw_Graphs()
         {
             int smaller_limit = Math.Min(index_action, Graphs.Count);

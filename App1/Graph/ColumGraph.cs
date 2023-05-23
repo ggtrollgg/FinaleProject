@@ -124,10 +124,7 @@ namespace App1
             DrawSquers();
         }
 
-
-        
-
-
+        //things i want to do only once at the start (and  they need canvas)
         private void DoOnce()
         {
             if (doOnce)
@@ -143,7 +140,7 @@ namespace App1
 
                 CreateChartSquars();
 
-                DrawYexis();
+                CreateYexis();
                 DrawXexis();
                 ChangeInTextPlaceX((float)0.01);
                 ChangeInTextPlaceY((float)0.01);
@@ -152,6 +149,7 @@ namespace App1
             }
         }
 
+        //find the point with the highest value and the lowest value
         public void findLowHeigh()
         {
             foreach (DataPoint i in dataPoints)
@@ -161,6 +159,9 @@ namespace App1
             }
         }
 
+        //create the Squars that represent the close and open of the stock at each timestamp
+        //create them so the whole graph fit in a section of the canvas
+        //and add them to a list
         public void CreateChartSquars()
         {
             if (Squares == null || Squares.Count == 0)
@@ -187,6 +188,7 @@ namespace App1
             }
         }
 
+        //draw the squars that represent close and open of the stock in every point of timeleap
         public void DrawSquers()
         {
             MyPoint UpLeft;
@@ -220,6 +222,8 @@ namespace App1
             }
         }
 
+        //calculate the new positions of the squares based on their original value and the changing values 
+        //--> offest x and y, and scale in the x exiecss
         private void CalculateNewPointes()
         {
             MyPoint upLeft;
@@ -238,9 +242,8 @@ namespace App1
             }
         }
 
-
-
-
+        //draw the text that represent the time of each point on the screen
+        //"Xexis" ---> because the text spreads horizontaly on the bottom of the screen 
         private void DrawXexis()
         {
             String TheString;
@@ -271,7 +274,10 @@ namespace App1
 
         }
 
-        private void DrawYexis()
+        //create the text that represent the price of each point/squar in the graph
+        //based on the original/first/defualt position of the points
+        //"Yexis" --> the price text stacks verticaly in the right side of the screen
+        private void CreateYexis()
         {
             String TheString;
             float width = 0;
@@ -293,7 +299,9 @@ namespace App1
 
         }
 
-
+        //Change the place of all the texts that represent the date/time of each point/squar in the graph
+        //in case and the gap between each text is big enough to fit another textblock than show the coresponding textblock that fit there
+        //in case and the textblocks touch each other than hide the textblocks that are to adjacent to the right of the hidden ones
         private void ChangeInTextPlaceX(float v)
         {
             int place = 0;
@@ -333,6 +341,7 @@ namespace App1
             }
         }
 
+        //Draws the textblocks that represent range of prices (of each point) on the screen
         private void ChangeInTextPlaceY(float v)
         {
 
@@ -484,6 +493,10 @@ namespace App1
             }
         }
 
+        //gets a X value, than it is going through the calculations to becom a new ChangedPoint but in backword order
+        //meaning if it was a ChangedPoint (point on graphs that was changed bt offset and scale) it is now a X value that represent an original/defualt point on the graph
+        // and thus, it has an I, index in the list of original points
+        //because every point x position is determinded by its position in the list(i index) than i can find the I index (or the closes to it) of the point in corrdinate (X,...);
         private int Calculate_Original_Point_I(float x)
         {
             double defualtPointx = (x - camera.CameraOffSetX) / zoomfactor_X;
@@ -492,6 +505,10 @@ namespace App1
             return i;
         }
 
+        //Same as above but without rounding the resualt
+        //this because when i check for the rightest point on screen,
+        //the pixel that is the rightest on scree can be more than half way to a point that isnt on screen 
+        //but i still want it to retern the rightest point that i can see on screen
         private int Calculate_Original_Point_I_without_rounding(float x)
         {
             double defualtPointx = (x - camera.CameraOffSetX) / zoomfactor_X;
@@ -500,7 +517,8 @@ namespace App1
             return i;
         }
 
-
+        //draw the mid point between 2 of my fingers
+        //(when there are more than 1 finger touching the screen)
         private void DrawTouching()
         {
             p1.Color = Color.Black;
@@ -517,6 +535,9 @@ namespace App1
             }
 
         }
+
+        //draw a text bubble at the left-up corrner of the screen with info
+        //of the point that is at the middle of 2 of my fingers that are touching the screen
         private void DrawTextBubbleForPoint(int i)
         {
             float point_x = ChangedSquares[i].Center.x;

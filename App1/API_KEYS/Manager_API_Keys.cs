@@ -23,17 +23,17 @@ namespace App1
             
 
             var editor = MainActivity.sp.Edit();
-            if (Mysp.GetInt("KeysAmount", -1) == -1)
+            if (Mysp.GetInt("KeysAmount", -1) == -1) //
             {
                 editor.PutInt("KeysAmount", 3);
                 editor.PutString("Key0", "0a0b32a8d57dc7a4d38458de98803860");
                 editor.PutString("Key1", "8bdedb14d7674def460cb3a84f1fd429");
                 editor.PutString("Key2", "561897c32bf107b87c107244081b759f");
 
-                //putting values that are right for 12/4/2023 17:32
-                editor.PutInt("Key0CallsRemain", 0);
-                editor.PutInt("Key1CallsRemain", 194);
-                editor.PutInt("Key2CallsRemain", 213);
+                //i have no way to know how many keys remain on a new device so i put 255 in each 
+                editor.PutInt("Key0CallsRemain", 255);
+                editor.PutInt("Key1CallsRemain", 255);
+                editor.PutInt("Key2CallsRemain", 255);
 
                 editor.Commit();
             }
@@ -51,6 +51,7 @@ namespace App1
 
         }
 
+        //get the key with most calls remain
         public API_Key GetBestKey()
         {
             int highest = 0;
@@ -71,7 +72,7 @@ namespace App1
             return k;
         }
 
-
+        //use a key
         public void UseKey(string Skey)
         {
             for(int i = 0; i < API_Keys.Count; i++)

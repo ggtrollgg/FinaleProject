@@ -28,7 +28,7 @@ namespace App1
 
         public static ISharedPreferences sp;//,offsp;
         public static Manager_API_Keys Manager_API_Keys;
-        Button btnstart,btnToListView,btnExit,btnTest;
+        Button btnstart,btnToListView,btnExit, BtnOffLineMode;
         Android.Content.Intent intent2;
         PendingIntent pendingIntent;
         bool offlineMode = false;
@@ -42,12 +42,12 @@ namespace App1
             btnstart = FindViewById<Button>(Resource.Id.btnstart);
             btnExit = FindViewById<Button>(Resource.Id.btnExit);
             btnToListView = FindViewById<Button>(Resource.Id.btnToListView);
-            btnTest = FindViewById<Button>(Resource.Id.btnTest);
+            BtnOffLineMode = FindViewById<Button>(Resource.Id.btnTest);
 
             btnstart.Click += Btnstart_Click;
             btnExit.Click += BtnExit_Click;
             btnToListView.Click += BtnToListView_Click;
-            btnTest.Click += BtnTest_Click;
+            BtnOffLineMode.Click += BtnOffLineMode_Click;
 
 
 
@@ -71,6 +71,14 @@ namespace App1
            
         }
 
+        
+        private void BtnOffLineMode_Click(object sender, EventArgs e)
+        {
+            offlineMode = !offlineMode;
+            Toast.MakeText(this, "offlineMode is: " + offlineMode, ToastLength.Short).Show();
+        }
+
+        //Create an Alarm Manager that Resets the amount of callsRemain in the keys in SharedPrefrence
         private void ResetKeys_Alaram_setup()
         {
             AlarmManager alarmManager = (AlarmManager)GetSystemService(AlarmService);
@@ -99,13 +107,6 @@ namespace App1
             }
         }
 
-        private void BtnTest_Click(object sender, EventArgs e)
-        {
-            
-            offlineMode = !offlineMode;
-            Toast.MakeText(this, "offlineMode is: " + offlineMode, ToastLength.Short).Show();
-        }
-
 
         //buttons
         private void BtnToListView_Click(object sender, EventArgs e)
@@ -120,9 +121,9 @@ namespace App1
             Finish();
         }
 
+        //goes to search activity
         private void Btnstart_Click(object sender, EventArgs e)
         {
-            //Intent intent = new Intent(this, typeof(ChartActivity));
             Intent intent = new Intent(this, typeof(SearchActivity));
             intent.PutExtra("OfflineMode", offlineMode);
             StartActivity(intent);

@@ -56,6 +56,8 @@ namespace App1
             t.Start();
             return base.OnStartCommand(intent, flags, startId);
         }
+
+        //every (total sec in day)/num of calls remain, load/create a request for the data from firestore 
         private void Run()
         {
             running = true;
@@ -116,6 +118,7 @@ namespace App1
                 return db;
             }
         }
+        //create a request to fire store to get all the stocks i have Tracking prices for
         private void LoadItems()
         {
             CallInProcess = true;
@@ -129,7 +132,8 @@ namespace App1
         }
 
 
-
+        //when getting all the stocks, check if they surrpest one of their tracking prices (in relation to the last price i seen last time i was on/checked the price of ) 
+        //if a tracking price is breached than create a stattus bar notification with info which stock and tracking price  was breached
         public async void OnSuccess(Java.Lang.Object result)
         {
             Console.WriteLine("OnSuccess");
@@ -174,6 +178,7 @@ namespace App1
             await GetCurrentPriceFromWeb(Symbols);
         }
 
+        //getting the current price of each stock form financiel.com 
         private async Task GetCurrentPriceFromWeb(List<string> symbols)
         {
             using (var httpClient2 = new HttpClient())
@@ -283,6 +288,8 @@ namespace App1
             return;
         }
 
+
+        //checking if a current price is above or below my last seen price and than check if it surpesses/breach any of the travking prices
         private float CheckIfSurpesst(float lastPrice, float currentPrice, List<float> trackingPrices)
         {
             float priceAlarm = -1;

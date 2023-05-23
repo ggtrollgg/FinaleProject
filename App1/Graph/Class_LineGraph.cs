@@ -23,8 +23,6 @@ namespace App1
         List<float> values = new List<float>();
         float heighest = 0, lowest = -1;
 
-
-
         List<MyPoint> points = new List<MyPoint>();
         List<MyPoint> Changedpoints = new List<MyPoint>();
 
@@ -32,16 +30,10 @@ namespace App1
         List<TextBlock> TextBlocks_Y = new List<TextBlock>();
 
 
-        bool running = true;
-        float frame_rate = (float)(1.0 / 2);
-
         float text_start_y;
         float text_margin_y = 0;//30px
 
         bool doingOnce = true;
-
-        public bool Zoom = false;
-        public bool Move = false;
 
         Paint p1 = new Paint();
 
@@ -127,7 +119,7 @@ namespace App1
                 }
 
                 DrawXexis();
-                ChangeInTextPlaceY((float)0.01);
+                DrawYexis((float)0.01);
 
                 DrawTouching();
 
@@ -135,7 +127,7 @@ namespace App1
             }
         }
 
-       
+        //things i want to do only once at the start (and  they need canvas)
         public void doOnce()
         {
             if (values == null || values.Count == 0) { calculateValues(); }
@@ -151,17 +143,20 @@ namespace App1
                 CreateChartPoints();
             }
             DrawXexis();
-            DrawYexis();
+            CreateYexis();
 
             ChangeInTextPlaceX((float)0.001);
-            ChangeInTextPlaceY((float)-0.01);
+            DrawYexis((float)-0.01);
             doingOnce = false;
         }
 
+        //calls the function that draw the graph
         private void DrawGraph()
         {
             DrawPoints();
         }
+
+        //draw the points that represent close and open of the stock in every point of timeleap
         public void DrawPoints()
         {
             
@@ -185,6 +180,11 @@ namespace App1
                 }
             }
         }
+
+        //an exemple of how i plasterd my olde code and not just removed it
+        //at first befor i had FatherGraph,DataPoint class and the knowlge that the price of a stock isn't the average of its high and low 
+        // i calculated it by getting the high and low and do an average between them
+        //but after i realized my mistake and my code got better i just take the values i need(close value) from father graph 
         private void calculateValues()
         {
             foreach (DataPoint i in dataPoints)
@@ -192,6 +192,8 @@ namespace App1
                 values.Add(i.close);
             }
         }
+
+        //find the point with the highest value and the lowest close value
         public void findLowHeigh()
         {
             foreach (float i in values)
@@ -200,6 +202,10 @@ namespace App1
                 if (i < lowest || lowest == -1) lowest = i;
             }
         }
+
+        //create the points that represent the close  of the stock at each timestamp
+        //create them so the whole graph fit in a section of the canvas
+        //and add them to a list
         public void CreateChartPoints()
         {
             if (points == null || points.Count == 0)
@@ -215,6 +221,9 @@ namespace App1
                 CalculateNewPointes();
             }
         }
+
+        //calculate the new positions of the points based on their original value and the changing values 
+        //--> offest x and y, and scale in the x exiecss
         private void CalculateNewPointes()
         {
             Changedpoints.Clear();
@@ -227,9 +236,12 @@ namespace App1
             
         }
 
-        
 
-        //text functions
+
+        //----text functions----//
+
+        //draw the text that represent the time of each point on the screen
+        //"Xexis" ---> because the text spreads horizontaly on the bottom of the screen 
         private void DrawXexis()
         {
             String TheString;
@@ -266,7 +278,11 @@ namespace App1
             }
 
         }
-        private void DrawYexis()
+
+        //create the text that represent the price of each point in the graph
+        //based on the original/first/defualt position of the points
+        //"Yexis" --> the price text stacks verticaly in the right side of the screen
+        private void CreateYexis()
         {
             String TheString;
             float width = 0;
@@ -287,6 +303,10 @@ namespace App1
             }
 
         }
+
+        //Change the place of all the texts that represent the date/time of each point in the graph
+        //in case and the gap between each text is big enough to fit another textblock than show the coresponding textblock that fit there
+        //in case and the textblocks touch each other than hide the textblocks that are to adjacent to the right of the hidden ones
         private void ChangeInTextPlaceX(float v)
         {
             int Anchor_place = 0;
@@ -331,7 +351,9 @@ namespace App1
                 }
             }
         }
-        private void ChangeInTextPlaceY(float v)
+
+        //Draws the textblocks that represent range of prices (of each point) on the screen
+        private void DrawYexis(float v)
         {
             canvas.DrawRect(text_start_y, 0, canvas.Width, canvas.Height, background);
             int Anchor_place = 0;
@@ -461,10 +483,14 @@ namespace App1
             }
         }
 
-        
 
 
-        //calculations to find points on graph
+
+        //-----calculations to find points on original/defualt graph-----//
+        //gets a X value, than it is going through the calculations to becom a new ChangedPoint but in backword order
+        //meaning if it was a ChangedPoint (point on graphs that was changed bt offset and scale) it is now a X value that represent an original/defualt point on the graph
+        // and thus, it has an I, index in the list of original points
+        //because every point x position is determinded by its position in the list(i index) than i can find the I index (or the closes to it) of the point in corrdinate (X,...);
         private int Calculate_Original_Point_I(float x)
         {
             double defualtPointx = (x - camera.CameraOffSetX) / test_zoomfactor;
@@ -472,7 +498,11 @@ namespace App1
             int i = (int)Math.Round(itest2);
             return i;
         }
-        
+
+        //Same as above but without rounding the resualt
+        //this because when i check for the rightest point on screen,
+        //the pixel that is the rightest on scree can be more than half way to a point that isnt on screen 
+        //but i still want it to retern the rightest point that i can see on screen
         private int Calculate_Original_Point_I_without_rounding(float x)
         {
             double defualtPointx = (x - camera.CameraOffSetX) / test_zoomfactor;
@@ -483,7 +513,9 @@ namespace App1
 
 
 
-        //draw point touching and text bubble that upear above it with info
+        //----draw point touching and text bubble that upear above it with info----//
+        //draw the mid point between 2 of my fingers
+        //(when there are more than 1 finger touching the screen)
         private void DrawTouching()
         {
             p1.Color = Color.Black;
@@ -500,6 +532,8 @@ namespace App1
             }
         }
 
+        //draw a text bubble at the left-up corrner of the screen with info
+        //of the point that is at the middle of 2 of my fingers that are touching the screen
         private void DrawTextBubbleForPoint(int i)
         {
             float point_x = Changedpoints[i].x;
@@ -509,20 +543,10 @@ namespace App1
             p_text1.Color = Color.White;
             p_text1.TextSize = 50;
 
-            
-
-           
-
-            float Bordar_x = point_x / 2;
-            float Bordar_y = point_y / 2;
-
-
 
 
             Paint paint= new Paint();
             paint.Color = Color.ParseColor("#999999");
-
-            
 
             Paint p_low = new Paint();
             p_low.Color = Color.Red;
@@ -532,20 +556,33 @@ namespace App1
             p_heigh.Color = Color.Green;
             p_heigh.TextSize = 40;
 
+            float Bordar_x = 50;
+            float Bordar_y = 50;
+
             float box_width = Math.Max(canvas.Width / 3, p_text1.MeasureText(dataPoints[i].date) + 100);
-            float box_height = p_text1.TextSize + p_low.TextSize + p_heigh.TextSize + 10;
+            float box_height = p_text1.TextSize + 2 * p_low.TextSize + 2 * p_heigh.TextSize + 10;
             canvas.DrawRect(Bordar_x - 50, Bordar_y - 50, Bordar_x + box_width + 50, Bordar_y + box_height + 50, black);
             canvas.DrawRect(Bordar_x, Bordar_y, Bordar_x + box_width, Bordar_y + box_height, paint);
 
 
             canvas.DrawText(dataPoints[i].date, Bordar_x + 1, Bordar_y + p_text1.TextSize, p_text1);
-
-            canvas.DrawText("heigh: " + dataPoints[i].heigh, Bordar_x + 1, Bordar_y + p_heigh.TextSize + p_text1.TextSize , p_heigh);
+            canvas.DrawText("heigh: " + dataPoints[i].heigh, Bordar_x + 1, Bordar_y + p_heigh.TextSize + p_text1.TextSize, p_heigh);
             canvas.DrawText("low: " + dataPoints[i].low, Bordar_x + 1, Bordar_y + p_low.TextSize + p_heigh.TextSize + p_text1.TextSize, p_low);
-            
+            if (dataPoints[i].close > dataPoints[i].open)
+            {
+                canvas.DrawText("close: " + dataPoints[i].close, Bordar_x + 1, Bordar_y + 2 * p_heigh.TextSize + p_low.TextSize + p_text1.TextSize, p_heigh);
+                canvas.DrawText("open: " + dataPoints[i].open, Bordar_x + 1, Bordar_y + 2 * p_low.TextSize + 2 * p_heigh.TextSize + p_text1.TextSize, p_low);
+            }
+            else
+            {
+                canvas.DrawText("open: " + dataPoints[i].open, Bordar_x + 1, Bordar_y + 2 * p_heigh.TextSize + p_low.TextSize + p_text1.TextSize, p_heigh);
+                canvas.DrawText("close: " + dataPoints[i].close, Bordar_x + 1, Bordar_y + 2 * p_low.TextSize + 2 * p_heigh.TextSize + p_text1.TextSize, p_low);
+            }
+
+
         }
 
-        
+
     }
 
 

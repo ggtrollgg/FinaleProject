@@ -36,6 +36,7 @@ namespace App1.General_Classes
 
         }
 
+        //convert a list of MA_Points to a list of "MyPoint"
         private void Convert_List_To_MyPoint(List<MA_Point> graph)
         {
             for(int i = 0; i < graph.Count; i++ ) 
@@ -44,6 +45,7 @@ namespace App1.General_Classes
             }
         }
 
+        //create all the components that represent a trend line
         public void Create_TrendLine()
         {
             for(int i = 0; i < Points.Count; i++) 
@@ -61,6 +63,7 @@ namespace App1.General_Classes
 
         }
 
+        //calculate the slope of the trend line
         private void Calculate_M()
         {
             M = 0;
@@ -76,12 +79,14 @@ namespace App1.General_Classes
             M = Upper_formula / Lower_formula;
         }
 
+        
         public float Calculate_Y_Of(float x_value)
         {
             float y_value = M*x_value + B;
             return y_value;
         }
 
+        //returns the y value of the point in the futer --> point 2 in the futer is the point that is in the end the exsisting list of points in the graph + 2
         public float Calculate_Y_Of_futerPoint(int point_in_the_futer)
         {
             float y_value = M * (point_in_the_futer+ Points.Count-1) + B;

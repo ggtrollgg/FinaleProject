@@ -16,6 +16,7 @@ namespace App1
     public class ResetKeys : BroadcastReceiver
     {
         Context con;
+        //put 255 in all key-fields  
         public override void OnReceive(Context context, Intent intent)
         {
             con = context;

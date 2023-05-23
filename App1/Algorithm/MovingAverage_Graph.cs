@@ -23,6 +23,7 @@ namespace App1
             Calculate_MA_Of(points);
         }
 
+        //calculate moving average of a set of Data points
         private void Calculate_MA_Of(List<DataPoint> points)
         {
             float average = 0;

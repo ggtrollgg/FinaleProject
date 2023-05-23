@@ -3,6 +3,7 @@ using Android.Content;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
+using Android.Views.Animations;
 using Android.Widget;
 using App1.Algorithm;
 using System;
@@ -21,12 +22,13 @@ namespace App1
         public string prediction;
         ImageView iv;
         public int maxProgress_calls = 5;
+        Animation FadeIn;
 
         [Obsolete]
         public ProgressBarHandler(Context context)
         {
             this.context = context;
-
+            FadeIn = AnimationUtils.LoadAnimation(context, Resource.Animation.FadeIn);
         }
         [Obsolete]
         public ProgressBarHandler(Context context, LinearLayout LLProgg, TextView TVProgg, LinearLayout LLPred, TextView TVPred)
@@ -36,8 +38,10 @@ namespace App1
             TVProgress= TVProgg;
             TVPrediction= TVPred;
             LLPrediction= LLPred;
+            FadeIn = AnimationUtils.LoadAnimation(context, Resource.Animation.FadeIn);
         }
 
+        //take corresponding action to the data in the message 
         public override void HandleMessage(Message msg)
         {
             if(status == null || LLProgress == null || LLProgressBar == null || LLPrediction == null || TVProgress==null || TVPrediction== null )
@@ -45,20 +49,20 @@ namespace App1
                 Console.WriteLine("MyError!!!!!! ------> There is something null in ProgressBarHandler");
                 return;
             }
-            if(LLProgress.Visibility != ViewStates.Visible)
+            if(LLProgress.Visibility != ViewStates.Visible) //make progress bar visibale (and in case it is a back to back activation of the algorithm, than hide the prediction text)
             {
                 LLProgress.Visibility = ViewStates.Visible;
                 LLPrediction.Visibility = ViewStates.Gone;
             }
-            if (msg.Arg1 == -1)
+            if (msg.Arg1 == -1) //when the process stats but nothing has finished yet -> the progress bar states something along the line of: "algorithm started" 
             {
                 TVProgress.Text = "" + status;
             }
-            if(msg.Arg1== 0)
+            if(msg.Arg1== 0) // add to progrees bar another image viwe and put the right string
             {
                 Add_progress_ToBar();
             }
-            else if(msg.Arg1 == 1)
+            else if(msg.Arg1 == 1) //remove the imageViews, hide the Progressbar and Show prediction of algorithm
             {
                 LLProgressBar.RemoveAllViews();
                 LLProgress.Visibility = ViewStates.Gone;
@@ -70,6 +74,7 @@ namespace App1
 
         }
 
+        //add a image view item to the view and make it fade in 
         private void Add_progress_ToBar()
         {
             TVProgress.Text ="" + status;
@@ -81,6 +86,7 @@ namespace App1
             iv.LayoutParameters = layoutParams;
             iv.SetBackgroundColor(Android.Graphics.Color.Aqua);
             LLProgressBar.AddView(iv);
+            iv.StartAnimation(FadeIn);
 
         }
     }

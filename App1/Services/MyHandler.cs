@@ -30,10 +30,10 @@ namespace App1
             this.context = context;
             this.LL = LL;
         }
-        
+        //take corresponding action to the data in the message 
         public override void HandleMessage(Message msg)
         {
-            if(graph_view== null)
+            if(graph_view== null)  //if the  drawer of the algorithm graphs has been disposed of than clear all views in the LinearLayout it was in;
             {
                 if (LL != null)
                 {
@@ -45,7 +45,7 @@ namespace App1
                 }
                 return;
             }
-            if(LL!= null) 
+            if(LL!= null) //add the drawing view of the algorithm again
             {
                 this.LL.Visibility = ViewStates.Visible;
                 if (LL.RootView != null)

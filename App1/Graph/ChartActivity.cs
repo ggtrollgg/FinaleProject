@@ -4,18 +4,15 @@ using Android.Gms.Extensions;
 using Android.OS;
 using Android.Telecom;
 using Android.Views;
+using Android.Views.Animations;
 using Android.Widget;
 using App1.Algorithm;
 using Firebase;
 using Firebase.Firestore;
-//import doc, deleteDoc from firestore;
 using Java.Util;
 using Org.Json;
 using System;
 using System.Collections.Generic;
-//using Syncfusion.SfChart.XForms;
-//using Xamarin.Forms;
-
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,8 +40,8 @@ namespace App1
 
 
         ImageButton ibHome,ibSave,ibTrack,ibData,ibType;
-        
 
+        
         //StockChart chart;
         Class_LineGraph chart2;
         
@@ -128,7 +125,7 @@ namespace App1
 
         }
 
-        
+        //context menu staff 
         public override void OnCreateContextMenu(IContextMenu menu, View v, IContextMenuContextMenuInfo menuInfo)
         {
             base.OnCreateContextMenu(menu, v, menuInfo);
@@ -235,10 +232,7 @@ namespace App1
         }
 
 
-
-        //suppose to be about data base
-        //currently doesnt work properly
-
+        //Changes the icon of the "saved" and "tracking" buttons when the stock is already in the data base in FireStore
         public void ChangeIcons()
         {
             string symbol = Intent.GetStringExtra("symbol") ?? "AAPL";
@@ -276,13 +270,17 @@ namespace App1
         }
 
 
-        //Firestore - Data base staff
+        //-----Firestore - Data base staff-----//
+
+        //setting up the data base 
         public void SetUpDataBase()
         {
             db = GetDataBase();
             _ = LoadItemsAsync();
 
         }
+
+        //creating a connection to the database
         public FirebaseFirestore GetDataBase()
         {
 
@@ -294,6 +292,8 @@ namespace App1
             .SetStorageBucket("stock-data-base-finalproject.appspot.com")
             .Build();
 
+
+            //in case there are allready database instenses created in servecis are other places
             try
             {
                 var app = FirebaseApp.InitializeApp(this, options);
@@ -319,6 +319,7 @@ namespace App1
             }
         }
 
+        //creating a request to get the info from the data base in firestore
         private async Task LoadItemsAsync()
         {
             Docs_In_DataBase.Clear();
@@ -327,6 +328,8 @@ namespace App1
             await q.Get().AddOnSuccessListener(this);
 
         }
+
+        //on reciving the info from firestore extract the usful info 
         public void OnSuccess(Java.Lang.Object result)
         {
             var snapshot = (QuerySnapshot)result;
@@ -343,7 +346,7 @@ namespace App1
         }
 
 
-
+        //this deletes an instance of the item in the index from the database
         private void DeleteItem_fromDataBase(int index)
         {
             DocumentReference doc = db.Collection("Saved Stocks").Document(Docs_In_DataBase[index].Id);
@@ -351,6 +354,7 @@ namespace App1
             Docs_In_DataBase.RemoveAt(index);
             ibSave.SetImageResource(Resource.Drawable.Icon_Favorite2);
         }
+        //this creates a new instance of the symbol in the database
         private void AddItem_ToDataBAse(string symbol)
         {
             HashMap map = new HashMap();
@@ -364,8 +368,7 @@ namespace App1
             collection.Add(map);
         }
 
-
-
+        //this creates a new instance of the symbol in the database with tracking prices
         private void AddTrackItem_ToDataBAse(string symbol)
         {
             HashMap map = new HashMap();
@@ -378,6 +381,9 @@ namespace App1
             CollectionReference collection = db.Collection("Saved Stocks");
             collection.Add(map);
         }
+
+        //in case the stock is already in the data base than delete the privious one and create a new one
+        //(sound file is a scrapped idea that i had at the beggining of the project)
         private void UpdateTrackItemAsync(string symbol,int index)
         {
             string soundfile = (string)Docs_In_DataBase[index].Get("SoundFile");
@@ -398,7 +404,8 @@ namespace App1
 
 
 
-        //buttons
+        //--------buttons-------//
+        //show the tracking PopUP
         private void IbTrack_Click(object sender, EventArgs e)
         {
             
@@ -417,6 +424,7 @@ namespace App1
             d.Show();
         }
 
+        //when clicked add/update the item to the  database
         private void BtnTrack_Click(object sender, EventArgs e)
         {
             if(Symbol == "")
@@ -450,12 +458,14 @@ namespace App1
             }
         }
 
+        //close the Tracking PopUp
         private void BtnCancel_Click(object sender, EventArgs e)
         {
             btnTrack.Click -= BtnTrack_Click;
             d.Cancel();
         }
 
+        //when clicked add the stock to the database without a tracking prices
         private void IbSave_Click(object sender, EventArgs e)
         {
             int index = -1;
@@ -490,6 +500,7 @@ namespace App1
 
         }
 
+        //go to the previous activity
         private void IbHome_Click(object sender, EventArgs e)
         {
 
@@ -504,7 +515,8 @@ namespace App1
 
 
 
-        // algorithm
+        // -------algorithm-------//
+        //Set Up the Algorithm PopUp and start it
         private void IbData_Click(object sender, EventArgs e)
         {
             d = new Dialog(this);
@@ -576,8 +588,7 @@ namespace App1
             d.Show();
 
         }
-
-
+        //cancel the PopUp and abort the algorithm
         private void BtnGoBack_Click(object sender, EventArgs e)
         {
             d.Cancel();
@@ -587,7 +598,7 @@ namespace App1
                 algoLL.RemoveAllViews();
             }
         }
-
+        //start the algorithm
         private void BtnStart_Click(object sender, EventArgs e)
         {
 
@@ -618,7 +629,8 @@ namespace App1
         }
 
 
-
+        //in case and the user choose a diffrent time leaps than 1 min 
+        //than get from financl.com the stock prices and info with the wanted time leaps
         public async Task<List<DataPoint>> getInfoFromWeb(string timeLeap)
         {
             List<DataPoint> newList = new List<DataPoint>();
@@ -678,6 +690,7 @@ namespace App1
             return newList;
         }
 
+        //start the allgorithm process in the class
         private void StartAlgorithm(List<DataPoint> newList)
         {
             if (ETdegree.Text.Length < 1)
@@ -710,6 +723,8 @@ namespace App1
 
         }
 
+        //an event that the class MATL_Algorithm calls when the process is finished
+        //it is about setting up the drawing view for the graphs
         private void Continue_Algorithm_Process()
         {
 
@@ -742,6 +757,8 @@ namespace App1
             Add_Prediction("My predection is: \n in " + MATLAlgo.FuterPoint + " * " + timeleap + " the price of the stock will be: " + MATLAlgo.prediction.price);
         }
 
+        //-----ProgressBar Events-----//
+        //start the progress bar -> make it visibale but with 0% done
         public void Start_progress_Bar(string description)
         {
             m = new Message();
@@ -751,6 +768,7 @@ namespace App1
             handler.SendMessage(m);
 
         }
+        //adding progress to the progressBar
         public void Add_progress_ToBar(string description)
         {
             m = new Message();
@@ -760,6 +778,7 @@ namespace App1
             handler.SendMessage(m);
 
         }
+        //adding to the prediction LinearLayout the predicion that the algorithm created
         public void Add_Prediction(string description)
         {
             m = new Message();
@@ -824,6 +843,11 @@ namespace App1
             
             base.OnPause();
         }
+
+        //when Offline mode is active, insert these hardvoded values to the list
+
+        //I didnt Know there was a standart in the indastry to put these kind of info in a text file
+        //(i origanaly had a class that created and worked with txt files but i scrapped it when they changed the conditions to pass the project)
         private void CreateOfflineGraph()
         {
             //in order to get these line i printed the points of the stock : INTC
@@ -2347,54 +2371,5 @@ namespace App1
             list_DataPoints.Add(new DataPoint((float)29.43, (float)29.41, (float)29.425, (float)29.415, "2023-05-16 15:11:00"));
         }
 
-        //not used
-        //private void BtnMove_Click(object sender, EventArgs e)
-        //{
-        //    chart.Move = !chart.Move;
-        //    if (chart.Move)
-        //    {
-        //        btnMove.SetBackgroundColor(Android.Graphics.Color.Green);
-        //    }
-        //    else
-        //    {
-        //        btnMove.SetBackgroundColor(Android.Graphics.Color.Red);
-        //    }
-        //}
-
-        //private void BtnZoom_Click(object sender, EventArgs e)
-        //{
-        //    chart.Zoom = !chart.Zoom;
-        //    if (chart.Zoom)
-        //    {
-        //        btnZoom.SetBackgroundColor(Android.Graphics.Color.Green);
-        //        //btnZoom.Background = (Android.Graphics.Drawables.Drawable)"green";
-        //    }
-        //    else
-        //    {
-        //        btnZoom.SetBackgroundColor(Android.Graphics.Color.Red);
-        //        //btnZoom.Background = (Android.Graphics.Drawables.Drawable)"red";
-        //    }
-        //}
-
-        //public String[] CleanAndSaperet(String TheContent)
-        //{
-        //    if (TheContent == null) { Console.WriteLine("the content is null"); return null; }
-
-        //    if (TheContent.Contains("\n")) TheContent = TheContent.Replace("\n", "");
-        //    if (TheContent.Contains("\r")) TheContent = TheContent.Replace("\r", "");
-
-        //    TheContent = TheContent.Replace('{', ' ');
-        //    TheContent = TheContent.Replace('}', ' ');
-        //    TheContent = TheContent.Replace('[', ' ');
-        //    TheContent = TheContent.Replace(']', ' ');
-        //    TheContent = TheContent.Replace('(', ' ');
-        //    TheContent = TheContent.Replace(')', ' ');
-        //    TheContent = TheContent.Replace(':', ',');
-        //    TheContent = TheContent.Replace('"', ' ');
-        //    TheContent = TheContent.Replace(" ", "");
-
-        //    String[] s = TheContent.Split(',');
-        //    return s;
-        //}
     }
 }

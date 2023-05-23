@@ -305,7 +305,10 @@ namespace App1
 			public const int design_snackbar_out = 2130771995;
 			
 			// aapt resource value: 0x7F01001C
-			public const int fragment_fast_out_extra_slow_in = 2130771996;
+			public const int FadeIn = 2130771996;
+			
+			// aapt resource value: 0x7F01001D
+			public const int fragment_fast_out_extra_slow_in = 2130771997;
 			
 			static Animation()
 			{

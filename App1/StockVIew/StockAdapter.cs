@@ -50,7 +50,7 @@ namespace App1
             return view;
 
         }
-
+        //inflate View for a Tracked stock with tracking price
         private View TrackingLayout(int position, View convertView, ViewGroup parent)
         {
             LayoutInflater layoutInflater = ((StockViewActivity)context).LayoutInflater;
@@ -95,6 +95,7 @@ namespace App1
             return view;
         }
 
+        //inflate a view for Saved stocks without tracking prices
         private View SavedLayout(int position, View convertView, ViewGroup parent)
         {
             Android.Views.LayoutInflater layoutInflater = ((StockViewActivity)context).LayoutInflater;
