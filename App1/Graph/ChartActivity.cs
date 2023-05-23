@@ -27,11 +27,8 @@ namespace App1
         List<float> list = new List<float>();
         List<string> list_Dates = new List<string>();
         List<DataPoint> list_DataPoints= new List<DataPoint>();
-
-        //List<string> Symbols_In_DataBase = new List<string>();
         List<DocumentSnapshot> Docs_In_DataBase = new List<DocumentSnapshot>();
         List<Class_FatherGraph> Charts = new List<Class_FatherGraph>();
-        //Button btnMove, btnZoom;
 
         LinearLayout l1;
         Button btnTrack, btnCancel;
@@ -41,8 +38,6 @@ namespace App1
 
         ImageButton ibHome,ibSave,ibTrack,ibData,ibType;
 
-        
-        //StockChart chart;
         Class_LineGraph chart2;
         
         Dialog d;

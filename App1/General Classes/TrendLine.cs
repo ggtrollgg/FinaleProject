@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace App1.General_Classes
+namespace App1
 {
     public class TrendLine
     {
